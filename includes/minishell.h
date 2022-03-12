@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/08 19:41:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/12 16:28:27 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/includes/libft.h"
 # include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <signal.h>
 # include <limits.h>
 # include <readline/readline.h>
