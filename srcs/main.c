@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/12 17:00:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/15 12:14:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,74 +28,39 @@ void	parsing_cmd(char *str, char **args)
 			str++;
 		}
 	}
-	args[0] = ft_strjoin("/bin/", args[0]);
 	args[i] = NULL;
 }
 
-void	prompt(t_vars *vars, char **env)
+void	prompt(t_env *envs)
 {
 	char	*str;
 	char	**args;
 	int		i;
 
-	args = malloc(sizeof(char *) * ARG_MAX);
 	while (1)
 	{
+		args = malloc(sizeof(char *) * ARG_MAX);
 		str = readline("🐚minishell$ ");
 		parsing_cmd(str, args);
-		if (!ft_strcmp(args[0] + 5, "exit"))
-			break ;
-		else if (!ft_strcmp(args[0] + 5, "pwd"))
-			printf("%s\n", getcwd(vars->cwd, PATH_MAX));
-		/*
-		else if (!ft_strcmp(args[0] + 5, "cd"))
-		{
-			if (args[1] == NULL)
-			{
-				chdir(getenv("HOME"));
-				continue ;
-			}
-			if (chdir(args[1]) == -1)
-				printf("cd: %s: No such file or directory\n", args[1]);
-		}
-		*/
-		else if (!ft_strcmp(args[0] + 5, "echo"))
-		{
-			if (!args[1])
-				printf("\n");
-			else if (!ft_strcmp(args[1], "-n"))
-			{
-				if (!args[2])
-					continue ;
-				printf("%s", args[2]);
-			}
-			else
-				printf("%s\n", args[1]);
-		}
+		if (builtin(envs, args) == SUCCESS)
+			continue ;
 		else
-		{
-			vars->pid = fork();
-			if (vars->pid == 0)
-			{
-				if (execve(args[0], args, args) == -1)
-				{
-					printf("%s: command not found\n", args[0] + 5);
-					exit(0);
-				}
-			}
-			else
-				waitpid(vars->pid, NULL, 0);
-		}
+			exec(args);
+		free(args);
 		free(str);
 	}
-	free(args);
-	exit(0);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_vars	vars;
+	t_env	*envs;
 
-	prompt(&vars, env);
+	envs = NULL;
+	while (*env)
+	{
+		add_env(envs, *env);
+		env++;
+	}
+	prompt(envs);
 	return (0);
 }

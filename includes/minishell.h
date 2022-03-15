@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/12 16:28:27 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/12 21:32:26 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,43 @@
 
 # define CMD_MAX 256
 
-typedef struct s_vars
+enum
 {
-	pid_t	pid;
-	char	args[ARG_MAX];
-	char	cwd[PATH_MAX];
-}				t_vars;
+	SUCCESS = 1,
+	ERROR = 0
+} ;
+
+typedef struct s_env
+{
+	struct s_env	*top;
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}				t_env;
+
+/*
+*** builtin ***
+*/
+int		builtin(t_env *envs, char **args);
+void	cd(t_env *envs, char **args);
+void	echo(char **args);
+
+/*
+*** exec ***
+*/
+void	exec(char **args);
+
+/*
+*** env ***
+*/
+char	*search_env(t_env *envs, char *name);
+void	add_env(t_env *envs, char *name);
+t_env	*make_envs(char **env);
+void	env(t_env *envs);
+
+/*
+*** tools **
+*/
+t_env	*getnode(char *key, char *value);
 
 #endif
