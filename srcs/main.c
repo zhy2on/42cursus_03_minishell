@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/15 12:14:59 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/15 13:24:36 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,15 @@ void	prompt(t_env *envs)
 
 int	main(int ac, char **av, char **env)
 {
-	t_env	*envs;
+	t_env	envs;
+	t_env	*ptr;
 
-	envs = NULL;
+	envs.first = NULL;
 	while (*env)
 	{
-		add_env(envs, *env);
+		add_env(&envs, *env);
 		env++;
 	}
-	prompt(envs);
+	prompt(&envs);
 	return (0);
 }

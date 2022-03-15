@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/12 21:30:56 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/15 13:17:33 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,26 @@ void	add_env(t_env *envs, char *name)
 		return ;
 	}
 	split_s = ft_split(name, '=');
-	if (!envs)
+	if (!envs->first)
 	{
-		envs = getnode(split_s[0], split_s[1]);
+		envs->first = getnode(split_s[0], split_s[1]);
 		return ;
 	}
-	ptr = envs;
+	ptr = envs->first;
 	while (ptr->next)
 		ptr = ptr->next;
 	ptr->next = getnode(split_s[0], split_s[1]);
 	free(split_s);
+}
+
+void	env(t_env *envs)
+{
+	while (envs)
+	{
+		if (envs->value)
+			printf("%s=%s\n", envs->key, envs->value);
+		envs = envs->next;
+	}
 }
 
 t_env	*make_envs(char **env)
@@ -59,14 +69,4 @@ t_env	*make_envs(char **env)
 	while (env[++i])
 		add_env(envs, env[i]);
 	return (envs);
-}
-
-void	env(t_env *envs)
-{
-	while (envs)
-	{
-		if (envs->value)
-			printf("%s=%s\n", envs->key, envs->value);
-		envs = envs->next;
-	}
 }
