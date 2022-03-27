@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/12 21:32:26 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 17:39:24 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ enum
 
 typedef struct s_env
 {
-	struct s_env	*top;
+	struct s_env	*first;
 	char			*key;
 	char			*value;
 	struct s_env	*next;
@@ -54,13 +54,15 @@ void	exec(char **args);
 *** env ***
 */
 char	*search_env(t_env *envs, char *name);
+int		env_parsing(char *s);
+void	add_env_sub(t_env *envs, char *key, char *value);
 void	add_env(t_env *envs, char *name);
-t_env	*make_envs(char **env);
 void	env(t_env *envs);
 
 /*
 *** tools **
 */
 t_env	*getnode(char *key, char *value);
+int		ft_isquot(char s);
 
 #endif

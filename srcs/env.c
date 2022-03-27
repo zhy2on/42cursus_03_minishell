@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/15 13:17:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 17:43:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,50 +23,90 @@ char	*search_env(t_env *envs, char *key)
 	return (NULL);
 }
 
-void	add_env(t_env *envs, char *name)
+int	env_parsing(char *s)
+{
+	int		i;
+	char	quot;
+
+	quot = '\0';
+	i = 0;
+	while (*s)
+	{
+		if (!quot && ft_isquot(*s))
+		{
+			quot = *s;
+			i++;
+		}
+		else if (*s == quot)
+		{
+			quot = '\0';
+			i++;
+		}
+		else if (i > 0)
+			*(s - i) = *s;
+		s++;
+	}
+	*(s - i) = '\0';
+	if (quot)
+		return (ERROR);
+	return (SUCCESS);
+}
+
+void	add_env_sub(t_env *envs, char *key, char *value)
 {
 	t_env	*ptr;
+
+	ptr = envs->first;
+	if (!ptr)
+	{
+		envs->first = getnode(key, value);
+		return ;
+	}
+	while (ptr->next && ft_strcmp(key, ptr->key))
+		ptr = ptr->next;
+	if (!ft_strcmp(key, ptr->key))
+	{
+		if (value)
+			ptr->value = value;
+	}
+	else
+		ptr->next = getnode(key, value);
+}
+
+void	add_env(t_env *envs, char *name)
+{
 	char	*s;
-	char	**split_s;
+	char	*value;
 
 	s = name;
 	while (ft_isalnum(*s) || *s == '_')
 		s++;
-	if (*s != '=')
+	if (*s && *s != '=')
 	{
 		printf("minishell: export: `%s': not a valid identifier\n", name);
 		return ;
 	}
-	split_s = ft_split(name, '=');
-	if (!envs->first)
+	value = NULL;
+	if (*s == '=')
+		value = s + 1;
+	*s++ = '\0';
+	if (env_parsing(s) == ERROR)
 	{
-		envs->first = getnode(split_s[0], split_s[1]);
+		printf("minishell: export: single quotate error\n");
 		return ;
 	}
-	ptr = envs->first;
-	while (ptr->next)
-		ptr = ptr->next;
-	ptr->next = getnode(split_s[0], split_s[1]);
-	free(split_s);
+	add_env_sub(envs, name, value);
 }
 
 void	env(t_env *envs)
 {
-	while (envs)
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
 	{
-		if (envs->value)
-			printf("%s=%s\n", envs->key, envs->value);
-		envs = envs->next;
+		if (ptr->value)
+			printf("%s=%s\n", ptr->key, ptr->value);
+		ptr = ptr->next;
 	}
-}
-
-t_env	*make_envs(char **env)
-{
-	t_env	*envs;
-	int		i;
-
-	i = -1;
-	while (env[++i])
-		add_env(envs, env[i]);
-	return (envs);
 }

@@ -6,11 +6,38 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/15 12:15:40 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/15 21:17:01 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	export(t_env *envs, char **args)
+{
+	t_env	*ptr;
+
+	if (!args[1])
+	{
+		ptr = envs->first;
+		while (ptr)
+		{
+			printf("declare -x %s", ptr->key);
+			if (ptr->value)
+				printf("=\"%s\"", ptr->value);
+			printf("\n");
+			ptr = ptr->next;
+		}
+	}
+	else
+	{
+		args = args + 1;
+		while (*args)
+		{
+			add_env(envs, *args);
+			args++;
+		}
+	}
+}
 
 void	cd(t_env *envs, char **args)
 {
@@ -76,6 +103,8 @@ int	builtin(t_env *envs, char **args)
 		echo(args);
 	else if (!ft_strcmp(args[0], "env"))
 		env(envs);
+	else if (!ft_strcmp(args[0], "export"))
+		export(envs, args);
 	else
 		return (ERROR);
 	return (SUCCESS);
