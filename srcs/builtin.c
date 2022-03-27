@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/15 21:17:01 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 18:07:00 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,26 @@ void	cd(t_env *envs, char **args)
 	char	cwd[PATH_MAX];
 
 	if (args[1] == NULL)
-		chdir(search_env(envs, "HOME"));
+	{
+		add_env(envs, ft_strjoin("OLDPWD=", getcwd(cwd, PATH_MAX)));
+		chdir(search_env(envs, "HOME")->value);
+	}
 	else if (!ft_strcmp(args[1], "-"))
 	{
 		if (!search_env(envs, "OLDPWD"))
 			printf("minishell: cd: OLDPWD not set\n");
 		else
-			chdir(search_env(envs, "OLDPWD"));
+		{
+			getcwd(cwd, PATH_MAX);
+			chdir(search_env(envs, "OLDPWD")->value);
+			add_env(envs, ft_strjoin("OLDPWD=", cwd));
+		}
 	}
-	else if (chdir(args[1]) == -1)
-		printf("minishell: cd: %s: No such file or directory\n", args[1]);
 	else
 	{
-		//export OLDPWD=cwd
+		add_env(envs, ft_strjoin("OLDPWD=", getcwd(cwd, PATH_MAX)));
+		if (chdir(args[1]) == -1)
+			printf("minishell: cd: %s: No such file or directory\n", args[1]);
 	}
 }
 

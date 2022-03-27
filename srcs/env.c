@@ -6,19 +6,22 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 17:43:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 18:09:44 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*search_env(t_env *envs, char *key)
+t_env	*search_env(t_env *envs, char *key)
 {
-	while (envs)
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
 	{
-		if (!ft_strcmp(envs->key, key))
-			return (envs->value);
-		envs = envs->next;
+		if (!ft_strcmp(ptr->key, key))
+			return (ptr);
+		ptr = ptr->next;
 	}
 	return (NULL);
 }

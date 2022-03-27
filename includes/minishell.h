@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 17:39:24 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 17:55:14 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	exec(char **args);
 /*
 *** env ***
 */
-char	*search_env(t_env *envs, char *name);
+t_env	*search_env(t_env *envs, char *key);
 int		env_parsing(char *s);
 void	add_env_sub(t_env *envs, char *key, char *value);
 void	add_env(t_env *envs, char *name);
