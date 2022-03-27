@@ -6,29 +6,54 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 19:06:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 21:54:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	parsing_cmd(char *str, char **args)
+void	parsing_cmd_sub(char *str, char **args, char *quot, int i)
 {
-	int		i;
-
-	i = 0;
 	while (*str)
 	{
-		args[i++] = str;
-		while (*str && *str != ' ')
-			str++;
-		if (*str == ' ')
+		if (!*quot && ft_isquot(*str))
 		{
-			*str = '\0';
-			str++;
+			*quot = *str;
+			i++;
 		}
+		else if (*str == *quot)
+		{
+			*quot = '\0';
+			i++;
+		}
+		else if (i > 0)
+			*(str - i) = *str;
+		if (!*quot && *str == ' ')
+		{
+			*(str - i) = '\0';
+			*args++ = str - i + 1;
+		}
+		str++;
 	}
-	args[i] = NULL;
+	*args = NULL;
+	*(str - i) = '\0';
+}
+
+int	parsing_cmd(char *str, char **args)
+{
+	int		i;
+	char	quot;
+
+	i = 0;
+	*args++ = str;
+	quot = '\0';
+	parsing_cmd_sub(str, args, &quot, i);
+	if (quot)
+	{
+		printf("minishell: single quotate error\n");
+		return (ERROR);
+	}
+	return (SUCCESS);
 }
 
 void	prompt(t_env *envs)
@@ -41,8 +66,7 @@ void	prompt(t_env *envs)
 	{
 		args = malloc(sizeof(char *) * ARG_MAX);
 		str = readline("🐚minishell$ ");
-		parsing_cmd(str, args);
-		if (parsing_args(args) == ERROR)
+		if (parsing_cmd(str, args) == ERROR)
 			continue ;
 		if (builtin(envs, args) == SUCCESS)
 			continue ;

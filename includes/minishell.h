@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 19:07:40 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 21:59:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ void	env(t_env *envs);
 *** tools **
 */
 t_env	*getnode(char *key, char *value);
-int		remove_quot(char *s);
-int		parsing_args(char **args);
 int		ft_isquot(char s);
 
 #endif

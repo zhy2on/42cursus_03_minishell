@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/12 19:23:41 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 21:39:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	exec(char **args)
 	{
 		if (execve(args[0], args, args) == -1)
 		{
-			printf("minishell: %s: command not found\n", args[0] + 5);
+			printf("minishell: %s: command not found\n", args[0]);
 			exit(0);
 		}
 	}
