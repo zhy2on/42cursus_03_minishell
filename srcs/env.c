@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 18:45:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 19:08:54 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,6 @@ void	add_env(t_env *envs, char *name)
 	if (*s == '=')
 		value = s + 1;
 	*s++ = '\0';
-	if (parsing_value(s) == ERROR)
-	{
-		printf("minishell: export: single quotate error\n");
-		return ;
-	}
 	add_env_sub(envs, name, value);
 }
 

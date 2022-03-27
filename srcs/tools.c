@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 18:42:14 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 19:08:27 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_env	*getnode(char *key, char *value)
 	return (ret);
 }
 
-int	parsing_value(char *s)
+int	remove_quot(char *s)
 {
 	int		i;
 	char	quot;
@@ -49,6 +49,20 @@ int	parsing_value(char *s)
 	*(s - i) = '\0';
 	if (quot)
 		return (ERROR);
+	return (SUCCESS);
+}
+
+int	parsing_args(char **args)
+{
+	while (*args)
+	{
+		if (remove_quot(*args) == ERROR)
+		{
+			printf("minishell: single quotate error\n");
+			return (ERROR);
+		}
+		args++;
+	}
 	return (SUCCESS);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/15 20:43:18 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 19:06:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	prompt(t_env *envs)
 		args = malloc(sizeof(char *) * ARG_MAX);
 		str = readline("🐚minishell$ ");
 		parsing_cmd(str, args);
+		if (parsing_args(args) == ERROR)
+			continue ;
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 18:43:53 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 19:05:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ void	echo(char **args)
 int	builtin(t_env *envs, char **args)
 {
 	char	cwd[PATH_MAX];
+	char	*ptr;
 
 	if (!ft_strcmp(args[0], "exit"))
 		exit(0);
