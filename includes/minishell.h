@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 17:55:14 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 18:47:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ typedef struct s_env
 /*
 *** builtin ***
 */
-int		builtin(t_env *envs, char **args);
+void	unset(t_env *envs, char **args);
+void	export(t_env *envs, char **args);
 void	cd(t_env *envs, char **args);
 void	echo(char **args);
+int		builtin(t_env *envs, char **args);
 
 /*
 *** exec ***
@@ -53,8 +55,8 @@ void	exec(char **args);
 /*
 *** env ***
 */
+void	remove_env(t_env *envs, char *key);
 t_env	*search_env(t_env *envs, char *key);
-int		env_parsing(char *s);
 void	add_env_sub(t_env *envs, char *key, char *value);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
@@ -63,6 +65,7 @@ void	env(t_env *envs);
 *** tools **
 */
 t_env	*getnode(char *key, char *value);
+int		parsing_value(char *s);
 int		ft_isquot(char s);
 
 #endif

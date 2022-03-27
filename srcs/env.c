@@ -6,11 +6,39 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 18:09:44 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 18:45:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	remove_env(t_env *envs, char *key)
+{
+	t_env	*ptr;
+	t_env	*tmp;
+
+	if (!envs->first)
+		return ;
+	if (!ft_strcmp(envs->first->key, key))
+	{
+		tmp = envs->first;
+		envs->first = envs->first->next;
+		free(tmp);
+		return ;
+	}
+	ptr = envs->first;
+	while (ptr->next)
+	{
+		if (!ft_strcmp(ptr->next->key, key))
+		{
+			tmp = ptr->next;
+			ptr->next = ptr->next->next;
+			free(tmp);
+			return ;
+		}
+		ptr = ptr->next;
+	}
+}
 
 t_env	*search_env(t_env *envs, char *key)
 {
@@ -24,35 +52,6 @@ t_env	*search_env(t_env *envs, char *key)
 		ptr = ptr->next;
 	}
 	return (NULL);
-}
-
-int	env_parsing(char *s)
-{
-	int		i;
-	char	quot;
-
-	quot = '\0';
-	i = 0;
-	while (*s)
-	{
-		if (!quot && ft_isquot(*s))
-		{
-			quot = *s;
-			i++;
-		}
-		else if (*s == quot)
-		{
-			quot = '\0';
-			i++;
-		}
-		else if (i > 0)
-			*(s - i) = *s;
-		s++;
-	}
-	*(s - i) = '\0';
-	if (quot)
-		return (ERROR);
-	return (SUCCESS);
 }
 
 void	add_env_sub(t_env *envs, char *key, char *value)
@@ -93,7 +92,7 @@ void	add_env(t_env *envs, char *name)
 	if (*s == '=')
 		value = s + 1;
 	*s++ = '\0';
-	if (env_parsing(s) == ERROR)
+	if (parsing_value(s) == ERROR)
 	{
 		printf("minishell: export: single quotate error\n");
 		return ;

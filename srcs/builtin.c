@@ -6,11 +6,36 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 18:07:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/03/27 18:43:53 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	unset(t_env *envs, char **args)
+{
+	char	*s;
+	t_env	*ptr;
+
+	args = args + 1;
+	while (*args)
+	{
+		s = *args;
+		while (*s)
+		{
+			if (!ft_isalnum(*s))
+			{
+				printf("minishell: unset: `%s': not a valid identifier\n",
+					*args);
+				break ;
+			}
+			s++;
+		}
+		if (!*s)
+			remove_env(envs, *args);
+		args++;
+	}
+}
 
 void	export(t_env *envs, char **args)
 {
@@ -112,6 +137,8 @@ int	builtin(t_env *envs, char **args)
 		env(envs);
 	else if (!ft_strcmp(args[0], "export"))
 		export(envs, args);
+	else if (!ft_strcmp(args[0], "unset"))
+		unset(envs, args);
 	else
 		return (ERROR);
 	return (SUCCESS);
