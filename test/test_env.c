@@ -38,7 +38,7 @@ int	main(int ac, char **av, char **env)
 {
 	int		i;
 	char	*str;
-	
+
 	prompt();
 	return (0);
 }

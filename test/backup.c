@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 21:58:58 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 21:59:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/01 15:49:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,31 @@ int	parsing_args(char **args)
 		args++;
 	}
 	return (SUCCESS);
+}
+
+void	parsing_cmd_sub(char *str, char **args, char *quot, int i)
+{
+	while (*str)
+	{
+		if (!*quot && ft_isquot(*str))
+		{
+			*quot = *str;
+			i++;
+		}
+		else if (*str == *quot)
+		{
+			*quot = '\0';
+			i++;
+		}
+		else if (i > 0)
+			*(str - i) = *str;
+		if (!*quot && *str == ' ')
+		{
+			*(str - i) = '\0';
+			*args++ = str - i + 1;
+		}
+		str++;
+	}
+	*args = NULL;
+	*(str - i) = '\0';
 }
