@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 21:59:23 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/25 17:33:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,14 @@ typedef struct s_env
 */
 void	unset(t_env *envs, char **args);
 void	export(t_env *envs, char **args);
-void	cd(t_env *envs, char **args);
 void	echo(char **args);
 int		builtin(t_env *envs, char **args);
+
+/*
+*** cd ***
+*/
+void	cd(t_env *envs, char **args);
+void	cd_sub(t_env *envs, char **args);
 
 /*
 *** exec ***
