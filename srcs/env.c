@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/26 17:47:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/26 17:53:31 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*validate_key(char *key, char *cmd)
 	if (!ft_strcmp(cmd, "unset") && *s)
 	{
 		printf("minishell: unset: `%s': not a valid identifier\n", key);
-		return (0);
+		return (NULL);
 	}
 	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
 	{
