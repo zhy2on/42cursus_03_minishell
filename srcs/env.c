@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 19:08:54 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/26 17:03:08 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	add_env(t_env *envs, char *name)
 	char	*value;
 
 	s = name;
-	while (ft_isalnum(*s) || *s == '_')
+	while (ft_isalpha(*s) || *s == '_')
 		s++;
 	if (*s && *s != '=')
 	{
