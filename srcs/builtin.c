@@ -6,24 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/26 21:50:28 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/27 20:54:00 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	env(t_env *envs)
-{
-	t_env	*ptr;
-
-	ptr = envs->first;
-	while (ptr)
-	{
-		if (ptr->value)
-			printf("%s=%s\n", ptr->key, ptr->value);
-		ptr = ptr->next;
-	}
-}
 
 void	unset(t_env *envs, char **args)
 {

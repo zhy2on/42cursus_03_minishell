@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:50:35 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/27 20:54:05 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,4 +105,17 @@ void	add_env(t_env *envs, char *name)
 	}
 	if (ptr && value)
 		ptr->value = value;
+}
+
+void	env(t_env *envs)
+{
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
+	{
+		if (ptr->value)
+			printf("%s=%s\n", ptr->key, ptr->value);
+		ptr = ptr->next;
+	}
 }
