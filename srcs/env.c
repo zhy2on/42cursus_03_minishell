@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/26 17:53:31 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/27 20:50:35 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,23 +97,12 @@ void	add_env(t_env *envs, char *name)
 		envs->first = getnode(name, value);
 		return ;
 	}
-	while (ptr->next && ft_strcmp(name, ptr->key))
-		ptr = ptr->next;
-	if (!ft_strcmp(name, ptr->key) && value)
-		ptr->value = value;
-	else
-		ptr->next = getnode(name, value);
-}
-
-void	env(t_env *envs)
-{
-	t_env	*ptr;
-
-	ptr = envs->first;
-	while (ptr)
+	while (ptr && ft_strcmp(name, ptr->key))
 	{
-		if (ptr->value)
-			printf("%s=%s\n", ptr->key, ptr->value);
+		if (!ptr->next)
+			ptr->next = getnode(name, value);
 		ptr = ptr->next;
 	}
+	if (ptr && value)
+		ptr->value = value;
 }
