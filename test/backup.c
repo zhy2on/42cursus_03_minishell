@@ -6,11 +6,30 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 21:58:58 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/01 15:49:23 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/26 17:41:05 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	add_env_sub(t_env *envs, char *key, char *value)
+{
+	t_env	*ptr;
+
+	ptr = envs->first;
+	if (!ptr)
+	{
+		envs->first = getnode(key, value);
+		return ;
+	}
+	while (ptr->next && ft_strcmp(key, ptr->key))
+		ptr = ptr->next;
+	if (!ft_strcmp(key, ptr->key) && value)
+		ptr->value = value;
+	else
+		ptr->next = getnode(key, value);
+}
+
 
 int	remove_quot(char *s)
 {

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/25 17:33:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/27 20:53:08 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 # include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-
-# define CMD_MAX 256
 
 enum
 {
@@ -60,9 +58,9 @@ void	exec(char **args);
 /*
 *** env ***
 */
+char	*validate_key(char *key, char *cmd);
 void	remove_env(t_env *envs, char *key);
 t_env	*search_env(t_env *envs, char *key);
-void	add_env_sub(t_env *envs, char *key, char *value);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
 
