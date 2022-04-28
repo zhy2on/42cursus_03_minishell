@@ -25,7 +25,7 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				printf("minishell: unset: `%s': not a valid identifier\n",
+				fprintf(stderr,"minishell: unset: `%s': not a valid identifier\n",
 					*args);
 				break ;
 			}
@@ -46,10 +46,10 @@ void	export(t_env *envs, char **args)
 		ptr = envs->first;
 		while (ptr)
 		{
-			printf("declare -x %s", ptr->key);
+			fprintf(stderr,"declare -x %s", ptr->key);
 			if (ptr->value)
-				printf("=\"%s\"", ptr->value);
-			printf("\n");
+				fprintf(stderr,"=\"%s\"", ptr->value);
+			fprintf(stderr,"\n");
 			ptr = ptr->next;
 		}
 	}
@@ -69,7 +69,7 @@ void	echo(char **args)
 	char	*ptr;
 
 	if (!args[1])
-		printf("\n");
+		fprintf(stderr,"\n");
 	ptr = args[1];
 	if (ptr && *ptr == '-')
 		while (*(++ptr) == 'n')
@@ -78,18 +78,18 @@ void	echo(char **args)
 	{
 		args = args + 2;
 		while (*(args + 1))
-			printf("%s ", *args++);
+			fprintf(stderr,"%s ", *args++);
 		if (*args)
-			printf("%s", *args);
+			fprintf(stderr,"%s", *args);
 	}
 	else
 	{
 		args = args + 1;
 		while (*(args + 1))
-			printf("%s ", *args++);
+			fprintf(stderr,"%s ", *args++);
 		if (*args)
-			printf("%s", *args);
-		printf("\n");
+			fprintf(stderr,"%s", *args);
+		fprintf(stderr,"\n");
 	}
 }
 
@@ -101,7 +101,7 @@ int	builtin(t_env *envs, char **args)
 	if (!ft_strcmp(args[0], "exit"))
 		exit(0);
 	else if (!ft_strcmp(args[0], "pwd"))
-		printf("%s\n", getcwd(cwd, PATH_MAX));
+		fprintf(stderr,"%s\n", getcwd(cwd, PATH_MAX));
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
