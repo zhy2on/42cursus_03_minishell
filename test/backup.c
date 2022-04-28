@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 21:58:58 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/26 17:41:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/26 18:44:48 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	add_env_sub(t_env *envs, char *key, char *value)
 	else
 		ptr->next = getnode(key, value);
 }
-
 
 int	remove_quot(char *s)
 {
