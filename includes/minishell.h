@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:53:08 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/04/30 17:33:33 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,26 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-enum
+enum token_type
+{
+	EMPTY = 0,
+	CMD = 1,
+	ARG = 2,
+	TRUNC = 3,
+	APPEND = 4,
+	INPUT = 5,
+	PIPE = 6,
+	END = 7
+} ;
+
+enum std_type
+{
+	STDIN = 0,
+	STDOUT = 1,
+	STDERR = 2
+} ;
+
+enum return_type
 {
 	SUCCESS = 1,
 	ERROR = 0
@@ -35,6 +54,14 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }				t_env;
+
+typedef struct s_token
+{
+	struct s_token	*first;
+	int				type;
+	char			*str;
+	struct s_token	*next;
+}				t_token;
 
 /*
 *** builtin ***
@@ -65,9 +92,15 @@ void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
 
 /*
+*** token ***
+*/
+void	add_token(t_token *tokens, char *str);
+
+/*
 *** tools **
 */
-t_env	*getnode(char *key, char *value);
+t_env	*get_env_node(char *key, char *value);
+t_token	*get_token_node(int type, char *str);
 int		ft_isquot(char s);
 
 #endif

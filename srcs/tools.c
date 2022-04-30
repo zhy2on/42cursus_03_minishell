@@ -12,13 +12,24 @@
 
 #include "../includes/minishell.h"
 
-t_env	*getnode(char *key, char *value)
+t_env	*get_env_node(char *key, char *value)
 {
 	t_env	*ret;
 
 	ret = malloc(sizeof(t_env));
 	ret->key = key;
 	ret->value = value;
+	ret->next = NULL;
+	return (ret);
+}
+
+t_token	*get_token_node(int type, char *str)
+{
+	t_token	*ret;
+
+	ret = malloc(sizeof(t_token));
+	ret->type = type;
+	ret->str = str;
 	ret->next = NULL;
 	return (ret);
 }

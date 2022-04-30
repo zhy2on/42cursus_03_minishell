@@ -94,13 +94,13 @@ void	add_env(t_env *envs, char *name)
 	ptr = envs->first;
 	if (!ptr)
 	{
-		envs->first = getnode(name, value);
+		envs->first = get_env_node(name, value);
 		return ;
 	}
 	while (ptr && ft_strcmp(name, ptr->key))
 	{
 		if (!ptr->next)
-			ptr->next = getnode(name, value);
+			ptr->next = get_env_node(name, value);
 		ptr = ptr->next;
 	}
 	if (ptr && value)
