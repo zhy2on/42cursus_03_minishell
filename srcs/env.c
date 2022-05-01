@@ -25,12 +25,12 @@ char	*validate_key(char *key, char *cmd)
 	}
 	if (!ft_strcmp(cmd, "unset") && *s)
 	{
-		printf("minishell: unset: `%s': not a valid identifier\n", key);
+		fprintf(stderr,"minishell: unset: `%s': not a valid identifier\n", key);
 		return (NULL);
 	}
 	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
 	{
-		printf("minishell: export: `%s': not a valid identifier\n", key);
+		fprintf(stderr,"minishell: export: `%s': not a valid identifier\n", key);
 		return (NULL);
 	}
 	return (s);
@@ -115,7 +115,7 @@ void	env(t_env *envs)
 	while (ptr)
 	{
 		if (ptr->value)
-			printf("%s=%s\n", ptr->key, ptr->value);
+			fprintf(stderr,"%s=%s\n", ptr->key, ptr->value);
 		ptr = ptr->next;
 	}
 }

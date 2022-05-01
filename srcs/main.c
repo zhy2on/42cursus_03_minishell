@@ -12,6 +12,13 @@
 
 #include "../includes/minishell.h"
 
+static void env_print(char **env) {
+	int i = 0;
+	while (env[i]) {
+		ft_putendl_fd(env[i++], 2);
+	}
+}
+
 void	parsing_cmd_sub(char *str, char **args, char *quot, int i)
 {
 	while (*str)
@@ -50,17 +57,19 @@ int	parsing_cmd(char *str, char **args)
 	parsing_cmd_sub(str, args, &quot, i);
 	if (quot)
 	{
-		printf("minishell: single quotate error\n");
+		fprintf(stderr,"minishell: single quotate error\n");
 		return (ERROR);
 	}
 	return (SUCCESS);
 }
 
-void	prompt(t_env *envs)
+void	prompt(t_env *envs,char **env)
 {
 	char	*str;
 	char	**args;
 	int		i;
+
+	// env_print(env);
 
 	while (1)
 	{
@@ -71,22 +80,27 @@ void	prompt(t_env *envs)
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args);
+			exec(args,env);
 		free(args);
 		free(str);
 	}
 }
 
+
+
 int	main(int ac, char **av, char **env)
 {
 	t_env	envs;
-
+	int i =0;
 	envs.first = NULL;
-	while (*env)
-	{
-		add_env(&envs, *env);
-		env++;
-	}
-	prompt(&envs);
+	// env_print(env);
+	
+	
+	// while (env[i])
+	// {
+	// 	add_env(&envs, env[i]);
+	// 	i++;
+	// }
+	prompt(&envs,env);
 	return (0);
 }
