@@ -6,18 +6,57 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/28 16:07:32 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/01 20:49:28 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../includes/minishell.h"
+int	j_lstsize(t_env *lst)
+{
+	int i;
+	i = 0;
+	while (lst != NULL)
+	{
+		i++;
+		lst = lst->next;
+	}
+	return (i);
+}
+
+static char **convert_env(t_env *envs)
+{
+	char **env;
+	int	total_l;
+	int	i;
+	t_env *env_lst;
+	int lst_size;
+	env_lst = envs->first;
+	lst_size = j_lstsize(env_lst);
+	env = (char **)malloc(sizeof(char *) * (lst_size + 1));
+	i = 0;
+	//envs = envs->next;
+	while (i < lst_size && envs != NULL)
+	{
+		fprintf(stderr,"envs->key : %s\n",env_lst->key);
+		env[i] = ft_strdup(env_lst->key);
+		env[i] = ft_strjoin(env[i],"=");
+		env[i] = ft_strjoin(env[i],env_lst->value);
+		env_lst = env_lst->next;
+		i++;
+	}
+	env[i] = NULL;
+	return (env);
+}
+
+
 static void env_print(char **env) {
 	int i = 0;
 	while (env[i]) {
 		ft_putendl_fd(env[i++], 2);
 	}
 }
+
 static void	check_newline(char buffer[])
 {
 	int	i;
@@ -33,6 +72,7 @@ static void	check_newline(char buffer[])
 		i++;
 	}
 }
+
 static char *str_convert(char *buf) {
 	int i;
 	char *str;
@@ -51,16 +91,33 @@ static char *str_convert(char *buf) {
 
 void find_cmd(char **args, char **env, char buff[], int buf_size );
 
-void	exec(char **args,char **env)
+void	exec(char **args,char **env ,t_env *envs)
 {
 	pid_t	pid;
 	char	buff[4096];
 	ft_memset(buff,0,4096);
 	static char *argss[] = {NULL,NULL};
-	
-	// env_print(env);
+	char **test;
+	test = convert_env(envs);
+	int i=0;
+	int k =0 ;
+	/*
+	while (envs)
+	{
+		ft_putendl_fd(envs->key,2);
+		envs = envs->next;
+	}
+	*/
+	fprintf(stderr,"------env_join_test------");
+	while (test[i])
+	{
+		fprintf(stderr,"%s\n",test[i]);
+		i++;
+	}
 
-	find_cmd(args, env,buff,4096);
+	// env_print(env);
+	
+	find_cmd(args, test,buff,4096);
 	argss[0] = buff;
 	
 	// printf("debug buff : %s\n", buff);

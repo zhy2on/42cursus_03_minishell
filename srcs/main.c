@@ -6,16 +6,18 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 21:54:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/01 20:02:14 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void env_print(char **env) {
-	int i = 0;
-	while (env[i]) {
-		ft_putendl_fd(env[i++], 2);
+static void	env_print(char **env)
+{
+	int i =0;
+	while (env[i])
+	{
+		ft_putendl_fd(env[i++],2);
 	}
 }
 
@@ -80,27 +82,37 @@ void	prompt(t_env *envs,char **env)
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args,env);
+			exec(args,env,envs);
 		free(args);
 		free(str);
 	}
 }
 
-
+static void	print_envs(t_env *envs)
+{
+	int i =0;
+	while (envs)
+	{
+		ft_putendl_fd(envs->key,2);
+		envs = envs->next;
+	}
+}
 
 int	main(int ac, char **av, char **env)
 {
 	t_env	envs;
 	int i =0;
 	envs.first = NULL;
-	// env_print(env);
-	
-	
-	// while (env[i])
-	// {
-	// 	add_env(&envs, env[i]);
-	// 	i++;
-	// }
+	env_print(env);
+	while (env[i])
+	{
+		add_env(&envs, env[i]);
+		i++;
+	}
+	int k = 0;
+	env_print(env);
+	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
+	print_envs(&envs);
 	prompt(&envs,env);
 	return (0);
 }
