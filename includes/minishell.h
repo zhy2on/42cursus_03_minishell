@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/30 17:33:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/02 14:22:24 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-enum token_type
+enum e_token_type
 {
 	EMPTY = 0,
 	CMD = 1,
@@ -34,14 +34,14 @@ enum token_type
 	END = 7
 } ;
 
-enum std_type
+enum e_std_type
 {
 	STDIN = 0,
 	STDOUT = 1,
 	STDERR = 2
 } ;
 
-enum return_type
+enum e_return_type
 {
 	SUCCESS = 1,
 	ERROR = 0
@@ -101,6 +101,6 @@ void	add_token(t_token *tokens, char *str);
 */
 t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
-int		ft_isquot(char s);
+int		is_quot(char s);
 
 #endif
