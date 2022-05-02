@@ -75,6 +75,7 @@ void	prompt(t_env *envs,char **env)
 
 	while (1)
 	{
+		set_signal();
 		args = malloc(sizeof(char *) * ARG_MAX);
 		str = readline("🐚minishell$ ");
 		if (parsing_cmd(str, args) == ERROR)
