@@ -6,11 +6,26 @@
 /*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 19:20:08 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:39:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	convert_tokens(char **args, t_token *tokens)
+{
+	int		i;
+	t_token	*ptr;
+
+	i = 0;
+	ptr = tokens->first;
+	while (ptr)
+	{
+		args[i++] = ptr->str;
+		ptr = ptr->next;
+	}
+	args[i] = NULL;
+}
 
 char	**create_args(t_token *tokens)
 {
@@ -63,8 +78,8 @@ int	parsing_cmd(char *str, t_token *tokens)
 void	prompt(t_env *envs,char **env)
 {
 	char	*str;
-	char	**args;
-	t_token	*tokens;
+	char	*args[ARG_MAX];
+	t_token	tokens;
 	int		i;
 
 	// env_print(env);
@@ -72,22 +87,19 @@ void	prompt(t_env *envs,char **env)
 	set_signal();
 	while (1)
 	{
-		args = (char **)malloc(sizeof(char *) * ARG_MAX);
-		str = readline("minishell$ ");
-		tokens = (t_token *)malloc(sizeof(t_token));
-		tokens->first = NULL;
-		add_history(str);
-		if (parsing_cmd(str, tokens) == ERROR)
+		str = readline("🐚minishell$ ");
+		if (!*str)
 			continue ;
-		args = create_args(tokens);
-		printf("token first: %p\n", tokens->first);
+		tokens.first = NULL;
+		add_history(str);
+		if (parsing_cmd(str, &tokens) == ERROR)
+			continue ;
+		convert_tokens(args, &tokens);
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args, env, envs);
-		free_token(tokens);
-		free(tokens);
-		free(args);
+		free_token(&tokens);
 		free(str);
 	}
 }
