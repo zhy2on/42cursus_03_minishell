@@ -11,17 +11,21 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-/*
+
 static void handler_1(int signo)
 {
     char *str;
+	int cnt;
     if (signo == SIGINT)
     {
         str = ft_strdup(rl_line_buffer);
+		cnt = 15 + ft_strlen(str);
+		// printf("cnt : %d\n", cnt);
         rl_replace_line("", 0);
         // 현재까직 입력된 프롬포트의 문자열을 str로 바꿔준다. 
         //ft_putstr_fd("🐚minishell$ ",1);
-        ft_putstr_fd("\033[K",1);
+        ft_putstr_fd("\033[2K",1);
+		fprintf(stderr,"\033[%dD",cnt);
         // ft_putstr_fd("\b\b  \n", 1);
         ft_putstr_fd("🐚minishell$ ",1);
         ft_putstr_fd(str,1);
@@ -33,6 +37,13 @@ static void handler_1(int signo)
         // readline 함수의 인자로 넣은 문자열을 다시 출력한다. 
         free(str);
     }
+	else if (signo == SIGTERM)
+	{
+		printf("\033[1A");
+        printf("\033[10C");
+    	printf(" exit\n");
+        exit(-1);
+	}
 }
 static void handler_2(int signo)
 {
@@ -51,55 +62,5 @@ void    set_signal(void)
 {
     signal(SIGINT, handler_1);
     signal(SIGQUIT, SIG_IGN);
+	signal(SIGTERM, handler_1);
 }
-*/
-
-static void
-	is_sigint(int pid, int status)
-{
-	if (pid == -1 && !WEXITSTATUS(status))
-	{
-		rl_replace_line("", 0);
-		printf("\n");
-		rl_on_new_line();
-		rl_redisplay();
-	}
-	else
-	{
-		if (!WIFEXITED(status))
-			ft_putstr_fd("\n", 1);
-	}
-}
-
-static void
-	is_sigquit(int pid, int status)
-{
-	if (pid == -1 && !WEXITSTATUS(status))
-		return ;
-	else
-	{
-		if (!WIFEXITED(status))
-			ft_putstr_fd("Quit: 3\n", 1);
-	}
-}
-
-static void
-	handle_signal(int signo)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = waitpid(-1, &status, 0);
-	if (signo == SIGINT)
-		is_sigint(pid, status);
-	else if (signo == SIGQUIT)
-		is_sigquit(pid, status);
-}
-
-void
-	set_signal(void)
-{
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
-}
-
