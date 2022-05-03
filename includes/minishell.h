@@ -36,6 +36,13 @@ typedef struct s_env
 	struct s_env	*next;
 }				t_env;
 
+typedef struct s_data
+{
+	// t_env	*env_lst;
+	int		shlvl;
+}	t_data;
+
+t_data	g_data;
 /*
 *** builtin ***
 */
@@ -74,6 +81,7 @@ int		ft_isquot(char s);
  *** signal ***
  */
 void	set_signal(void);
-void	reset_signal(void);
+// void	reset_signal(void);
+void    init_shlvl(t_env *envs);
 
 #endif
