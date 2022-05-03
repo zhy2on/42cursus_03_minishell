@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 20:15:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 21:22:11 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	prompt(t_env *envs, char **env)
 		if (parsing_cmd(str, &tokens) == ERROR)
 			continue ;
 		args = create_args(&tokens);
-		if (builtin(envs, args) == SUCCESS)
+		if (!args[0] || builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args, env, envs);
