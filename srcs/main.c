@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 19:39:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 21:07:45 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,28 @@ int	parsing_cmd(char *str, t_token *tokens)
 	}
 	return (SUCCESS);
 }
-
+void	eof_history(char *str)
+{
+	if (str == NULL)
+	{
+		// ft_putstr_fd("\033[1A",2);
+		// ft_putstr_fd("\033[6C",2);
+		ft_putstr_fd("\033[15D",1);
+		ft_putstr_fd("🐚minishell$ ",1);
+		ft_putstr_fd("exit\n",2);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		if (ft_strcmp(str, "exit") == 0)
+		{
+			ft_putendl_fd("exit",2);
+			free(str);
+			exit(EXIT_SUCCESS);
+		}
+		add_history(str);
+	}
+}
 void	prompt(t_env *envs,char **env)
 {
 	char	*str;
@@ -88,10 +109,10 @@ void	prompt(t_env *envs,char **env)
 	while (1)
 	{
 		str = readline("🐚minishell$ ");
+		eof_history(str);
 		if (!*str)
 			continue ;
 		tokens.first = NULL;
-		add_history(str);
 		if (parsing_cmd(str, &tokens) == ERROR)
 			continue ;
 		convert_tokens(args, &tokens);
