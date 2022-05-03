@@ -72,10 +72,10 @@ void	prompt(t_env *envs,char **env)
 	int		i;
 
 	// env_print(env);
-
+	// rl_catch_signals = 0;
+	set_signal();
 	while (1)
 	{
-		set_signal();
 		args = malloc(sizeof(char *) * ARG_MAX);
 		str = readline("🐚minishell$ ");
 		if (parsing_cmd(str, args) == ERROR)
@@ -110,10 +110,10 @@ int	main(int ac, char **av, char **env)
 		add_env(&envs, env[i]);
 		i++;
 	}
-	int k = 0;
 	//env_print(env);
 	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
 	//print_envs(&envs);
+	init_shlvl(&envs);
 	prompt(&envs,env);
 	return (0);
 }

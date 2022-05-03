@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../includes/minishell.h"
+
 int	j_lstsize(t_env *lst)
 {
 	int i;
@@ -116,13 +116,13 @@ void	exec(char **args,char **env ,t_env *envs)
 	}
 	*/
 	// env_print(env);
-	
 	find_cmd(args, test,buff,4096);
 	argss[0] = buff;
 	
 	// printf("debug buff : %s\n", buff);
 	// printf("debug args[0] : %s\n", args[1]);
 	// pipe(fd);
+	// reset_signal();
 	pid = fork();
 	if (pid == 0)
 	{
