@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:53:08 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 13:36:47 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	cd_sub(t_env *envs, char **args);
 /*
 *** exec ***
 */
-void	exec(char **args);
+void	exec(char **args, char **env, t_env *envs);
 
 /*
 *** env ***
@@ -69,5 +69,11 @@ void	env(t_env *envs);
 */
 t_env	*getnode(char *key, char *value);
 int		ft_isquot(char s);
+
+/*
+ *** signal ***
+ */
+void	set_signal(void);
+void	reset_signal(void);
 
 #endif
