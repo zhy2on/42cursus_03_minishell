@@ -6,48 +6,27 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 21:54:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 16:51:01 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	parsing_cmd_sub(char *str, char **args, char *quot, int i)
-{
-	while (*str)
-	{
-		if (!*quot && ft_isquot(*str))
-		{
-			*quot = *str;
-			i++;
-		}
-		else if (*str == *quot)
-		{
-			*quot = '\0';
-			i++;
-		}
-		else if (i > 0)
-			*(str - i) = *str;
-		if (!*quot && *str == ' ')
-		{
-			*(str - i) = '\0';
-			*args++ = str - i + 1;
-		}
-		str++;
-	}
-	*args = NULL;
-	*(str - i) = '\0';
-}
-
-int	parsing_cmd(char *str, char **args)
+int	parsing_cmd(char *str, t_token *tokens)
 {
 	int		i;
 	char	quot;
+	t_token	*tmp;
 
 	i = 0;
-	*args++ = str;
 	quot = '\0';
-	parsing_cmd_sub(str, args, &quot, i);
+	parsing_line(str, &quot, tokens, i);
+	tmp = tokens->first;
+	while (tmp)
+	{
+		printf("%d %s\n", tmp->type, tmp->str);
+		tmp = tmp->next;
+	}
 	if (quot)
 	{
 		printf("minishell: single quotate error\n");
@@ -60,18 +39,24 @@ void	prompt(t_env *envs)
 {
 	char	*str;
 	char	**args;
+	t_token	*tokens;
 	int		i;
 
 	while (1)
 	{
-		args = malloc(sizeof(char *) * ARG_MAX);
+		args = (char **)malloc(sizeof(char *) * ARG_MAX);
+		tokens = (t_token *)malloc(sizeof(t_token));
 		str = readline("🐚minishell$ ");
-		if (parsing_cmd(str, args) == ERROR)
+		add_history(str);
+		if (parsing_cmd(str, tokens) == ERROR)
 			continue ;
+		/*
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args);
+		*/
+		free(tokens);
 		free(args);
 		free(str);
 	}
