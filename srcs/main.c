@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 19:39:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 20:15:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	convert_tokens(char **args, t_token *tokens)
-{
-	int		i;
-	t_token	*ptr;
-
-	i = 0;
-	ptr = tokens->first;
-	while (ptr)
-	{
-		args[i++] = ptr->str;
-		ptr = ptr->next;
-	}
-	args[i] = NULL;
-}
 
 char	**create_args(t_token *tokens)
 {
@@ -69,47 +54,48 @@ int	parsing_cmd(char *str, t_token *tokens)
 	}
 	if (quot)
 	{
-		fprintf(stderr,"minishell: single quotate error\n");
+		fprintf(stderr, "minishell: single quotate error\n");
 		return (ERROR);
 	}
 	return (SUCCESS);
 }
 
-void	prompt(t_env *envs,char **env)
+void	prompt(t_env *envs, char **env)
 {
 	char	*str;
-	char	*args[ARG_MAX];
+	char	**args;
 	t_token	tokens;
-	int		i;
 
-	// env_print(env);
-	// rl_catch_signals = 0;
 	set_signal();
 	while (1)
 	{
 		str = readline("🐚minishell$ ");
+		args = (char **)malloc(sizeof(char *) * ARG_MAX);
 		if (!*str)
 			continue ;
 		tokens.first = NULL;
 		add_history(str);
 		if (parsing_cmd(str, &tokens) == ERROR)
 			continue ;
-		convert_tokens(args, &tokens);
+		args = create_args(&tokens);
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args, env, envs);
 		free_token(&tokens);
+		free(args);
 		free(str);
 	}
 }
 
 static void	print_envs(t_env *envs)
 {
-	int i =0;
+	int	i;
+
+	i = 0;
 	while (envs)
 	{
-		ft_putendl_fd(envs->key,2);
+		ft_putendl_fd(envs->key, 2);
 		envs = envs->next;
 	}
 }
@@ -117,18 +103,13 @@ static void	print_envs(t_env *envs)
 int	main(int ac, char **av, char **env)
 {
 	t_env	envs;
-	int i =0;
+	int		i;
+
+	i = 0;
 	envs.first = NULL;
-	//env_print(env);
 	while (env[i])
-	{
-		add_env(&envs, env[i]);
-		i++;
-	}
-	//env_print(env);
-	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
-	//print_envs(&envs);
+		add_env(&envs, env[i++]);
 	init_shlvl(&envs);
-	prompt(&envs,env);
+	prompt(&envs, env);
 	return (0);
 }
