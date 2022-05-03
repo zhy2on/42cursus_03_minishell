@@ -6,11 +6,36 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 16:51:01 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 18:38:25 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+char	**create_args(t_token *tokens)
+{
+	int		i;
+	char	**ret;
+	t_token	*ptr;
+
+	i = 0;
+	ptr = tokens->first;
+	while (ptr)
+	{
+		i++;
+		ptr = ptr->next;
+	}
+	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	ptr = tokens->first;
+	while (ptr)
+	{
+		ret[i++] = ptr->str;
+		ptr = ptr->next;
+	}
+	ret[i] = NULL;
+	return (ret);
+}
 
 int	parsing_cmd(char *str, t_token *tokens)
 {
@@ -53,12 +78,11 @@ void	prompt(t_env *envs,char **env)
 		add_history(str);
 		if (parsing_cmd(str, tokens) == ERROR)
 			continue ;
-		/*
+		args = create_args(tokens);
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args);
-		*/
+			exec(args, env, envs);
 		free(tokens);
 		free(args);
 		free(str);
