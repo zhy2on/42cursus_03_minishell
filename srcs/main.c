@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/01 20:02:14 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/03 13:39:37 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,16 +104,16 @@ int	main(int ac, char **av, char **env)
 	t_env	envs;
 	int i =0;
 	envs.first = NULL;
-	env_print(env);
+	//env_print(env);
 	while (env[i])
 	{
 		add_env(&envs, env[i]);
 		i++;
 	}
 	int k = 0;
-	env_print(env);
+	//env_print(env);
 	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
-	print_envs(&envs);
+	//print_envs(&envs);
 	prompt(&envs,env);
 	return (0);
 }

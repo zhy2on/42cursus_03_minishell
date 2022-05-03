@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/01 20:49:28 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/03 13:41:54 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char **convert_env(t_env *envs)
 	//envs = envs->next;
 	while (i < lst_size && envs != NULL)
 	{
-		fprintf(stderr,"envs->key : %s\n",env_lst->key);
+		//fprintf(stderr,"envs->key : %s\n",env_lst->key);
 		env[i] = ft_strdup(env_lst->key);
 		env[i] = ft_strjoin(env[i],"=");
 		env[i] = ft_strjoin(env[i],env_lst->value);
@@ -107,14 +107,14 @@ void	exec(char **args,char **env ,t_env *envs)
 		ft_putendl_fd(envs->key,2);
 		envs = envs->next;
 	}
-	*/
+	
 	fprintf(stderr,"------env_join_test------");
 	while (test[i])
 	{
 		fprintf(stderr,"%s\n",test[i]);
 		i++;
 	}
-
+	*/
 	// env_print(env);
 	
 	find_cmd(args, test,buff,4096);
@@ -127,8 +127,8 @@ void	exec(char **args,char **env ,t_env *envs)
 	if (pid == 0)
 	{
 		// fprintf(stderr,"buff : %s ,\t args : %s ,\t env : %s \n", buff, args[0], env[1]);
-		ft_putstr_fd(buff, 2);
-		fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
+		//ft_putstr_fd(buff, 2);
+		//fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
 		execve(buff, argss, env);
 		fprintf(stderr,"minishell: %s: command not found\n", args[0]);
 		exit(0);
@@ -160,8 +160,8 @@ void find_cmd(char **args, char **env, char buff[], int buf_size )
 		close(fd[1]);
 		waitpid(pid, NULL, 0);
 		read(fd[0], buff, 4096);
-		ft_putstr_fd("parent: " , 2);
-		ft_putstr_fd(buff, 1);
+		//ft_putstr_fd("parent: " , 2);
+		//ft_putstr_fd(buff, 1);
 		check_newline(buff);
 	}
 }
