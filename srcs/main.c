@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 18:38:25 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:20:08 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,19 @@ void	prompt(t_env *envs,char **env)
 	while (1)
 	{
 		args = (char **)malloc(sizeof(char *) * ARG_MAX);
+		str = readline("minishell$ ");
 		tokens = (t_token *)malloc(sizeof(t_token));
-		str = readline("🐚minishell$ ");
+		tokens->first = NULL;
 		add_history(str);
 		if (parsing_cmd(str, tokens) == ERROR)
 			continue ;
 		args = create_args(tokens);
+		printf("token first: %p\n", tokens->first);
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args, env, envs);
+		free_token(tokens);
 		free(tokens);
 		free(args);
 		free(str);
