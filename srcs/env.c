@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:54:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:46:32 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ char	*validate_key(char *key, char *cmd)
 	}
 	if (!ft_strcmp(cmd, "unset") && *s)
 	{
-		fprintf(stderr,"minishell: unset: `%s': not a valid identifier\n", key);
+		fprintf(stderr, "minishell: unset: `%s': not a valid identifier\n", key);
 		return (NULL);
 	}
 	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
 	{
-		fprintf(stderr,"minishell: export: `%s': not a valid identifier\n", key);
+		fprintf(stderr,
+			"minishell: export: `%s': not a valid identifier\n", key);
 		return (NULL);
 	}
 	return (s);
@@ -115,7 +116,7 @@ void	env(t_env *envs)
 	while (ptr)
 	{
 		if (ptr->value)
-			fprintf(stderr,"%s=%s\n", ptr->key, ptr->value);
+			fprintf(stderr, "%s=%s\n", ptr->key, ptr->value);
 		ptr = ptr->next;
 	}
 }

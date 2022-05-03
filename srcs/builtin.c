@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 16:52:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:47:18 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				fprintf(stderr,"minishell: unset: `%s': not a valid identifier\n",
-					*args);
+				fprintf(stderr,
+					"minishell: unset: `%s': not a valid identifier\n", *args);
 				break ;
 			}
 			s++;
@@ -46,10 +46,10 @@ void	export(t_env *envs, char **args)
 		ptr = envs->first;
 		while (ptr)
 		{
-			fprintf(stderr,"declare -x %s", ptr->key);
+			fprintf(stderr, "declare -x %s", ptr->key);
 			if (ptr->value)
-				fprintf(stderr,"=\"%s\"", ptr->value);
-			fprintf(stderr,"\n");
+				fprintf(stderr, "=\"%s\"", ptr->value);
+			fprintf(stderr, "\n");
 			ptr = ptr->next;
 		}
 	}
@@ -69,7 +69,7 @@ void	echo(char **args)
 	char	*ptr;
 
 	if (!args[1])
-		fprintf(stderr,"\n");
+		fprintf(stderr, "\n");
 	ptr = args[1];
 	if (ptr && *ptr == '-')
 		while (*(++ptr) == 'n')
@@ -78,18 +78,18 @@ void	echo(char **args)
 	{
 		args = args + 2;
 		while (*(args + 1))
-			fprintf(stderr,"%s ", *args++);
+			fprintf(stderr, "%s ", *args++);
 		if (*args)
-			fprintf(stderr,"%s", *args);
+			fprintf(stderr, "%s", *args);
 	}
 	else
 	{
 		args = args + 1;
 		while (*(args + 1))
-			fprintf(stderr,"%s ", *args++);
+			fprintf(stderr, "%s ", *args++);
 		if (*args)
-			fprintf(stderr,"%s", *args);
-		fprintf(stderr,"\n");
+			fprintf(stderr, "%s", *args);
+		fprintf(stderr, "\n");
 	}
 }
 
