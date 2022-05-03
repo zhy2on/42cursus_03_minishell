@@ -29,19 +29,22 @@ int	parsing_cmd(char *str, t_token *tokens)
 	}
 	if (quot)
 	{
-		printf("minishell: single quotate error\n");
+		fprintf(stderr,"minishell: single quotate error\n");
 		return (ERROR);
 	}
 	return (SUCCESS);
 }
 
-void	prompt(t_env *envs)
+void	prompt(t_env *envs,char **env)
 {
 	char	*str;
 	char	**args;
 	t_token	*tokens;
 	int		i;
 
+	// env_print(env);
+	// rl_catch_signals = 0;
+	set_signal();
 	while (1)
 	{
 		args = (char **)malloc(sizeof(char *) * ARG_MAX);
@@ -62,16 +65,31 @@ void	prompt(t_env *envs)
 	}
 }
 
+static void	print_envs(t_env *envs)
+{
+	int i =0;
+	while (envs)
+	{
+		ft_putendl_fd(envs->key,2);
+		envs = envs->next;
+	}
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_env	envs;
-
+	int i =0;
 	envs.first = NULL;
-	while (*env)
+	//env_print(env);
+	while (env[i])
 	{
-		add_env(&envs, *env);
-		env++;
+		add_env(&envs, env[i]);
+		i++;
 	}
-	prompt(&envs);
+	//env_print(env);
+	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
+	//print_envs(&envs);
+	init_shlvl(&envs);
+	prompt(&envs,env);
 	return (0);
 }

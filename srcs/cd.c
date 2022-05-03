@@ -19,7 +19,7 @@ void	cd_sub(t_env *envs, char **args)
 	if (!ft_strcmp(args[1], "~") || !args[1])
 	{
 		if (!search_env(envs, "HOME"))
-			printf("minishell: cd: HOME not set\n");
+			fprintf(stderr,"minishell: cd: HOME not set\n");
 		else
 		{
 			getcwd(cwd, PATH_MAX);
@@ -31,7 +31,7 @@ void	cd_sub(t_env *envs, char **args)
 	{
 		add_env(envs, ft_strjoin("OLDPWD=", getcwd(cwd, PATH_MAX)));
 		if (chdir(args[1]) == -1)
-			printf("minishell: cd: %s: No such file or directory\n", args[1]);
+			fprintf(stderr,"minishell: cd: %s: No such file or directory\n", args[1]);
 	}
 }
 
@@ -47,13 +47,13 @@ void	cd(t_env *envs, char **args)
 	else if (!ft_strcmp(args[1], "-"))
 	{
 		if (!search_env(envs, "OLDPWD"))
-			printf("minishell: cd: OLDPWD not set\n");
+			fprintf(stderr,"minishell: cd: OLDPWD not set\n");
 		else
 		{
 			getcwd(cwd, PATH_MAX);
 			chdir(search_env(envs, "OLDPWD")->value);
 			add_env(envs, ft_strjoin("OLDPWD=", cwd));
-			printf("%s\n", getcwd(cwd, PATH_MAX));
+			fprintf(stderr,"%s\n", getcwd(cwd, PATH_MAX));
 		}
 	}
 	else

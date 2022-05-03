@@ -6,7 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/05/03 14:52:57 by jihoh            ###   ########.fr       */
+=======
+/*   Updated: 2022/05/03 13:36:47 by junyopar         ###   ########.fr       */
+>>>>>>> junyopar
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +67,13 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
+typedef struct s_data
+{
+	// t_env	*env_lst;
+	int		shlvl;
+}	t_data;
+
+t_data	g_data;
 /*
 *** builtin ***
 */
@@ -80,7 +91,7 @@ void	cd_sub(t_env *envs, char **args);
 /*
 *** exec ***
 */
-void	exec(char **args);
+void	exec(char **args, char **env, t_env *envs);
 
 /*
 *** env ***
@@ -110,5 +121,12 @@ char	*ft_strdup2(char *start, char *end);
 *** parsing ***
 */
 void	parsing_line(char *str, char *quot, t_token *tokens, int i);
+
+/*
+ *** signal ***
+ */
+void	set_signal(void);
+// void	reset_signal(void);
+void    init_shlvl(t_env *envs);
 
 #endif
