@@ -62,6 +62,20 @@ typedef struct s_token
 	char			*str;
 	struct s_token	*next;
 }				t_token;
+typedef struct s_exe
+{
+	int	a[2];
+	int b[2];
+	int pip_cnt;
+	int redir_in;
+	int redir_out;
+	char **cmd_arg;
+	int	flag_b;
+	int	heredoc_fd[2];
+	char *heredoc_buf;
+	pid_t	heredoc_pid;
+	int	heredoc_status;
+}	t_exe;
 
 typedef struct s_data
 {
@@ -87,8 +101,12 @@ void	cd_sub(t_env *envs, char **args);
 /*
 *** exec ***
 */
-void	exec(char **args, char **env, t_env *envs);
-
+void	exec(char **args, t_env *envs);
+int	pipe_count(char **args);
+t_exe	*init_exe(char **args);
+static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
+void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
+int		pre_exec(char **args, t_env *envs, t_token *lst);
 /*
 *** env ***
 */
@@ -122,7 +140,7 @@ void	parsing_line(char *str, char *quot, t_token *tokens, int i);
  *** signal ***
  */
 void	set_signal(void);
-// void	reset_signal(void);
+void	reset_signal(void);
 void    init_shlvl(t_env *envs);
 
 #endif
