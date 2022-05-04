@@ -96,6 +96,14 @@ void	eof_history(char *str)
 		add_history(str);
 	}
 }
+void	print_lst(t_token *lst)
+{
+	while (lst != NULL)
+	{
+		ft_putendl_fd(lst->str,2);
+		lst = lst->next;
+	}
+}
 void	prompt(t_env *envs,char **env)
 {
 	char	*str;
@@ -105,9 +113,11 @@ void	prompt(t_env *envs,char **env)
 
 	// env_print(env);
 	// rl_catch_signals = 0;
-	set_signal();
+	//set_signal();  이게 while 문 안에 있어도 되고 밖에 있어도 된다 그럼 밖에 있는게 너 낫지 않나??
 	while (1)
-	{
+	{	
+		int k = 0;
+		set_signal();
 		str = readline("🐚minishell$ ");
 		eof_history(str);
 		if (!*str)
@@ -119,7 +129,12 @@ void	prompt(t_env *envs,char **env)
 		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args, env, envs);
+		{
+			print_lst(&tokens);
+			// while(args[k])
+				// fprintf(stderr,"check args : %s\n",args[k++]);
+			pre_exec(args, envs,&tokens);
+		}
 		free_token(&tokens);
 		free(str);
 	}

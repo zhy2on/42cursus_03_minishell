@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
+ ** wc -l 하고 ctrl + c 누를 때 bash 와 다름 .. 그 경우 예외 처리 해줘야함.
+*/
 #include "../includes/minishell.h"
 
 static void handler_1(int signo)
@@ -37,13 +40,6 @@ static void handler_1(int signo)
         // readline 함수의 인자로 넣은 문자열을 다시 출력한다. 
         free(str);
     }
-	else if (signo == SIGTERM)
-	{
-		printf("\033[1A");
-        printf("\033[10C");
-    	printf(" exit\n");
-        exit(-1);
-	}
 }
 static void handler_2(int signo)
 {
@@ -62,5 +58,4 @@ void    set_signal(void)
 {
     signal(SIGINT, handler_1);
     signal(SIGQUIT, SIG_IGN);
-	signal(SIGTERM, handler_1);
 }

@@ -88,19 +88,86 @@ static char *str_convert(char *buf) {
 	str[i] = '\0';
 	return str;
 }
+/*
+*** init
+*/
+// utils - pipecount
+int	pipe_count(char **args)
+{
+	int cnt;
+	int idx;
+
+	idx = 0;
+	cnt = 0;
+	while (args[idx])
+	{
+		// fprintf(stderr,"p args : %s\n",args[idx]);
+		if (*args[idx] == '|')
+			cnt++;
+		idx++;
+	}
+	return (cnt);
+}
+
+t_exe	*init_exe(char **args)
+{
+	t_exe *exe;
+	
+	exe = (t_exe *)malloc(sizeof(t_exe));
+	if (exe == NULL)
+		exit(EXIT_FAILURE);
+	// fprintf(stderr, "pipe_cnt test : %d\n",pipe_count(args));
+	exe->pip_cnt = pipe_count(args);
+	exe->redir_in = -1;
+	exe->redir_out = -1;
+	exe->flag_b = 0;
+	exe->cmd_arg = NULL;
+	return (exe);
+}
 
 void find_cmd(char **args, char **env, char buff[], int buf_size );
 
-void	exec(char **args,char **env ,t_env *envs)
+int		pre_exec(char **args, t_env *envs, t_token *lst)
 {
+	t_exe *exe;
+	int i;
+	
+	exe = init_exe(args);
+	i = 0;
+	while (lst != NULL)
+	{
+		run_command(&lst,exe,i, envs, args);
+		i++;
+		lst = lst->next;
+	}
+	return (EXIT_SUCCESS);
+
+}
+static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args)
+{
+	pid_t	pid;
+	// pipe처리
+	reset_signal();
+	pid = fork();
+	if (pid < 0)
+		exit(EXIT_FAILURE);
+	else if (pid == 0)
+		child_process(*lst,exe,i,envs,args);
+	else
+		waitpid(pid, NULL, 0);
+}
+
+void	exec(char **args ,t_env *envs)
+{
+	// t_exe	*exe;
 	pid_t	pid;
 	char	buff[4096];
 	ft_memset(buff,0,4096);
 	static char *argss[] = {NULL,NULL};
 	char **test;
 	test = convert_env(envs);
-	int i=0;
-	int k =0 ;
+	// exe = init_exe(args);
+	//int i=0;
 	/*
 	while (envs)
 	{
@@ -129,7 +196,7 @@ void	exec(char **args,char **env ,t_env *envs)
 		// fprintf(stderr,"buff : %s ,\t args : %s ,\t env : %s \n", buff, args[0], env[1]);
 		//ft_putstr_fd(buff, 2);
 		//fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
-		execve(buff, args, env);
+		execve(buff, args, test);
 		fprintf(stderr,"minishell: %s: command not found\n", args[0]);
 		exit(0);
 	}
@@ -160,6 +227,7 @@ void find_cmd(char **args, char **env, char buff[], int buf_size )
 		close(fd[1]);
 		waitpid(pid, NULL, 0);
 		read(fd[0], buff, 4096);
+		buff[ft_strlen(buff) - 1]= '\0';
 		//ft_putstr_fd("parent: " , 2);
 		//ft_putstr_fd(buff, 1);
 		check_newline(buff);
