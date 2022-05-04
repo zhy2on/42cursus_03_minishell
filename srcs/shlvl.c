@@ -14,18 +14,10 @@
 
 void    init_shlvl(t_env *envs)
 {
-    char *val;
     t_env *shlvl_lst;
-    char *tmp;
+    int     i;
 
-    shlvl_lst = search_env(envs, "SHLVL");
-    // printf("shlvl_lst : %s=%s\n",shlvl_lst->key,shlvl_lst->value);
-    val = shlvl_lst->value;
-    g_data.shlvl = ft_atoi(val) + 1;
-    // free(val);
-    val = ft_itoa(g_data.shlvl);
-    tmp = ft_strjoin("SHLVL=",val);
-    free(val);
-    add_env(envs, tmp);
-    free(tmp);
+   shlvl_lst = search_env(envs, "SHLVL");
+   i = ft_atoi(shlvl_lst->value);
+   shlvl_lst->value = ft_itoa(i + 1);
 }
