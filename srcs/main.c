@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 21:07:45 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/04 19:24:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	**create_args(t_token *tokens)
 	return (ret);
 }
 
-int	parsing_cmd(char *str, t_token *tokens)
+int	parsing_cmd(char *str, t_token *tokens, t_env *envs)
 {
 	int		i;
 	char	quot;
@@ -45,7 +45,7 @@ int	parsing_cmd(char *str, t_token *tokens)
 
 	i = 0;
 	quot = '\0';
-	parsing_line(str, &quot, tokens, i);
+	parsing_line(str, &quot, tokens, envs);
 	tmp = tokens->first;
 	while (tmp)
 	{
@@ -81,13 +81,14 @@ void	eof_history(char *str)
 		add_history(str);
 	}
 }
-void	prompt(t_env *envs,char **env)
+
+void	prompt(t_env *envs, char **env)
 {
 	char	*str;
 	char	**args;
 	t_token	tokens;
 
-	set_signal();
+	//set_signal();
 	while (1)
 	{
 		str = readline("🐚minishell$ ");
@@ -95,15 +96,17 @@ void	prompt(t_env *envs,char **env)
 		if (!*str)
 			continue ;
 		tokens.first = NULL;
-		if (parsing_cmd(str, &tokens) == ERROR)
+		if (parsing_cmd(str, &tokens, envs) == ERROR)
 			continue ;
+		/*
 		args = create_args(&tokens);
-		if (!args[0] || builtin(envs, args) == SUCCESS)
+		if (builtin(envs, args) == SUCCESS)
 			continue ;
 		else
 			exec(args, env, envs);
 		free_token(&tokens);
 		free(args);
+		*/
 		free(str);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 18:32:44 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/04 18:20:58 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,12 @@ char	*ft_strdup2(char *start, char *end);
 /*
 *** parsing ***
 */
-void	parsing_line(char *str, char *quot, t_token *tokens, int i);
+void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs);
+
+/*
+*** handle_dollar ***
+*/
+char	*str_to_token(char *start, char *end, t_env *envs);
 
 /*
  *** signal ***
