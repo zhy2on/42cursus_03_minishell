@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/04 17:00:25 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/04 17:02:47 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,10 @@ int	builtin(t_env *envs, char **args)
 	char	cwd[PATH_MAX];
 	char	*ptr;
 
-	// if (!ft_strcmp(args[0], "exit"))
-	// {
-	// 	printf("exit\n");
-	// 	exit(0);
-	// }
+	if (!args[0])
+		return ;
 	if (!ft_strcmp(args[0], "pwd"))
-		fprintf(stderr,"%s\n", getcwd(cwd, PATH_MAX));
+		fprintf(stderr, "%s\n", getcwd(cwd, PATH_MAX));
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
