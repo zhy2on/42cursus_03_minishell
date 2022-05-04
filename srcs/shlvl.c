@@ -19,7 +19,7 @@ void    init_shlvl(t_env *envs)
     char *tmp;
 
     shlvl_lst = search_env(envs, "SHLVL");
-    printf("shlvl_lst : %s=%s\n",shlvl_lst->key,shlvl_lst->value);
+    // printf("shlvl_lst : %s=%s\n",shlvl_lst->key,shlvl_lst->value);
     val = shlvl_lst->value;
     g_data.shlvl = ft_atoi(val) + 1;
     // free(val);

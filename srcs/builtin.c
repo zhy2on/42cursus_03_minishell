@@ -97,13 +97,13 @@ int	builtin(t_env *envs, char **args)
 	char	cwd[PATH_MAX];
 	char	*ptr;
 
-	if (!ft_strcmp(args[0], "exit"))
-	{
-		printf("exit\n");
-		exit(0);
-	}
-	else if (!ft_strcmp(args[0], "pwd"))
-		fprintf(stderr, "%s\n", getcwd(cwd, PATH_MAX));
+	// if (!ft_strcmp(args[0], "exit"))
+	// {
+	// 	printf("exit\n");
+	// 	exit(0);
+	// }
+	if (!ft_strcmp(args[0], "pwd"))
+		fprintf(stderr,"%s\n", getcwd(cwd, PATH_MAX));
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
