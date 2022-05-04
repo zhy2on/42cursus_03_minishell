@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 19:47:18 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/04 15:46:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,26 +69,25 @@ void	echo(char **args)
 	char	*ptr;
 
 	if (!args[1])
+	{
 		fprintf(stderr, "\n");
+		return ;
+	}
 	ptr = args[1];
-	if (ptr && *ptr == '-')
+	if (*ptr == '-')
 		while (*(++ptr) == 'n')
 			;
-	if (!ptr || *ptr == '\0')
+	if (*ptr == '\0')
 	{
-		args = args + 2;
-		while (*(args + 1))
+		args += 2;
+		while (*args)
 			fprintf(stderr, "%s ", *args++);
-		if (*args)
-			fprintf(stderr, "%s", *args);
 	}
 	else
 	{
-		args = args + 1;
-		while (*(args + 1))
+		args += 1;
+		while (*args)
 			fprintf(stderr, "%s ", *args++);
-		if (*args)
-			fprintf(stderr, "%s", *args);
 		fprintf(stderr, "\n");
 	}
 }
