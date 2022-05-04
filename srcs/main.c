@@ -165,6 +165,7 @@ int	main(int ac, char **av, char **env)
 	//printf("check : %s = %s\n",envs.next->value,envs.next->key);
 	//print_envs(&envs);
 	init_shlvl(&envs);
+	// printf("%s\n", search_env(&envs, "SHLVL")->value);
 	prompt(&envs,env);
 	return (0);
 }
