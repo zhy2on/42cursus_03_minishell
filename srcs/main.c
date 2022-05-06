@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/04 19:24:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 19:42:44 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	**create_args(t_token *tokens)
 	return (ret);
 }
 
-int	parsing_cmd(char *str, t_token *tokens, t_env *envs)
+int	parsing_cmd(char *str, t_lsts *lsts)
 {
 	int		i;
 	char	quot;
@@ -45,8 +45,8 @@ int	parsing_cmd(char *str, t_token *tokens, t_env *envs)
 
 	i = 0;
 	quot = '\0';
-	parsing_line(str, &quot, tokens, envs);
-	tmp = tokens->first;
+	parsing_line(str, &quot, i, lsts);
+	tmp = lsts->tokens.first;
 	while (tmp)
 	{
 		printf("%d %s\n", tmp->type, tmp->str);
@@ -59,6 +59,7 @@ int	parsing_cmd(char *str, t_token *tokens, t_env *envs)
 	}
 	return (SUCCESS);
 }
+
 void	eof_history(char *str)
 {
 	if (str == NULL)
@@ -82,11 +83,10 @@ void	eof_history(char *str)
 	}
 }
 
-void	prompt(t_env *envs, char **env)
+void	prompt(t_lsts *lsts, char **env)
 {
 	char	*str;
 	char	**args;
-	t_token	tokens;
 
 	//set_signal();
 	while (1)
@@ -95,8 +95,8 @@ void	prompt(t_env *envs, char **env)
 		eof_history(str);
 		if (!*str)
 			continue ;
-		tokens.first = NULL;
-		if (parsing_cmd(str, &tokens, envs) == ERROR)
+		lsts->tokens.first = NULL;
+		if (parsing_cmd(str, lsts) == ERROR)
 			continue ;
 		/*
 		args = create_args(&tokens);
@@ -111,28 +111,16 @@ void	prompt(t_env *envs, char **env)
 	}
 }
 
-static void	print_envs(t_env *envs)
-{
-	int	i;
-
-	i = 0;
-	while (envs)
-	{
-		ft_putendl_fd(envs->key, 2);
-		envs = envs->next;
-	}
-}
-
 int	main(int ac, char **av, char **env)
 {
-	t_env	envs;
+	t_lsts	lsts;
 	int		i;
 
 	i = 0;
-	envs.first = NULL;
+	lsts.envs.first = NULL;
 	while (env[i])
-		add_env(&envs, env[i++]);
-	init_shlvl(&envs);
-	prompt(&envs, env);
+		add_env(&lsts.envs, env[i++]);
+	init_shlvl(&lsts.envs);
+	prompt(&lsts, env);
 	return (0);
 }

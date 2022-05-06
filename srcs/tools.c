@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 19:01:21 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 19:41:33 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,19 +47,4 @@ int	is_sep(char s)
 		|| s == - '<' || s == - '>')
 		return (1);
 	return (0);
-}
-
-char	*ft_strdup2(char *start, char *end)
-{
-	char	*ret;
-	char	*tmp;
-
-	ret = (char *)malloc(sizeof(char) * (end - start + 2));
-	if (!ret)
-		return (NULL);
-	tmp = ret;
-	while (start != end)
-		*tmp++ = *start++;
-	*tmp = '\0';
-	return (ret);
 }

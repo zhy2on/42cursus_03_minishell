@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 19:22:14 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 19:43:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,11 @@ void	trim_space(char *str, char *quot, int i)
 	*(str - i) = '\0';
 }
 
-void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs)
+void	parsing_line(char *str, char *quot, int i, t_lsts *lsts)
 {
 	char	*start;
-	int		i;
 
-	i = 0;
 	trim_space(str, quot, i);
-	printf("trim: %s\n", str);
 	if (*quot)
 		return ;
 	start = str;
@@ -93,12 +90,13 @@ void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs)
 			*(str - i) = *str;
 		if (!*quot && is_sep(*str))
 		{
-			add_token(tokens, str_to_token(start, str - i, envs));
+			add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs));
 			if (*(str - i) != ' ')
-				add_token(tokens, str_to_token(str - i, str - i + 1, envs));
+				add_token(&lsts->tokens,
+					str_to_token(str - i, str - i + 1, &lsts->envs));
 			start = str - i + 1;
 		}
 		str++;
 	}
-	add_token(tokens, str_to_token(start, str - i, envs));
+	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs));
 }

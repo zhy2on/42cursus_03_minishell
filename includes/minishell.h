@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/04 18:20:58 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 20:00:22 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
+typedef struct s_lsts
+{
+	t_env	envs;
+	t_token	tokens;
+}				t_lsts;
+
 typedef struct s_data
 {
 	// t_env	*env_lst;
@@ -103,6 +109,7 @@ void	env(t_env *envs);
 */
 void	add_token(t_token *tokens, char *str);
 void	free_token(t_token *tokens);
+char	*str_to_token(char *start, char *end, t_env *envs);
 
 /*
 *** tools **
@@ -116,18 +123,19 @@ char	*ft_strdup2(char *start, char *end);
 /*
 *** parsing ***
 */
-void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs);
+void	parsing_line(char *str, char *quot, int i, t_lsts *lsts);
 
 /*
 *** handle_dollar ***
 */
-char	*str_to_token(char *start, char *end, t_env *envs);
+char	*search_dollar_value(char *str, t_env *envs);
+char	*end_of_dollar(char *str);
 
 /*
- *** signal ***
+*** signal ***
  */
 void	set_signal(void);
 // void	reset_signal(void);
-void    init_shlvl(t_env *envs);
+void	init_shlvl(t_env *envs);
 
 #endif
