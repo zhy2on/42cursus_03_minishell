@@ -6,11 +6,18 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/04 21:45:58 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 19:22:14 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	dollar_check(char *str)
+{
+	if (*str == '$' && (ft_isalnum(*(str + 1)) || *(str + 1) == '_'))
+		return (1);
+	return (0);
+}
 
 int	sep_check(char *str)
 {
@@ -21,16 +28,29 @@ int	sep_check(char *str)
 	return (0);
 }
 
+void	replace_char(char **pstr, char *quot, int *i)
+{
+	char	*s;
+
+	s = *pstr;
+	if (*quot != '\'' && dollar_check(s))
+		*s = -(*s);
+	else if ((*s == '<' && *(s + 1) == '<')
+		|| (*s == '>' && *(s + 1) == '>'))
+	{
+		*(s + 1) = -(*(s + 1));
+		(*pstr)++;
+		(*i)++;
+	}
+}
+
 void	trim_space(char *str, char *quot, int i)
 {
 	while (*str == ' ' && ++i)
 		str++;
 	while (*str)
 	{
-		/*
-		if (*quot != '\'' && *str == '$')
-			*str = -(*str);
-		*/
+		replace_char(&str, quot, &i);
 		if (!*quot && is_quot(*str))
 			*quot = *str;
 		else if (*str == *quot)
@@ -65,8 +85,6 @@ void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs)
 	start = str;
 	while (*str)
 	{
-		if (*quot != '\'' && *str == '$' && (ft_isalnum(*(str + 1)) || *(str + 1) == '_'))
-			*str = -(*str);
 		if (!*quot && is_quot(*str) && ++i)
 			*quot = *str;
 		else if ((*str == *quot) && ++i)
@@ -83,35 +101,4 @@ void	parsing_line(char *str, char *quot, t_token *tokens, t_env *envs)
 		str++;
 	}
 	add_token(tokens, str_to_token(start, str - i, envs));
-}
-
-void	parsing_backup(char *str, char *quot, t_token *tokens, t_env *envs)
-{
-	char	*start;
-	int		i;
-
-	i = 0;
-	trim_space(str, quot, i);
-	printf("trim: %s\n", str);
-	if (*quot)
-		return ;
-	start = str;
-	while (*str)
-	{
-		if (!*quot && is_quot(*str) && ++i)
-			*quot = *str;
-		else if ((*str == *quot) && ++i)
-			*quot = '\0';
-		else if (i > 0)
-			*(str - i) = *str;
-		if (!*quot && is_sep(*str))
-		{
-			add_token(tokens, ft_strdup2(start, str - i));
-			if (*(str - i) != ' ')
-				add_token(tokens, ft_strdup2(str - i, str - i + 1));
-			start = str - i + 1;
-		}
-		str++;
-	}
-	add_token(tokens, ft_strdup2(start, str - i));
 }
