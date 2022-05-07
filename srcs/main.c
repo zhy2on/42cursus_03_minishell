@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 18:33:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/07 21:30:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,29 @@ int	parsing_cmd(char *str, t_lsts *lsts)
 		tmp = tmp->next;
 	}
 	return (SUCCESS);
+}
+
+void	eof_history(char *str)
+{
+	if (str == NULL)
+	{
+		// ft_putstr_fd("\033[1A",2);
+		// ft_putstr_fd("\033[6C",2);
+		ft_putstr_fd("\033[15D",1);
+		ft_putstr_fd("🐚minishell$ ",1);
+		ft_putstr_fd("exit\n",2);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		if (ft_strcmp(str, "exit") == 0)
+		{
+			ft_putendl_fd("exit",2);
+			free(str);
+			exit(EXIT_SUCCESS);
+		}
+		add_history(str);
+	}
 }
 
 void	prompt(t_lsts *lsts, char **env)

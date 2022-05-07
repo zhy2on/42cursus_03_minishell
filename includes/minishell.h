@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 20:00:22 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/07 21:29:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,13 +123,14 @@ char	*ft_strdup2(char *start, char *end);
 /*
 *** parsing ***
 */
-void	parsing_line(char *str, char *quot, int i, t_lsts *lsts);
+int		parsing_line(char *str, t_lsts *lsts);
 
 /*
-*** handle_dollar ***
+*** dollar ***
 */
 char	*search_dollar_value(char *str, t_env *envs);
 char	*end_of_dollar(char *str);
+int		dollar_check(char *str);
 
 /*
 *** signal ***
