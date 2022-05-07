@@ -1,16 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_dollar.c                                    :+:      :+:    :+:   */
+/*   dollar.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 17:31:33 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 19:59:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/06 21:23:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	dollar_check(char *str)
+{
+	if (*str == '$' && (ft_isalnum(*(str + 1)) || *(str + 1) == '_'))
+		return (1);
+	return (0);
+}
 
 char	*end_of_dollar(char *str)
 {

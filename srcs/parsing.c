@@ -6,18 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 19:43:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/07 18:36:34 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	dollar_check(char *str)
-{
-	if (*str == '$' && (ft_isalnum(*(str + 1)) || *(str + 1) == '_'))
-		return (1);
-	return (0);
-}
 
 int	sep_check(char *str)
 {
@@ -72,13 +65,10 @@ void	trim_space(char *str, char *quot, int i)
 	*(str - i) = '\0';
 }
 
-void	parsing_line(char *str, char *quot, int i, t_lsts *lsts)
+void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
 {
 	char	*start;
 
-	trim_space(str, quot, i);
-	if (*quot)
-		return ;
 	start = str;
 	while (*str)
 	{
@@ -99,4 +89,21 @@ void	parsing_line(char *str, char *quot, int i, t_lsts *lsts)
 		str++;
 	}
 	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs));
+}
+
+int	parsing_line(char *str, t_lsts *lsts)
+{
+	int		i;
+	char	quot;
+
+	i = 0;
+	quot = '\0';
+	trim_space(str, &quot, i);
+	if (quot)
+	{
+		printf("minishell: syntax error at unclosed quotatation mark\n");
+		return (ERROR);
+	}
+	create_tokens(str, &quot, i, lsts);
+	return (SUCCESS);
 }
