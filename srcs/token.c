@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/06 20:04:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/07 19:00:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ void	add_token(t_token *tokens, char *str)
 {
 	t_token	*ptr;
 
-	if (!str || !*str)
-		return ;
 	ptr = tokens->first;
 	if (!ptr)
 	{
