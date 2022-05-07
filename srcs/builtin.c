@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 19:14:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/07 19:25:24 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				printf("minishell: unset: `%s': not a valid identifier\n", *args);
+				printf("minishell: unset: `%s': not a valid identifier\n",
+					*args);
 				break ;
 			}
 			s++;
@@ -67,11 +68,8 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1])
-	{
-		printf("\n");
+	if (!args[1] && printf("\n"))
 		return ;
-	}
 	ptr = args[1];
 	if (*ptr == '-')
 	{
