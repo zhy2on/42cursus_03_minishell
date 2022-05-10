@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 16:39:17 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 19:06:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,6 @@ enum e_std_type
 	STDIN = 0,
 	STDOUT = 1,
 	STDERR = 2
-} ;
-
-enum e_sep_char
-{
-	DLLR = - '$',
-	REIN = - '<',
-	REOUT = - '>',
-	DBLREIN = - '<' + 1,
-	DBLREOUT = - '>' + 1,
 } ;
 
 enum e_return_type
@@ -120,7 +111,6 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_quot(char s);
 int		is_sep(char s);
-char	*ft_strdup2(char *start, char *end);
 
 /*
 *** parsing ***

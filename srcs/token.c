@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 16:53:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 20:17:14 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ char	*str_to_token(char *start, char *end, t_env *envs)
 	char	*ret;
 	char	end_backup;
 
-	if ((start == end) && !(*start == ' ' && !*start))
+	if (start == end)
 		return (NULL);
 	end_backup = *end;
 	*end = '\0';
