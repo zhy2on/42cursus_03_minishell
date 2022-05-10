@@ -21,6 +21,10 @@
 # include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
+
+# define READ 0
+# define WRITE 1
 
 enum e_token_type
 {
