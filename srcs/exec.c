@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 18:36:26 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 21:16:27 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static char *str_convert(char *buf) {
 
 void find_cmd(char **args, char **env, char buff[], int buf_size );
 
-void	exec(char **args,char **env ,t_env *envs)
+void	exec(char **args, t_env *envs)
 {
 	pid_t	pid;
 	char	buff[4096];
@@ -129,7 +129,7 @@ void	exec(char **args,char **env ,t_env *envs)
 		// fprintf(stderr,"buff : %s ,\t args : %s ,\t env : %s \n", buff, args[0], env[1]);
 		//ft_putstr_fd(buff, 2);
 		//fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
-		execve(buff, args, env);
+		execve(buff, args, args);
 		fprintf(stderr,"minishell: %s: command not found\n", args[0]);
 		exit(0);
 	}

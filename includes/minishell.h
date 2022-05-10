@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 19:06:56 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 21:11:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	cd_sub(t_env *envs, char **args);
 /*
 *** exec ***
 */
-void	exec(char **args, char **env, t_env *envs);
+void	exec(char **args, t_env *envs);
 
 /*
 *** env ***
