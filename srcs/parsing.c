@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 16:50:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/03 21:22:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	trim_space(char *str, char *quot, int i)
 				str++;
 			continue ;
 		}
-		else if (i > 0)
+		if (i > 0)
 			*(str - i) = *str;
 		str++;
 	}
