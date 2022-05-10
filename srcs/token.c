@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 19:00:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 16:53:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,48 @@ void	free_token(t_token *tokens)
 	}
 }
 
-void	add_token(t_token *tokens, char *str)
+void	set_token_type(t_token *tokens, t_token *token, int is_sep)
+{
+	t_token	*prev;
+
+	prev = tokens->first;
+	while (prev != token && prev->next != token)
+		prev = prev->next;
+	if (!ft_strcmp(token->str, ""))
+		token->type = EMPTY;
+	else if (!ft_strcmp(token->str, ">") && is_sep)
+		token->type = REDIROUT;
+	else if (!ft_strcmp(token->str, ">>") && is_sep)
+		token->type = APPEND;
+	else if (!ft_strcmp(token->str, "<") && is_sep)
+		token->type = REDIRIN;
+	else if (!ft_strcmp(token->str, "<<") && is_sep)
+		token->type = HEREDOC;
+	else if (!ft_strcmp(token->str, "|") && is_sep)
+		token->type = PIPE;
+	else if (tokens->first == token || prev->type >= REDIROUT)
+		token->type = CMD;
+	else
+		token->type = ARG;
+}
+
+void	add_token(t_token *tokens, char *str, int is_sep)
 {
 	t_token	*ptr;
 
+	if (!str)
+		return ;
 	ptr = tokens->first;
 	if (!ptr)
 	{
 		tokens->first = get_token_node(0, str);
+		set_token_type(tokens, tokens->first, is_sep);
 		return ;
 	}
 	while (ptr->next)
 		ptr = ptr->next;
 	ptr->next = get_token_node(0, str);
+	set_token_type(tokens, ptr->next, is_sep);
 }
 
 int	token_len(char *str, t_env *envs)
@@ -94,6 +123,8 @@ char	*str_to_token(char *start, char *end, t_env *envs)
 	char	*ret;
 	char	end_backup;
 
+	if ((start == end) && !(*start == ' ' && !*start))
+		return (NULL);
 	end_backup = *end;
 	*end = '\0';
 	ret = (char *)malloc(sizeof(char) * (token_len(start, envs) + 1));

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 20:27:03 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 16:19:34 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,16 @@ void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
 			*(str - i) = *str;
 		if (!*quot && is_sep(*str))
 		{
-			add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs));
+			add_token(&lsts->tokens,
+				str_to_token(start, str - i, &lsts->envs), 0);
 			if (*(str - i) != ' ')
 				add_token(&lsts->tokens,
-					str_to_token(str - i, str - i + 1, &lsts->envs));
+					str_to_token(str - i, str - i + 1, &lsts->envs), 1);
 			start = str - i + 1;
 		}
 		str++;
 	}
-	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs));
+	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs), 0);
 }
 
 int	parsing_line(char *str, t_lsts *lsts)
@@ -102,7 +103,7 @@ int	parsing_line(char *str, t_lsts *lsts)
 	printf("trim:%s$\n", str);
 	if (quot)
 	{
-		printf("minishell: syntax error at unclosed quotatation mark\n");
+		printf("minishell: syntax error with unclosed quotes\n");
 		return (ERROR);
 	}
 	create_tokens(str, &quot, i, lsts);

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 21:29:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 16:39:17 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ enum e_token_type
 	EMPTY = 0,
 	CMD = 1,
 	ARG = 2,
-	TRUNC = 3,
+	REDIROUT = 3,
 	APPEND = 4,
-	INPUT = 5,
-	PIPE = 6,
-	END = 7
+	REDIRIN = 5,
+	HEREDOC = 6,
+	PIPE = 7,
 } ;
 
 enum e_std_type
@@ -39,6 +39,15 @@ enum e_std_type
 	STDIN = 0,
 	STDOUT = 1,
 	STDERR = 2
+} ;
+
+enum e_sep_char
+{
+	DLLR = - '$',
+	REIN = - '<',
+	REOUT = - '>',
+	DBLREIN = - '<' + 1,
+	DBLREOUT = - '>' + 1,
 } ;
 
 enum e_return_type
@@ -69,13 +78,6 @@ typedef struct s_lsts
 	t_token	tokens;
 }				t_lsts;
 
-typedef struct s_data
-{
-	// t_env	*env_lst;
-	int		shlvl;
-}	t_data;
-
-t_data	g_data;
 /*
 *** builtin ***
 */
@@ -107,7 +109,7 @@ void	env(t_env *envs);
 /*
 *** token ***
 */
-void	add_token(t_token *tokens, char *str);
+void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
 char	*str_to_token(char *start, char *end, t_env *envs);
 
