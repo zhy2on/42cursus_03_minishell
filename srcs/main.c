@@ -78,29 +78,17 @@ void	eof_history(char *str)
 		add_history(str);
 	}
 }
-<<<<<<< HEAD
-void	print_lst(t_token *lst)
-{
-	while (lst != NULL)
-	{
-		ft_putendl_fd(lst->str,2);
-		lst = lst->next;
-	}
-}
-void	prompt(t_env *envs,char **env)
-=======
 
 void	prompt(t_lsts *lsts, char **env)
->>>>>>> origin/jihoh
 {
 	char	*str;
 	char	**args;
 
-	//set_signal();
+	set_signal();
 	while (1)
 	{	
 		int k = 0;
-		set_signal();
+		// set_signal();
 		str = readline("🐚minishell$ ");
 		eof_history(str);
 		if (!*str)
@@ -108,25 +96,15 @@ void	prompt(t_lsts *lsts, char **env)
 		lsts->tokens.first = NULL;
 		if (parsing_cmd(str, lsts) == ERROR)
 			continue ;
-		/*
+		
 		args = create_args(&lsts->tokens);
 		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
-<<<<<<< HEAD
-		{
-			print_lst(&tokens);
-			// while(args[k])
-				// fprintf(stderr,"check args : %s\n",args[k++]);
-			pre_exec(args, envs,&tokens);
-		}
-		free_token(&tokens);
-=======
-			exec(args, env, &lsts->envs);
+			exec(args, &lsts->envs);
 		free_token(&lsts->tokens);
->>>>>>> origin/jihoh
 		free(args);
-		*/
+		
 		free(str);
 	}
 }

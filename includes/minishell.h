@@ -25,17 +25,16 @@
 
 # define READ 0
 # define WRITE 1
-
 enum e_token_type
 {
 	EMPTY = 0,
 	CMD = 1,
 	ARG = 2,
-	TRUNC = 3,
+	REDIROUT = 3,
 	APPEND = 4,
-	INPUT = 5,
-	PIPE = 6,
-	END = 7
+	REDIRIN = 5,
+	HEREDOC = 6,
+	PIPE = 7,
 } ;
 
 enum e_std_type
@@ -43,6 +42,15 @@ enum e_std_type
 	STDIN = 0,
 	STDOUT = 1,
 	STDERR = 2
+} ;
+
+enum e_sep_char
+{
+	DLLR = - '$',
+	REIN = - '<',
+	REOUT = - '>',
+	DBLREIN = - '<' + 1,
+	DBLREOUT = - '>' + 1,
 } ;
 
 enum e_return_type
@@ -66,6 +74,7 @@ typedef struct s_token
 	char			*str;
 	struct s_token	*next;
 }				t_token;
+
 typedef struct s_exe
 {
 	int	a[2];
@@ -81,13 +90,12 @@ typedef struct s_exe
 	int	heredoc_status;
 }	t_exe;
 
-typedef struct s_data
+typedef struct s_lsts
 {
-	// t_env	*env_lst;
-	int		shlvl;
-}	t_data;
+	t_env	envs;
+	t_token	tokens;
+}				t_lsts;
 
-t_data	g_data;
 /*
 *** builtin ***
 */
@@ -111,6 +119,7 @@ t_exe	*init_exe(char **args);
 static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
 void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
 int		pre_exec(char **args, t_env *envs, t_token *lst);
+void    parent_process(t_exe *exe, pid_t pid, int i);
 /*
 *** env ***
 */
@@ -123,8 +132,9 @@ void	env(t_env *envs);
 /*
 *** token ***
 */
-void	add_token(t_token *tokens, char *str);
+void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
+char	*str_to_token(char *start, char *end, t_env *envs);
 
 /*
 *** tools **
@@ -138,13 +148,20 @@ char	*ft_strdup2(char *start, char *end);
 /*
 *** parsing ***
 */
-void	parsing_line(char *str, char *quot, t_token *tokens, int i);
+int		parsing_line(char *str, t_lsts *lsts);
 
 /*
- *** signal ***
+*** dollar ***
+*/
+char	*search_dollar_value(char *str, t_env *envs);
+char	*end_of_dollar(char *str);
+int		dollar_check(char *str);
+
+/*
+*** signal ***
  */
 void	set_signal(void);
 void	reset_signal(void);
-void    init_shlvl(t_env *envs);
+void	init_shlvl(t_env *envs);
 
 #endif

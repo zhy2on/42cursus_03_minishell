@@ -176,7 +176,8 @@ static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **a
 	else if (pid == 0)
 		child_process(*lst,exe,i,envs,args);
 	else
-		waitpid(pid, NULL, 0);
+		parent_process(exe, pid, i);
+		// waitpid(pid, NULL, 0);
 }
 
 void	exec(char **args ,t_env *envs)
