@@ -138,7 +138,19 @@ int		pre_exec(char **args, t_env *envs, t_token *lst)
 	{
 		run_command(&lst,exe,i, envs, args);
 		i++;
-		lst = lst->next;
+		exe->pip_cnt--;
+		while (lst != NULL)
+		{
+			if (lst->type == PIPE)
+				break ;
+			lst = lst->next;
+		}
+		// if (lst == NULL)
+		// {
+			// exe free 
+		// }
+		if (lst->type == PIPE)
+			lst = lst->next;
 	}
 	return (EXIT_SUCCESS);
 
@@ -147,6 +159,16 @@ static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **a
 {
 	pid_t	pid;
 	// pipe처리
+	if (exe->pip_cnt > 0)
+	{
+		if (i % 2 == 0)
+			pipe(exe->a);
+		else
+		{
+			exe->flag_b = 1;
+			pipe(exe->b);
+		}
+	}
 	reset_signal();
 	pid = fork();
 	if (pid < 0)
