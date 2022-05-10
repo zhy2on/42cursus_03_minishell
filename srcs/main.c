@@ -6,34 +6,35 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 16:06:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 21:14:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	**create_args(t_token *tokens)
+char	**create_args(t_token *tokens, t_token **pptr)
 {
 	int		i;
 	char	**ret;
 	t_token	*ptr;
 
 	i = 0;
-	ptr = tokens->first;
-	while (ptr)
+	ptr = *pptr;
+	while (ptr && ptr->type <= ARG)
 	{
 		i++;
 		ptr = ptr->next;
 	}
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
-	ptr = tokens->first;
-	while (ptr)
+	ptr = *pptr;
+	while (ptr && ptr->type <= ARG)
 	{
 		ret[i++] = ptr->str;
 		ptr = ptr->next;
 	}
 	ret[i] = NULL;
+	*pptr = ptr;
 	return (ret);
 }
 
@@ -79,10 +80,31 @@ void	eof_history(char *str)
 	}
 }
 
+void	handle_args(t_lsts *lsts, char **env)
+{
+	t_token	*ptr;
+	char	**args;
+
+	ptr = lsts->tokens.first;
+	while (ptr)
+	{
+		if (ptr->type > ARG)
+		{
+			ptr = ptr->next;
+			continue ;
+		}
+		args = create_args(&lsts->tokens, &ptr);
+		if (builtin(&lsts->envs, args) == SUCCESS)
+			continue ;
+		else
+			exec(args, &lsts->envs);
+		free(args);
+	}
+}
+
 void	prompt(t_lsts *lsts, char **env)
 {
 	char	*str;
-	char	**args;
 
 	set_signal();
 	while (1)
@@ -96,6 +118,7 @@ void	prompt(t_lsts *lsts, char **env)
 		lsts->tokens.first = NULL;
 		if (parsing_cmd(str, lsts) == ERROR)
 			continue ;
+<<<<<<< HEAD
 		
 		args = create_args(&lsts->tokens);
 		if (builtin(&lsts->envs, args) == SUCCESS)
@@ -105,6 +128,10 @@ void	prompt(t_lsts *lsts, char **env)
 		free_token(&lsts->tokens);
 		free(args);
 		
+=======
+		handle_args(lsts, env);
+		free_token(&lsts->tokens);
+>>>>>>> origin/jihoh
 		free(str);
 	}
 }

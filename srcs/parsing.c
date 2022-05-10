@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 16:19:34 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 20:17:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,19 @@ void	trim_space(char *str, char *quot, int i)
 	*(str - i) = '\0';
 }
 
+int	check_empty_token(char *start, char *str, int i, t_lsts *lsts)
+{
+	char	prev;
+	char	next;
+
+	prev = *(str - 1);
+	next = *(str + 1);
+	if ((prev == *str) && (start == str - i + 1)
+		&& (is_sep(next) || !next))
+		add_token(&lsts->tokens, "", 0);
+	return (1);
+}
+
 void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
 {
 	char	*start;
@@ -74,7 +87,8 @@ void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
 	{
 		if (!*quot && is_quot(*str) && ++i)
 			*quot = *str;
-		else if ((*str == *quot) && ++i)
+		else if (*quot && (*str == *quot) && ++i
+			&& check_empty_token(start, str, i, lsts))
 			*quot = '\0';
 		else if (i > 0)
 			*(str - i) = *str;
