@@ -81,6 +81,13 @@ typedef struct s_exe
 	int	heredoc_status;
 }	t_exe;
 
+typedef struct s_data
+{
+	// t_env	*env_lst;
+	int		shlvl;
+}	t_data;
+
+t_data	g_data;
 /*
 *** builtin ***
 */

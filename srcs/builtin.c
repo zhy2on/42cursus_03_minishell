@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/04 15:52:18 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 14:38:19 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				fprintf(stderr,
-					"minishell: unset: `%s': not a valid identifier\n", *args);
+				printf("minishell: unset: `%s': not a valid identifier\n",
+					*args);
 				break ;
 			}
 			s++;
@@ -46,10 +46,10 @@ void	export(t_env *envs, char **args)
 		ptr = envs->first;
 		while (ptr)
 		{
-			fprintf(stderr, "declare -x %s", ptr->key);
+			printf("declare -x %s", ptr->key);
 			if (ptr->value)
-				fprintf(stderr, "=\"%s\"", ptr->value);
-			fprintf(stderr, "\n");
+				printf("=\"%s\"", ptr->value);
+			printf("\n");
 			ptr = ptr->next;
 		}
 	}
@@ -68,29 +68,28 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1])
-	{
-		fprintf(stderr, "\n");
+	if (!args[1] && printf("\n"))
 		return ;
-	}
 	ptr = args[1];
 	if (*ptr == '-')
+	{
 		while (*(++ptr) == 'n')
 			;
-	if (*ptr == '\0')
-	{
-		args += 2;
-		while (*args && *(args + 1))
-			fprintf(stderr, "%s ", *args++);
-		fprintf(stderr, "%s", *args);
+		if (*ptr == '\0')
+		{
+			args += 2;
+			while (*args && *(args + 1))
+				printf("%s ", *args++);
+			if (*args)
+				printf("%s", *args);
+			return ;
+		}
 	}
-	else
-	{
-		args += 1;
-		while (*args && *(args + 1))
-			fprintf(stderr, "%s ", *args++);
-		fprintf(stderr, "%s\n", *args);
-	}
+	args += 1;
+	while (*args && *(args + 1))
+		printf("%s ", *args++);
+	if (*args)
+		printf("%s\n", *args);
 }
 
 int	builtin(t_env *envs, char **args)
@@ -98,13 +97,10 @@ int	builtin(t_env *envs, char **args)
 	char	cwd[PATH_MAX];
 	char	*ptr;
 
-	// if (!ft_strcmp(args[0], "exit"))
-	// {
-	// 	printf("exit\n");
-	// 	exit(0);
-	// }
+	if (!args[0])
+		return (SUCCESS);
 	if (!ft_strcmp(args[0], "pwd"))
-		fprintf(stderr,"%s\n", getcwd(cwd, PATH_MAX));
+		printf("%s\n", getcwd(cwd, PATH_MAX));
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))

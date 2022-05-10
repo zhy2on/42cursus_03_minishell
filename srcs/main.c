@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 21:07:45 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/10 16:06:55 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	**create_args(t_token *tokens)
 	return (ret);
 }
 
-int	parsing_cmd(char *str, t_token *tokens)
+int	parsing_cmd(char *str, t_lsts *lsts)
 {
 	int		i;
 	char	quot;
@@ -45,20 +45,17 @@ int	parsing_cmd(char *str, t_token *tokens)
 
 	i = 0;
 	quot = '\0';
-	parsing_line(str, &quot, tokens, i);
-	tmp = tokens->first;
+	if (parsing_line(str, lsts) == ERROR)
+		return (ERROR);
+	tmp = lsts->tokens.first;
 	while (tmp)
 	{
 		printf("%d %s\n", tmp->type, tmp->str);
 		tmp = tmp->next;
 	}
-	if (quot)
-	{
-		fprintf(stderr, "minishell: single quotate error\n");
-		return (ERROR);
-	}
 	return (SUCCESS);
 }
+
 void	eof_history(char *str)
 {
 	if (str == NULL)
@@ -81,6 +78,7 @@ void	eof_history(char *str)
 		add_history(str);
 	}
 }
+<<<<<<< HEAD
 void	print_lst(t_token *lst)
 {
 	while (lst != NULL)
@@ -90,12 +88,15 @@ void	print_lst(t_token *lst)
 	}
 }
 void	prompt(t_env *envs,char **env)
+=======
+
+void	prompt(t_lsts *lsts, char **env)
+>>>>>>> origin/jihoh
 {
 	char	*str;
 	char	**args;
-	t_token	tokens;
 
-	set_signal();
+	//set_signal();
 	while (1)
 	{	
 		int k = 0;
@@ -104,13 +105,15 @@ void	prompt(t_env *envs,char **env)
 		eof_history(str);
 		if (!*str)
 			continue ;
-		tokens.first = NULL;
-		if (parsing_cmd(str, &tokens) == ERROR)
+		lsts->tokens.first = NULL;
+		if (parsing_cmd(str, lsts) == ERROR)
 			continue ;
-		args = create_args(&tokens);
-		if (!args[0] || builtin(envs, args) == SUCCESS)
+		/*
+		args = create_args(&lsts->tokens);
+		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
+<<<<<<< HEAD
 		{
 			print_lst(&tokens);
 			// while(args[k])
@@ -118,33 +121,26 @@ void	prompt(t_env *envs,char **env)
 			pre_exec(args, envs,&tokens);
 		}
 		free_token(&tokens);
+=======
+			exec(args, env, &lsts->envs);
+		free_token(&lsts->tokens);
+>>>>>>> origin/jihoh
 		free(args);
+		*/
 		free(str);
-	}
-}
-
-static void	print_envs(t_env *envs)
-{
-	int	i;
-
-	i = 0;
-	while (envs)
-	{
-		ft_putendl_fd(envs->key, 2);
-		envs = envs->next;
 	}
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_env	envs;
+	t_lsts	lsts;
 	int		i;
 
 	i = 0;
-	envs.first = NULL;
+	lsts.envs.first = NULL;
 	while (env[i])
-		add_env(&envs, env[i++]);
-	init_shlvl(&envs);
-	prompt(&envs, env);
+		add_env(&lsts.envs, env[i++]);
+	init_shlvl(&lsts.envs);
+	prompt(&lsts, env);
 	return (0);
 }

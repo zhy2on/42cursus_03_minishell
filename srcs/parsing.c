@@ -6,50 +6,35 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/03 21:22:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 16:19:34 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*end_of_replace(char *str)
-{
-	char	*s;
-
-	s = validate_key(s + 1, " ");
-	if (s == str + 1)
-	{
-		if (ft_isdigit(*s))
-			return (NULL);
-		else
-			return (str);
-	}
-	return (s);
-}
-
-char	*replace_dollar(t_env *envs, char *str, char *end)
-{
-	char	*ret;
-	char	tmp;
-
-	if (!end)
-		return (NULL);
-	if (end == str)
-		return (ft_strdup("$"));
-	tmp = *end;
-	*end = '\0';
-	ret = ft_strdup(search_env(envs, str + 1)->value);
-	*end = tmp;
-	return (ret);
-}
-
 int	sep_check(char *str)
 {
 	while (*str == ' ')
 		str++;
-	if (is_sep(*str))
+	if (is_sep(*str) || !*str)
 		return (1);
 	return (0);
+}
+
+void	replace_char(char **pstr, char *quot, int *i)
+{
+	char	*s;
+
+	s = *pstr;
+	if (*quot != '\'' && dollar_check(s))
+		*s = -(*s);
+	else if ((*s == '<' && *(s + 1) == '<')
+		|| (*s == '>' && *(s + 1) == '>'))
+	{
+		*(s + 1) = -(*(s + 1));
+		(*pstr)++;
+		(*i)++;
+	}
 }
 
 void	trim_space(char *str, char *quot, int i)
@@ -58,8 +43,7 @@ void	trim_space(char *str, char *quot, int i)
 		str++;
 	while (*str)
 	{
-		if (*quot != '\'' && *str == '$')
-				*str = -(*str);
+		replace_char(&str, quot, &i);
 		if (!*quot && is_quot(*str))
 			*quot = *str;
 		else if (*str == *quot)
@@ -67,25 +51,24 @@ void	trim_space(char *str, char *quot, int i)
 		else if (!*quot && *str == ' ')
 		{
 			if (!(is_sep(*(str - 1)) || sep_check(str)))
+			{
+				*(str - i) = *str;
 				str++;
+			}
 			while (*str == ' ' && ++i)
 				str++;
 			continue ;
 		}
-		if (i > 0)
-			*(str - i) = *str;
+		*(str - i) = *str;
 		str++;
 	}
 	*(str - i) = '\0';
 }
 
-void	parsing_line(char *str, char *quot, t_token *tokens, int i)
+void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
 {
 	char	*start;
 
-	trim_space(str, quot, i);
-	if (*quot)
-		return ;
 	start = str;
 	while (*str)
 	{
@@ -97,12 +80,32 @@ void	parsing_line(char *str, char *quot, t_token *tokens, int i)
 			*(str - i) = *str;
 		if (!*quot && is_sep(*str))
 		{
-			add_token(tokens, ft_strdup2(start, str - i));
+			add_token(&lsts->tokens,
+				str_to_token(start, str - i, &lsts->envs), 0);
 			if (*(str - i) != ' ')
-				add_token(tokens, ft_strdup2(str - i, str - i + 1));
+				add_token(&lsts->tokens,
+					str_to_token(str - i, str - i + 1, &lsts->envs), 1);
 			start = str - i + 1;
 		}
 		str++;
 	}
-	add_token(tokens, ft_strdup2(start, str - i));
+	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs), 0);
+}
+
+int	parsing_line(char *str, t_lsts *lsts)
+{
+	int		i;
+	char	quot;
+
+	i = 0;
+	quot = '\0';
+	trim_space(str, &quot, i);
+	printf("trim:%s$\n", str);
+	if (quot)
+	{
+		printf("minishell: syntax error with unclosed quotes\n");
+		return (ERROR);
+	}
+	create_tokens(str, &quot, i, lsts);
+	return (SUCCESS);
 }
