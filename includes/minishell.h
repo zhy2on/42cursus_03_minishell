@@ -6,11 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/05/03 18:32:44 by jihoh            ###   ########.fr       */
-=======
 /*   Updated: 2022/05/10 21:11:20 by jihoh            ###   ########.fr       */
->>>>>>> origin/jihoh
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +86,14 @@ typedef struct s_lsts
 	t_env	envs;
 	t_token	tokens;
 }				t_lsts;
+//
+typedef struct s_data
+{
+	int				exit;
+	unsigned char	exit_status;	
+}	t_data;
+
+t_data		g_data;
 
 /*
 *** builtin ***
@@ -109,12 +113,16 @@ void	cd_sub(t_env *envs, char **args);
 *** exec ***
 */
 void	exec(char **args, t_env *envs);
-int	pipe_count(char **args);
-t_exe	*init_exe(char **args);
+int	pipe_count(t_token *token);
+t_exe	*init_exe(t_token *tokens);
 static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
 void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
 int		pre_exec(char **args, t_env *envs, t_token *lst);
 void    parent_process(t_exe *exe, pid_t pid, int i);
+//
+void	exe_command(char **args, t_env *envs);
+void	find_excu(char *command, char *envs[], char buffer[], int buf_size);
+// void    command_arg(t_token **lst, t_exe *exe);
 /*
 *** env ***
 */

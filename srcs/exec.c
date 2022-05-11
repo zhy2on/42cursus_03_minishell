@@ -49,14 +49,6 @@ static char **convert_env(t_env *envs)
 	return (env);
 }
 
-
-static void env_print(char **env) {
-	int i = 0;
-	while (env[i]) {
-		ft_putendl_fd(env[i++], 2);
-	}
-}
-
 static void	check_newline(char buffer[])
 {
 	int	i;
@@ -148,7 +140,8 @@ int		pre_exec(char **args, t_env *envs, t_token *lst)
 		}
 		if (lst == NULL)
 		{
-			//exefree;
+			free(exe);
+			exe = NULL;
 			break;
 		}
 		else if (lst->type == PIPE)
@@ -185,114 +178,140 @@ void	exe_command(char **args, t_env *envs)
 {
 	char	buf[4096];
 	char    **convertenv;
+
 	ft_memset(buf,0,4096);
 	convertenv = convert_env(envs);
 	find_excu(args[0], convertenv, buf, 4096);
-	execve(buf,args,convertenv);
+	// find_excu(exe->cmd_arg[0], convertenv, buf, 4096);
+	if (buf[0] == '\0')
+	{
+		fprintf(stderr,"command not found\n");
+		g_data.exit_status = 127;
+	}
+	else
+	{
+		g_data.exit_status = 0;
+		execve(buf,args,convertenv);
+		// execve(buf,exe->cmd_arg,convertenv);
+	}
 }
 void	find_excu(char *command, char *envs[], char buffer[], int buf_size)
 {
 	static	char *argv[] = {"/usr/bin/which","-a",NULL,NULL};
-	char	**arg;
+	// char	**arg;
 	int		pipefd[2];
 	pid_t	pid;
 
 	pipe(pipefd);
-	pid = fork;
-	if (pid == 0)
-	{
-		find_command()
-	}
-	
-}
-void	exec(char **args ,t_env *envs)
-{
-	pid_t	pid;
-	char	buff[4096];
-	// int		pipefd[2];
-
-	ft_memset(buff,0,4096);
-
-	static char *argss[] = {NULL,NULL};
-	char **test;
-	test = convert_env(envs);
-	// exe = init_exe(args);
-	//int i=0;
-	/*
-	while (envs)
-	{
-		ft_putendl_fd(envs->key,2);
-		envs = envs->next;
-	}
-	
-	fprintf(stderr,"------env_join_test------");
-	while (test[i])
-	{
-		fprintf(stderr,"%s\n",test[i]);
-		i++;
-	}
-	*/
-	// env_print(env);
-	find_cmd(args, test,buff,4096);
-	// argss[0] = buff;
-	
-	// printf("debug buff : %s\n", buff);
-	// printf("debug args[0] : %s\n", args[1]);
-	// pipe(pipefd);
-	// reset_signal();
-	/*
-	if (buff[0] == '\0')
-	{
-		fprintf(stderr,"Test Not Found");
-	}
-	else
-	{
-		execve(buff,args,test);
-	}
-	*/
 	pid = fork();
 	if (pid == 0)
 	{
-		// fprintf(stderr,"buff : %s ,\t args : %s ,\t env : %s \n", buff, args[0], env[1]);
-		//ft_putstr_fd(buff, 2);
-		//fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
-		execve(buff, args, test);
-		fprintf(stderr,"minishell: %s: command not found\n", args[0]);
-		exit(0);
-	}
-	else
-		waitpid(pid, NULL, 0);
-}
-
-void find_cmd(char **args, char **env, char buff[], int buf_size )
-{
-	pid_t	pid;
-	int		fd[2];
-	static	char *argv[] = {"/usr/bin/which","-a",NULL,NULL};
-	// int		pipefd[2];
-
-	// argv[2] = args[0];
-	// int i=1;
-	pipe(fd);
-	pid = fork();
-	if (pid == 0)
-	{
-		close(fd[0]);
-		argv[2] = args[0];
-		dup2(fd[1],STDOUT_FILENO);
-		close(fd[1]);
-		execve("/usr/bin/which", argv, env);
-		// exit(0);
+		close(pipefd[0]);
+		argv[2] = command;
+		dup2(pipefd[1],STDOUT_FILENO);
+		close(pipefd[1]);
+		execve("/usr/bin/which",argv,envs);
+		exit(EXIT_SUCCESS);
 	}
 	else
 	{
-		close(fd[1]);
-		waitpid(pid, NULL, 0);
-		read(fd[0], buff, 4096);
-		buff[ft_strlen(buff) - 1]= '\0';
-		//ft_putstr_fd("parent: " , 2);
-		//ft_putstr_fd(buff, 1);
-		check_newline(buff);
+		close(pipefd[1]);
+		waitpid(pid,NULL,0);
+		read(pipefd[0],buffer,buf_size);
+		buffer[ft_strlen(buffer) - 1]= '\0';
+		check_newline(buffer);
 	}
 }
+
+
+// void	exec(char **args ,t_env *envs)
+// {
+// 	pid_t	pid;
+// 	char	buff[4096];
+// 	// int		pipefd[2];
+
+// 	ft_memset(buff,0,4096);
+
+// 	static char *argss[] = {NULL,NULL};
+// 	char **test;
+// 	test = convert_env(envs);
+// 	// exe = init_exe(args);
+// 	//int i=0;
+// 	/*
+// 	while (envs)
+// 	{
+// 		ft_putendl_fd(envs->key,2);
+// 		envs = envs->next;
+// 	}
+	
+// 	fprintf(stderr,"------env_join_test------");
+// 	while (test[i])
+// 	{
+// 		fprintf(stderr,"%s\n",test[i]);
+// 		i++;
+// 	}
+// 	*/
+// 	// env_print(env);
+// 	find_cmd(args, test,buff,4096);
+// 	// argss[0] = buff;
+	
+// 	// printf("debug buff : %s\n", buff);
+// 	// printf("debug args[0] : %s\n", args[1]);
+// 	// pipe(pipefd);
+// 	// reset_signal();
+// 	/*
+// 	if (buff[0] == '\0')
+// 	{
+// 		fprintf(stderr,"Test Not Found");
+// 	}
+// 	else
+// 	{
+// 		execve(buff,args,test);
+// 	}
+// 	*/
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		// fprintf(stderr,"buff : %s ,\t args : %s ,\t env : %s \n", buff, args[0], env[1]);
+// 		//ft_putstr_fd(buff, 2);
+// 		//fprintf(stderr, "len: %zu str: %s\n", ft_strlen(buff), buff);
+// 		execve(buff, args, test);
+// 		fprintf(stderr,"minishell: %s: command not found\n", args[0]);
+// 		exit(0);
+// 	}
+// 	else
+// 		waitpid(pid, NULL, 0);
+// }
+
+// void find_cmd(char **args, char **env, char buff[], int buf_size )
+// {
+// 	pid_t	pid;
+// 	int		fd[2];
+// 	static	char *argv[] = {"/usr/bin/which","-a",NULL,NULL};
+// 	// int		pipefd[2];
+
+// 	// argv[2] = args[0];
+// 	// int i=1;
+// 	pipe(fd);
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		close(fd[0]);
+// 		argv[2] = args[0];
+// 		dup2(fd[1],STDOUT_FILENO);
+// 		close(fd[1]);
+// 		execve("/usr/bin/which", argv, env);
+// 		// exit(0);
+// 	}
+// 	else
+// 	{
+// 		close(fd[1]);
+// 		waitpid(pid, NULL, 0);
+// 		read(fd[0], buff, 4096);
+// 		buff[ft_strlen(buff) - 1]= '\0';
+// 		//ft_putstr_fd("parent: " , 2);
+// 		//ft_putstr_fd(buff, 1);
+// 		check_newline(buff);
+// 	}
+// }
 

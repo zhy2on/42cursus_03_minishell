@@ -84,7 +84,7 @@ void	handle_args(t_lsts *lsts, char **env)
 {
 	t_token	*ptr;
 	char	**args;
-	// int i =0;
+	int i =0;
 
 	ptr = lsts->tokens.first;
 	while (ptr)
@@ -95,14 +95,14 @@ void	handle_args(t_lsts *lsts, char **env)
 			continue ;
 		}
 		args = create_args(&lsts->tokens, &ptr);
-		// i =0;
-		// printf("Test args :");
-		// while (args[i])
-		// {
-		// 	printf(" %s->",args[i]);
-		// 	i++;
-		// }
-		// printf("null\n");
+		i =0;
+		printf("Test args :");
+		while (args[i])
+		{
+			printf(" %s->",args[i]);
+			i++;
+		}
+		printf("null\n");
 		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else

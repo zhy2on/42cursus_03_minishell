@@ -35,6 +35,10 @@ void    parent_process(t_exe *exe, pid_t pid, int i)
         close(exe->a[READ]);
         close(exe->b[WRITE]);
     }
-    waitpid(pid, &status, 0);
+    // waitpid(pid, NULL, 0);
+    waitpid(pid,&status,0);
+    g_data.exit_status = status >> 8;
+    if (status == 0)
+        g_data.exit_status = status;
     // exit status 처리 
 }
