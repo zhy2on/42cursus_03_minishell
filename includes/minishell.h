@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 15:23:59 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 18:55:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,15 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <limits.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
 enum e_token_type
 {
-	CMD = 1,
-	ARG = 2,
+	CMD = 0,
+	ARG = 1,
+	DIR = 2,
 	REDIROUT = 3,
 	APPEND = 4,
 	REDIRIN = 5,
@@ -67,6 +69,21 @@ typedef struct s_lsts
 	t_env	envs;
 	t_token	tokens;
 }				t_lsts;
+
+typedef struct s_fd
+{
+	int	in;
+	int	out;
+	int	fdin;
+	int	fdout;
+}				t_fd;
+
+typedef struct s_mini
+{
+	t_env	envs;
+	t_token	tokens;
+	t_fd	fd;
+}				t_mini;
 
 /*
 *** builtin ***
@@ -114,7 +131,7 @@ int		is_sep(char s);
 /*
 *** parsing ***
 */
-int		parsing_line(char *str, t_lsts *lsts);
+int		parsing_line(char *str, t_mini *mini);
 
 /*
 *** dollar ***
@@ -129,5 +146,11 @@ int		dollar_check(char *str);
 void	set_signal(void);
 // void	reset_signal(void);
 void	init_shlvl(t_env *envs);
+
+/*
+*** redirect ***
+*/
+void	restore_inout(t_fd *fd);
+void	handle_redirect(t_token *token, t_fd *fd);
 
 #endif

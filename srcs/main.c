@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 21:14:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 19:26:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,19 @@ char	**create_args(t_token *tokens, t_token **pptr)
 
 	i = 0;
 	ptr = *pptr;
-	while (ptr && ptr->type <= ARG)
+	while (ptr && ptr->type != PIPE)
 	{
-		i++;
+		if (ptr->type <= ARG)
+			i++;
 		ptr = ptr->next;
 	}
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	ptr = *pptr;
-	while (ptr && ptr->type <= ARG)
+	while (ptr && ptr->type != PIPE)
 	{
-		ret[i++] = ptr->str;
+		if (ptr->type <= ARG)
+			ret[i++] = ptr->str;
 		ptr = ptr->next;
 	}
 	ret[i] = NULL;
@@ -38,7 +40,7 @@ char	**create_args(t_token *tokens, t_token **pptr)
 	return (ret);
 }
 
-int	parsing_cmd(char *str, t_lsts *lsts)
+int	parsing_cmd(char *str, t_mini *mini)
 {
 	int		i;
 	char	quot;
@@ -46,9 +48,9 @@ int	parsing_cmd(char *str, t_lsts *lsts)
 
 	i = 0;
 	quot = '\0';
-	if (parsing_line(str, lsts) == ERROR)
+	if (parsing_line(str, mini) == ERROR)
 		return (ERROR);
-	tmp = lsts->tokens.first;
+	tmp = mini->tokens.first;
 	while (tmp)
 	{
 		printf("%d %s\n", tmp->type, tmp->str);
@@ -80,58 +82,59 @@ void	eof_history(char *str)
 	}
 }
 
-void	handle_args(t_lsts *lsts, char **env)
+void	handle_args(t_mini *mini, char **env)
 {
 	t_token	*ptr;
 	char	**args;
+	t_fd	fd;
 
-	ptr = lsts->tokens.first;
+	ptr = mini->tokens.first;
 	while (ptr)
 	{
-		if (ptr->type > ARG)
-		{
-			ptr = ptr->next;
-			continue ;
-		}
-		args = create_args(&lsts->tokens, &ptr);
-		if (builtin(&lsts->envs, args) == SUCCESS)
+		handle_redirect(ptr, &fd);
+		args = create_args(&mini->tokens, &ptr);
+		if (builtin(&mini->envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args, &lsts->envs);
+			exec(args, &mini->envs);
 		free(args);
 	}
 }
 
-void	prompt(t_lsts *lsts, char **env)
+void	prompt(t_mini *mini, char **env)
 {
 	char	*str;
 
 	//set_signal();
 	while (1)
 	{
+		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		eof_history(str);
+		//eof_history(str);
 		if (!*str)
 			continue ;
-		lsts->tokens.first = NULL;
-		if (parsing_cmd(str, lsts) == ERROR)
+		mini->tokens.first = NULL;
+		if (parsing_cmd(str, mini) == ERROR)
 			continue ;
-		handle_args(lsts, env);
-		free_token(&lsts->tokens);
+		handle_args(mini, env);
+		free_token(&mini->tokens);
 		free(str);
 	}
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_lsts	lsts;
+	t_mini	mini;
 	int		i;
 
 	i = 0;
-	lsts.envs.first = NULL;
+	mini.envs.first = NULL;
+	mini.fd.in = dup(STDIN);
+	mini.fd.out = dup(STDOUT);
+	mini.fd.fdout = -1;
 	while (env[i])
-		add_env(&lsts.envs, env[i++]);
-	init_shlvl(&lsts.envs);
-	prompt(&lsts, env);
+		add_env(&mini.envs, env[i++]);
+	init_shlvl(&mini.envs);
+	prompt(&mini, env);
 	return (0);
 }

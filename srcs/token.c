@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 16:11:39 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 16:28:58 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 		token->type = PIPE;
 	else if (tokens->first == token || prev->type == PIPE)
 		token->type = CMD;
+	else if (prev->type > DIR && prev->type < PIPE)
+		token->type = DIR;
 	else
 		token->type = ARG;
 }

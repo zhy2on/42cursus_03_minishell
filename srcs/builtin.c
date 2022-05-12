@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 14:38:19 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 19:18:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ int	builtin(t_env *envs, char **args)
 		export(envs, args);
 	else if (!ft_strcmp(args[0], "unset"))
 		unset(envs, args);
+	else if (!ft_strcmp(args[0], "exit"))
+		exit(0);
 	else
 		return (ERROR);
 	return (SUCCESS);
