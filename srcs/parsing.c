@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 20:17:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 15:15:48 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	check_empty_token(char *start, char *str, int i, t_lsts *lsts)
 	next = *(str + 1);
 	if ((prev == *str) && (start == str - i + 1)
 		&& (is_sep(next) || !next))
-		add_token(&lsts->tokens, "", 0);
+		add_token(&lsts->tokens, ft_strdup(""), 0);
 	return (1);
 }
 
