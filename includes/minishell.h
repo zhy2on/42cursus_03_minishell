@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 21:11:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 15:23:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,13 @@
 
 enum e_token_type
 {
-	EMPTY = 0,
 	CMD = 1,
 	ARG = 2,
 	REDIROUT = 3,
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7,
+	PIPE = 7
 } ;
 
 enum e_std_type

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 20:22:45 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 16:11:39 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 	prev = tokens->first;
 	while (prev != token && prev->next != token)
 		prev = prev->next;
-	if (!ft_strcmp(token->str, ""))
-		token->type = EMPTY;
-	else if (!ft_strcmp(token->str, ">") && is_sep)
+	if (!ft_strcmp(token->str, ">") && is_sep)
 		token->type = REDIROUT;
 	else if (!ft_strcmp(token->str, ">>") && is_sep)
 		token->type = APPEND;
@@ -46,7 +44,7 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 		token->type = HEREDOC;
 	else if (!ft_strcmp(token->str, "|") && is_sep)
 		token->type = PIPE;
-	else if (tokens->first == token || prev->type >= REDIROUT)
+	else if (tokens->first == token || prev->type == PIPE)
 		token->type = CMD;
 	else
 		token->type = ARG;
