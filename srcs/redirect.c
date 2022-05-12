@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 19:27:47 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 20:02:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ void	change_inout(t_token *token, t_fd *fd)
 	if (!token->next)
 		return ;
 	if (token->type == REDIROUT)
-		fd->fdout = open(token->next->str, O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+		fd->fdout = open(token->next->str,
+				O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
 	else if (token->type == APPEND)
-		fd->fdout = open(token->next->str, O_CREAT | O_WRONLY | O_APPEND, S_IRWXU);
+		fd->fdout = open(token->next->str,
+				O_CREAT | O_WRONLY | O_APPEND, S_IRWXU);
 	else
 		return ;
 	if (fd->fdout == -1)

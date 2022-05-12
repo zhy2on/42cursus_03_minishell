@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
+ ** wc -l 하고 ctrl + c 누를 때 bash 와 다름 .. 그 경우 예외 처리 해줘야함.
+*/
 #include "../includes/minishell.h"
 
 static void handler_1(int signo)
@@ -24,12 +27,19 @@ static void handler_1(int signo)
         rl_replace_line("", 0);
         // 현재까직 입력된 프롬포트의 문자열을 str로 바꿔준다. 
         //ft_putstr_fd("🐚minishell$ ",1);
+        /*
+        ft_putstr_fd("\033[K", 1);
+		ft_putstr_fd("🐚minishell ", 1);
+		ft_putstr_fd(str, 1);
+		ft_putstr_fd("\n", 1);
+        */
+        
         ft_putstr_fd("\033[2K",1);
 		fprintf(stderr,"\033[%dD",cnt);
-        // ft_putstr_fd("\b\b  \n", 1);
         ft_putstr_fd("🐚minishell$ ",1);
         ft_putstr_fd(str,1);
         ft_putstr_fd("\n",1);
+        
         rl_on_new_line();
         //rl_redisplay 를 실행시키기 위해 필요한 함수
         rl_redisplay();
@@ -37,21 +47,13 @@ static void handler_1(int signo)
         // readline 함수의 인자로 넣은 문자열을 다시 출력한다. 
         free(str);
     }
-	else if (signo == SIGTERM)
-	{
-		printf("\033[1A");
-        printf("\033[10C");
-    	printf(" exit\n");
-        exit(-1);
-	}
 }
 static void handler_2(int signo)
 {
     if (signo == SIGINT)
         ft_putstr_fd("\n",1);
-    else if (signo == SIGQUIT)
-        ft_putendl_fd("Quit: 3", 1);
-    //else if (signal == SIGTERM)
+    // else if (signo == SIGQUIT)
+    //     ft_putendl_fd("Quit: 3", 1);
 }
 void    reset_signal(void)
 {
@@ -62,5 +64,4 @@ void    set_signal(void)
 {
     signal(SIGINT, handler_1);
     signal(SIGQUIT, SIG_IGN);
-	signal(SIGTERM, handler_1);
 }

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 18:55:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 19:44:46 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
+
+# define READ 0
+# define WRITE 1
 
 enum e_token_type
 {
@@ -64,6 +68,21 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
+typedef struct s_exe
+{
+	int	a[2];
+	int b[2];
+	int pip_cnt;
+	int redir_in;
+	int redir_out;
+	char **cmd_arg;
+	int	flag_b;
+	int	heredoc_fd[2];
+	char *heredoc_buf;
+	pid_t	heredoc_pid;
+	int	heredoc_status;
+}	t_exe;
+
 typedef struct s_lsts
 {
 	t_env	envs;
@@ -84,6 +103,21 @@ typedef struct s_mini
 	t_token	tokens;
 	t_fd	fd;
 }				t_mini;
+//test
+typedef struct s_data
+{
+	//char			**env;
+	int				redir_in;
+	int				redir_out;
+	int				pip[2][2];
+	int				i;
+	int				ac;
+	int				fork;
+	int				exit;
+	int	exit_status;	
+}	t_data;
+
+t_data		g_data;
 
 /*
 *** builtin ***
@@ -103,6 +137,28 @@ void	cd_sub(t_env *envs, char **args);
 *** exec ***
 */
 void	exec(char **args, t_env *envs);
+int	pipe_count(t_token *token);
+t_exe	*init_exe(t_token *tokens);
+static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
+void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
+int		pre_exec(char **args, t_env *envs, t_token *lst);
+void    parent_process(t_exe *exe, pid_t pid, int i);
+//
+void	exe_command(char **args, t_env *envs);
+void	find_excu(char *command, char *envs[], char buffer[], int buf_size);
+// test exec
+void    test_exec(char **args, t_env *envs, t_token *tokens);
+void    pre_execute(t_token *tokens);
+void    backup_execute(int *stdin, int *stdout);
+void    excute_token(t_token *tokens, char **args, t_env *envs);
+void    t_excute_cmd(t_token *tokens, char **args, t_env *envs);
+void 	t_exec_cmd(t_token *tokens, char **args, t_env *envs);
+void    set_pipe(void);
+void    connect_pipe(int fd[2], int io);
+// redirect
+int	redirect_in(char *file);
+int	redirect_out(char *file);
+int redirect_out_append(char *file);
 
 /*
 *** env ***
@@ -144,7 +200,7 @@ int		dollar_check(char *str);
 *** signal ***
  */
 void	set_signal(void);
-// void	reset_signal(void);
+void	reset_signal(void);
 void	init_shlvl(t_env *envs);
 
 /*

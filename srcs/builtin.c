@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 19:18:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 21:35:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,11 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1] && printf("\n"))
+	if (!args[1])
+	{
+		ft_putstr_fd("\n", STDOUT);
 		return ;
+	}
 	ptr = args[1];
 	if (*ptr == '-')
 	{
@@ -79,17 +82,23 @@ void	echo(char **args)
 		{
 			args += 2;
 			while (*args && *(args + 1))
-				printf("%s ", *args++);
+			{
+				ft_putstr_fd(*args++, STDOUT);
+				ft_putstr_fd(" ", STDOUT);
+			}
 			if (*args)
-				printf("%s", *args);
+				ft_putendl_fd(*args, STDOUT);
 			return ;
 		}
 	}
 	args += 1;
 	while (*args && *(args + 1))
-		printf("%s ", *args++);
+	{
+		ft_putstr_fd(*args++, STDOUT);
+		ft_putstr_fd(" ", STDOUT);
+	}
 	if (*args)
-		printf("%s\n", *args);
+		ft_putstr_fd(*args, STDOUT);
 }
 
 int	builtin(t_env *envs, char **args)

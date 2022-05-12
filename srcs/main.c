@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 19:26:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 21:34:52 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	eof_history(char *str)
 	}
 }
 
-void	handle_args(t_mini *mini, char **env)
+void	handle_tokens(t_mini *mini, char **env)
 {
 	t_token	*ptr;
 	char	**args;
@@ -93,11 +93,10 @@ void	handle_args(t_mini *mini, char **env)
 	{
 		handle_redirect(ptr, &fd);
 		args = create_args(&mini->tokens, &ptr);
-		if (builtin(&mini->envs, args) == SUCCESS)
-			continue ;
-		else
-			exec(args, &mini->envs);
+		if (builtin(&mini->envs, args) != SUCCESS)
+			test_exec(args, &mini->envs, &mini->tokens);
 		free(args);
+		restore_inout(&mini->fd);
 	}
 }
 
@@ -105,10 +104,9 @@ void	prompt(t_mini *mini, char **env)
 {
 	char	*str;
 
-	//set_signal();
+	// set_signal();
 	while (1)
 	{
-		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
 		//eof_history(str);
 		if (!*str)
@@ -116,7 +114,7 @@ void	prompt(t_mini *mini, char **env)
 		mini->tokens.first = NULL;
 		if (parsing_cmd(str, mini) == ERROR)
 			continue ;
-		handle_args(mini, env);
+		handle_tokens(mini, env);
 		free_token(&mini->tokens);
 		free(str);
 	}

@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shlvl.c                                            :+:      :+:    :+:   */
+/*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/03 15:57:40 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/10 16:07:09 by jihoh            ###   ########.fr       */
+/*   Created: 2022/05/09 18:57:55 by junyopar          #+#    #+#             */
+/*   Updated: 2022/05/09 18:58:20 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+//pipex.ver
+// void    connect_pipe(int fd[], int io)
+// {
+//     dup2(fd[io], io);
+//     close(fd[io]);
+// }
 
-void    init_shlvl(t_env *envs)
+void    close_pipe(int fd[])
 {
-    t_env *shlvl_lst;
-    int     i;
-
-   shlvl_lst = search_env(envs, "SHLVL");
-   i = ft_atoi(shlvl_lst->value);
-   shlvl_lst->value = ft_itoa(i + 1);
+    close(fd[READ]);
+    close(fd[WRITE]);
 }
+
+// int pipe_count_list(t_)
