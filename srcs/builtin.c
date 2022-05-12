@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 21:35:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 21:53:40 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ void	export(t_env *envs, char **args)
 		ptr = envs->first;
 		while (ptr)
 		{
-			printf("declare -x %s", ptr->key);
+			join_putstr_fd("declare -x ", ptr->key, 0, STDOUT);
 			if (ptr->value)
-				printf("=\"%s\"", ptr->value);
-			printf("\n");
+				join_putstr_fd("=\"", ptr->value, "\"", STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
 			ptr = ptr->next;
 		}
 	}
@@ -68,11 +68,8 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1])
-	{
-		ft_putstr_fd("\n", STDOUT);
+	if (!args[1] && join_putstr_fd("\n", 0, 0, STDOUT))
 		return ;
-	}
 	ptr = args[1];
 	if (*ptr == '-')
 	{
@@ -82,23 +79,17 @@ void	echo(char **args)
 		{
 			args += 2;
 			while (*args && *(args + 1))
-			{
-				ft_putstr_fd(*args++, STDOUT);
-				ft_putstr_fd(" ", STDOUT);
-			}
+				join_putstr_fd(*args++, " ", 0, STDOUT);
 			if (*args)
-				ft_putendl_fd(*args, STDOUT);
+				join_putstr_fd(*args, "\n", 0, STDOUT);
 			return ;
 		}
 	}
 	args += 1;
 	while (*args && *(args + 1))
-	{
-		ft_putstr_fd(*args++, STDOUT);
-		ft_putstr_fd(" ", STDOUT);
-	}
+		join_putstr_fd(*args++, " ", 0, STDOUT);
 	if (*args)
-		ft_putstr_fd(*args, STDOUT);
+		join_putstr_fd(*args, 0, 0, STDOUT);
 }
 
 int	builtin(t_env *envs, char **args)
@@ -109,7 +100,7 @@ int	builtin(t_env *envs, char **args)
 	if (!args[0])
 		return (SUCCESS);
 	if (!ft_strcmp(args[0], "pwd"))
-		printf("%s\n", getcwd(cwd, PATH_MAX));
+		join_putstr_fd(getcwd(cwd, PATH_MAX), 0, 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
