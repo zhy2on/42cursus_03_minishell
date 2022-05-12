@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 19:44:46 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/12 21:53:21 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_quot(char s);
 int		is_sep(char s);
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
 
 /*
 *** parsing ***
