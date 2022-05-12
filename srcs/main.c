@@ -106,7 +106,12 @@ void	handle_args(t_lsts *lsts, char **env)
 		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
-			pre_exec(args, &lsts->envs, &lsts->tokens);
+		{
+			// test_exec
+			// pre_exec(args, &lsts->envs, &lsts->tokens);
+			test_exec(args,&lsts->envs,&lsts->tokens);
+
+		}
 		free(args);
 	}
 }

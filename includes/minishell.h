@@ -25,6 +25,7 @@
 
 # define READ 0
 # define WRITE 1
+
 enum e_token_type
 {
 	EMPTY = 0,
@@ -86,11 +87,19 @@ typedef struct s_lsts
 	t_env	envs;
 	t_token	tokens;
 }				t_lsts;
-//
+
+//test
 typedef struct s_data
 {
+	//char			**env;
+	int				redir_in;
+	int				redir_out;
+	int				pip[2][2];
+	int				i;
+	int				ac;
+	int				fork;
 	int				exit;
-	unsigned char	exit_status;	
+	int	exit_status;	
 }	t_data;
 
 t_data		g_data;
@@ -122,7 +131,20 @@ void    parent_process(t_exe *exe, pid_t pid, int i);
 //
 void	exe_command(char **args, t_env *envs);
 void	find_excu(char *command, char *envs[], char buffer[], int buf_size);
-// void    command_arg(t_token **lst, t_exe *exe);
+// test exec
+void    test_exec(char **args, t_env *envs, t_token *tokens);
+void    pre_execute(t_token *tokens);
+void    backup_execute(int *stdin, int *stdout);
+void    excute_token(t_token *tokens, char **args, t_env *envs);
+void    t_excute_cmd(t_token *tokens, char **args, t_env *envs);
+void 	t_exec_cmd(t_token *tokens, char **args, t_env *envs);
+void    set_pipe(void);
+void    connect_pipe(int fd[2], int io);
+// redirect
+int	redirect_in(char *file);
+int	redirect_out(char *file);
+int redirect_out_append(char *file);
+
 /*
 *** env ***
 */

@@ -13,30 +13,38 @@
 
 #include "../includes/minishell.h"
 // pipex.ver
-void	redirect_in(const char *file)
+int	redirect_in(char *file)
 {
-	int	infile;
-
-	infile = open(file, O_RDONLY);
-	if (infile < 0)
+	g_data.redir_in = open(file, O_RDONLY);
+	if (g_data.redir_in < 0)
 	{
-		perror("open fail");
-		exit(1);
+		fprintf(stderr,"test message\n");
+		g_data.exit_status = 1;
+		return (EXIT_FAILURE);
 	}
-	dup2(infile, STDIN_FILENO);
-	close(infile);
+	return (EXIT_SUCCESS);
 }
 
-void	redirect_out(const char *file)
+int	redirect_out(char *file)
 {
-	int	outfile;
-
-	outfile = open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (outfile < 0)
+	g_data.redir_out = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if (g_data.redir_out < 0)
 	{
-		perror("open fail\n");
-		exit(1);
+		// print_errmsg(file, strerror(errno));
+		g_data.exit_status = 1;
+		return (EXIT_FAILURE);
 	}
-	dup2(outfile, STDOUT_FILENO);
-	close(outfile);
+	return (EXIT_SUCCESS);
+}
+int
+	redirect_out_append(char *file)
+{
+	g_data.redir_out = open(file, O_RDWR | O_CREAT | O_APPEND, 0644);
+	if (g_data.redir_out < 0)
+	{
+		// print_errmsg(file, strerror(errno));
+		g_data.exit_status = 1;
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
