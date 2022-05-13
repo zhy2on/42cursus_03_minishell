@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 21:53:21 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/13 21:53:16 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ typedef struct s_mini
 	t_env	envs;
 	t_token	tokens;
 	t_fd	fd;
+	pid_t	pid;
 }				t_mini;
 //test
 typedef struct s_data

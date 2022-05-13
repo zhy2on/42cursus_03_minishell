@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/12 21:34:52 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/13 21:53:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	eof_history(char *str)
 
 void	handle_tokens(t_mini *mini, char **env)
 {
+	t_token	*token;
 	t_token	*ptr;
 	char	**args;
 	t_fd	fd;
@@ -91,12 +92,21 @@ void	handle_tokens(t_mini *mini, char **env)
 	ptr = mini->tokens.first;
 	while (ptr)
 	{
-		handle_redirect(ptr, &fd);
+		token = ptr;
 		args = create_args(&mini->tokens, &ptr);
-		if (builtin(&mini->envs, args) != SUCCESS)
-			test_exec(args, &mini->envs, &mini->tokens);
-		free(args);
-		restore_inout(&mini->fd);
+		mini->pid = fork();
+		if (mini->pid == 0)
+		{
+			handle_redirect(token, &fd);
+			if (builtin(&mini->envs, args) != SUCCESS)
+				test_exec(args, &mini->envs, &mini->tokens);
+			free(args);
+			exit(0);
+		}
+		else
+		{
+			wait(0);
+		}
 	}
 }
 
@@ -107,6 +117,7 @@ void	prompt(t_mini *mini, char **env)
 	// set_signal();
 	while (1)
 	{
+		//restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
 		//eof_history(str);
 		if (!*str)
@@ -131,7 +142,7 @@ int	main(int ac, char **av, char **env)
 	mini.fd.out = dup(STDOUT);
 	mini.fd.fdout = -1;
 	while (env[i])
-		add_env(&mini.envs, env[i++]);
+		add_env(&mini.envs, ft_strdup(env[i++]));
 	init_shlvl(&mini.envs);
 	prompt(&mini, env);
 	return (0);
