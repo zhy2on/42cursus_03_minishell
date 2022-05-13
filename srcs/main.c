@@ -96,21 +96,18 @@ void	handle_args(t_lsts *lsts, char **env)
 		}
 		args = create_args(&lsts->tokens, &ptr);
 		i =0;
-		printf("Test args :");
-		while (args[i])
-		{
-			printf(" %s->",args[i]);
-			i++;
-		}
-		printf("null\n");
+		// printf("Test args :");
+		// while (args[i])
+		// {
+		// 	printf(" %s->",args[i]);
+		// 	i++;
+		// }
+		// printf("null\n");
 		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
 		{
-			// test_exec
-			// pre_exec(args, &lsts->envs, &lsts->tokens);
-			test_exec(args,&lsts->envs,&lsts->tokens);
-
+			pre_exec(args, &lsts->envs, &lsts->tokens);
 		}
 		free(args);
 	}
@@ -119,16 +116,20 @@ void	handle_args(t_lsts *lsts, char **env)
 void	prompt(t_lsts *lsts, char **env)
 {
 	char	*str;
-
+	
 	// set_signal();
 	while (1)
 	{	
-		int k = 0;
+		str = NULL;
 		set_signal();
 		str = readline("🐚minishell$ ");
+		// fprintf(stderr,"%s\n",str);
 		eof_history(str);
 		if (!*str)
+		{
+			free(str);
 			continue ;
+		}
 		lsts->tokens.first = NULL;
 		if (parsing_cmd(str, lsts) == ERROR)
 			continue ;
@@ -146,7 +147,7 @@ int	main(int ac, char **av, char **env)
 	i = 0;
 	lsts.envs.first = NULL;
 	while (env[i])
-		add_env(&lsts.envs, env[i++]);
+		add_env(&lsts.envs, ft_strdup(env[i++]));
 	init_shlvl(&lsts.envs);
 	prompt(&lsts, env);
 	return (0);

@@ -38,9 +38,9 @@ void    set_pipe(void)
     // fprintf(stderr,"set_pipe:------------\n");
     // connect_pipe(g_data.pip[0],STDIN_FILENO);
     // connect_pipe(g_data.pip[1],STDOUT_FILENO);
-    if (g_data.i != 1 && g_data.redir_in == 0)
+    if (g_data.i != 1)
         connect_pipe(g_data.pip[0],STDIN_FILENO);
-    if (g_data.i < g_data.ac && g_data.redir_out)
+    if (g_data.i < g_data.ac)
         connect_pipe(g_data.pip[1],STDOUT_FILENO);
     // if (g_data.redir_in != 0)
     // {
@@ -53,10 +53,11 @@ void    set_pipe(void)
     //     close(g_data.redir_out);
     // }
 }
-void t_exec_cmd(t_token *tokens, char **args, t_env *envs)
-{
-    exe_command(args,envs);
-}
+// void t_exec_cmd(t_token *tokens, char **args, t_env *envs)
+// {
+//     fprintf(stderr,"!!!!!!!!!!!!!!!!!!");
+//     exe_command(args,envs);
+// }
 static void cmd_child(t_token *token,char **args, t_env *envs)
 {
     t_token *tokens;
@@ -130,8 +131,8 @@ void    backup_execute(int *stdin, int *stdout)
 {
     g_data.pip[0][0] = g_data.pip[1][0];
     g_data.pip[0][1] = g_data.pip[1][1];
-    // fprintf(stderr, "g_state.pip[0][0] : %d\n", g_data.pip[0][0]);
-	// fprintf(stderr, "g_state.pip[0][1] : %d\n", g_data.pip[0][1]);
+    fprintf(stderr, "g_state.pip[0][0] : %d\n", g_data.pip[0][0]);
+	fprintf(stderr, "g_state.pip[0][1] : %d\n", g_data.pip[0][1]);
     dup2(*stdin, STDIN_FILENO);
     dup2(*stdout, STDOUT_FILENO);
     close(*stdin);
@@ -150,15 +151,15 @@ void    test_exec(char **args, t_env *envs, t_token *token)
     // fprintf(stderr,"test_exec str : %s, %d\n", tokens->str, tokens->type);
     while (tokens)
     {
-        // fprintf(stderr,"================\n");
         stdin = dup(STDIN_FILENO);
         stdout = dup(STDOUT_FILENO);
-        // fprintf(stderr,"stdin : %d \t stdout : %d\n",stdin,stdout);
-		// fprintf(stderr,"g_state.ad : %d\n", g_data.ac);
+        // fprintf(stderr,"================\n");
+        fprintf(stderr,"stdin : %d \t stdout : %d\n",stdin,stdout);
+		fprintf(stderr,"g_state.ad : %d\n", g_data.ac);
         if (g_data.ac > 1)
             pipe(g_data.pip[1]);
         excute_token(tokens,args, envs);
-        // fprintf(stderr,"toekns test : %s\n", tokens->str);
+        fprintf(stderr,"toekns test : %s\n", tokens->str);
         backup_execute(&stdin, &stdout);
         while (tokens->next && tokens->next->type != PIPE)
             tokens = tokens->next;

@@ -89,7 +89,8 @@ int	pipe_count(t_token *token)
 	int	cnt;
 	cnt = 0;
 	t_token *ptr;
-	ptr = token->first;
+	// ptr = token->first;
+	ptr = token;
 
 	while (ptr != NULL)
 	{
@@ -110,26 +111,30 @@ t_exe	*init_exe(t_token *tokens)
 		exit(EXIT_FAILURE);
 	// fprintf(stderr, "pipe_cnt test : %d\n",pipe_count(args));
 	exe->pip_cnt = pipe_count(tokens);
-	printf("pipe count : %d\n", exe->pip_cnt);
-	exe->redir_in = -1;
-	exe->redir_out = -1;
+	// printf("pipe count : %d\n", exe->pip_cnt);
+	// exe->redir_in = -1;
+	// exe->redir_out = -1;
 	exe->flag_b = 0;
-	exe->cmd_arg = NULL;
+	// exe->cmd_arg = NULL;
 	return (exe);
 }
 
 void find_cmd(char **args, char **env, char buff[], int buf_size );
 
-int		pre_exec(char **args, t_env *envs, t_token *lst)
+int		pre_exec(char **args, t_env *envs, t_token *tokens)
 {
 	t_exe *exe;
 	int i;
-
+	t_token *lst;
+	lst = tokens->first;
+	// fprintf(stderr,"sssssCheck lst : %s\n", lst->str);
 	exe = init_exe(lst);
 	i = 0;
 	while (lst != NULL)
 	{
-		run_command(&lst,exe,i, envs, args);
+		// fprintf(stderr,"Check lst : %s\n", lst->str);
+		run_command(&tokens,exe,i, envs, args);
+		// fprintf(stderr,"RR Test i : %d\t RR pip_cnt : %d\n",i,exe->pip_cnt );
 		i++;
 		exe->pip_cnt--;
 		while (lst != NULL)
@@ -182,6 +187,7 @@ void	exe_command(char **args, t_env *envs)
 	ft_memset(buf,0,4096);
 	convertenv = convert_env(envs);
 	find_excu(args[0], convertenv, buf, 4096);
+	// fprintf(stderr, "TEST buf : %s\n", buf);
 	// find_excu(exe->cmd_arg[0], convertenv, buf, 4096);
 	if (buf[0] == '\0')
 	{
@@ -190,6 +196,7 @@ void	exe_command(char **args, t_env *envs)
 	}
 	else
 	{
+		// ft_putendl_fd("-----------",1);
 		g_data.exit_status = 0;
 		execve(buf,args,convertenv);
 		// execve(buf,exe->cmd_arg,convertenv);
@@ -208,6 +215,7 @@ void	find_excu(char *command, char *envs[], char buffer[], int buf_size)
 	{
 		close(pipefd[0]);
 		argv[2] = command;
+		fprintf(stderr,"args : %s\n",command);
 		dup2(pipefd[1],STDOUT_FILENO);
 		close(pipefd[1]);
 		execve("/usr/bin/which",argv,envs);

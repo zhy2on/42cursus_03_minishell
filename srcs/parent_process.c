@@ -15,7 +15,7 @@
 void    parent_process(t_exe *exe, pid_t pid, int i)
 {
     int status;
-
+    // fprintf(stderr,"R Test i : %d\t R pip_cnt : %d\n",i,exe->pip_cnt );
     status = 0;
     if (i == 0 && exe->pip_cnt == 0)
     {
@@ -36,7 +36,7 @@ void    parent_process(t_exe *exe, pid_t pid, int i)
         close(exe->b[WRITE]);
     }
     // waitpid(pid, NULL, 0);
-    waitpid(pid,&status,0);
+    waitpid(pid,NULL,0);
     g_data.exit_status = status >> 8;
     if (status == 0)
         g_data.exit_status = status;

@@ -42,20 +42,23 @@ void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args)
     //     dup2(exe->b[STDOUT_FILENO],STDOUT_FILENO);
     //     close(exe->b[STDOUT_FILENO]);
     // }
-    if (i % 2 == 0 && exe->pip_cnt == 0)
-		connect_pipe(exe->b, STDIN_FILENO);
-	else if (i % 2 != 0 && exe->pip_cnt == 0)
-		connect_pipe(exe->a, STDIN_FILENO);
-	else if (i % 2 == 0 && exe->pip_cnt > 0)
-	{
-		if (exe->flag_b != 0)
-			connect_pipe(exe->b, STDIN_FILENO);
-		connect_pipe(exe->a, STDOUT_FILENO);
-	}
-	else if (i % 2 != 0 && exe->pip_cnt > 0)
-	{
-		connect_pipe(exe->a, STDIN_FILENO);
-		connect_pipe(exe->b, STDOUT_FILENO);
-	}
+    // fprintf(stderr,"Test i : %d\t pip_cnt : %d",i,exe->pip_cnt );
+    
+    
+    // if (i % 2 == 0 && exe->pip_cnt == 0)
+	// 	s_connect_pipe(exe->b, STDIN_FILENO);
+	// else if (i % 2 != 0 && exe->pip_cnt == 0)
+	// 	s_connect_pipe(exe->a, STDIN_FILENO);
+	// else if (i % 2 == 0 && exe->pip_cnt > 0)
+	// {
+	// 	if (exe->flag_b != 0)
+	// 		s_connect_pipe(exe->b, STDIN_FILENO);
+	// 	s_connect_pipe(exe->a, STDOUT_FILENO);
+	// }
+	// else if (i % 2 != 0 && exe->pip_cnt > 0)
+	// {
+	// 	s_connect_pipe(exe->a, STDIN_FILENO);
+	// 	s_connect_pipe(exe->b, STDOUT_FILENO);
+	// }
     child_process_helper(lst,exe, envs,args);
 }

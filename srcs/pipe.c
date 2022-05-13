@@ -12,11 +12,11 @@
 
 #include "../includes/minishell.h"
 //pipex.ver
-// void    connect_pipe(int fd[], int io)
-// {
-//     dup2(fd[io], io);
-//     close(fd[io]);
-// }
+void    s_connect_pipe(int fd[], int io)
+{
+    dup2(fd[io], io);
+    close(fd[io]);
+}
 
 void    close_pipe(int fd[])
 {
