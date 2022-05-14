@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 02:26:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:22:18 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,17 @@ t_token	*get_token_node(int type, char *str)
 	return (ret);
 }
 
-int	is_quot(char s)
-{
-	if (s == '\'' || s == '\"')
-		return (1);
-	return (0);
-}
-
 int	is_sep(char s)
 {
 	if (s == '<' || s == '>' || s == '|' || s == ' '
 		|| s == - '<' || s == - '>')
+		return (1);
+	return (0);
+}
+
+int	is_quot(char s)
+{
+	if (s == '\'' || s == '\"')
 		return (1);
 	return (0);
 }
@@ -57,14 +57,5 @@ int	join_putstr_fd(char *a, char *b, char *c, int fd)
 		ft_putstr_fd(b, fd);
 	if (c)
 		ft_putstr_fd(c, fd);
-	return (1);
-}
-
-int	next_has_pipe(t_token *token)
-{
-	while (token && token->type != PIPE)
-		token = token->next;
-	if (!token)
-		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 02:49:34 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:22:28 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,20 +121,4 @@ void	add_env(t_env *envs, char *name)
 		value = s + 1;
 	*s = '\0';
 	add_env_sub(envs, name, value);
-}
-
-void	env(t_env *envs)
-{
-	t_env	*ptr;
-
-	ptr = envs->first;
-	while (ptr)
-	{
-		if (ptr->value)
-		{
-			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
-			join_putstr_fd("\n", 0, 0, STDOUT);
-		}
-		ptr = ptr->next;
-	}
 }

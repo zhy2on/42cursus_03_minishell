@@ -6,11 +6,27 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 02:24:30 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:19:48 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	env(t_env *envs)
+{
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
+	{
+		if (ptr->value)
+		{
+			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
+		}
+		ptr = ptr->next;
+	}
+}
 
 void	unset(t_env *envs, char **args)
 {
@@ -25,8 +41,8 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				printf("minishell: unset: `%s': not a valid identifier\n",
-					*args);
+				join_putstr_fd("minishell: unset: `", *args,
+					"': not a valid identifier\n", STDERR);
 				break ;
 			}
 			s++;

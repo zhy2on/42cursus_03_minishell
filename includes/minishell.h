@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 02:13:50 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:21:16 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,21 +103,6 @@ typedef struct s_mini
 	t_fd	fd;
 	pid_t	pid;
 }				t_mini;
-//test
-typedef struct s_data
-{
-	//char			**env;
-	int				redir_in;
-	int				redir_out;
-	int				pip[2][2];
-	int				i;
-	int				ac;
-	int				fork;
-	int				exit;
-	int	exit_status;	
-}	t_data;
-
-t_data		g_data;
 
 /*
 *** builtin ***
@@ -137,28 +122,10 @@ void	cd_sub(t_env *envs, char **args);
 *** exec ***
 */
 void	exec(char **args, t_env *envs);
-int	pipe_count(t_token *token);
 t_exe	*init_exe(t_token *tokens);
-static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
-void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
 int		pre_exec(char **args, t_env *envs, int flag);
-void    parent_process(t_exe *exe, pid_t pid, int i);
-//
 void	exe_command(char **args, t_env *envs);
-void	find_excu(char *command, char *envs[], char buffer[], int buf_size);
-// test exec
-void    test_exec(char **args, t_env *envs, t_token *tokens);
-void    pre_execute(t_token *tokens);
-void    backup_execute(int *stdin, int *stdout);
-void    excute_token(t_token *tokens, char **args, t_env *envs);
-void    t_excute_cmd(t_token *tokens, char **args, t_env *envs);
-void 	t_exec_cmd(t_token *tokens, char **args, t_env *envs);
-void    set_pipe(void);
-void    connect_pipe(int fd[2], int io);
-// redirect
-int	redirect_in(char *file);
-int	redirect_out(char *file);
-int redirect_out_append(char *file);
+void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
 
 /*
 *** env ***
@@ -175,6 +142,8 @@ void	env(t_env *envs);
 void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
 char	*str_to_token(char *start, char *end, t_env *envs);
+void	create_tokens(char *str, char *quot, int i, t_mini *mini);
+
 
 /*
 *** tools **
@@ -185,6 +154,8 @@ int		is_quot(char s);
 int		is_sep(char s);
 int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		next_has_pipe(t_token *token);
+int		sep_check(char *str);
+char	*validate_key(char *key, char *cmd);
 
 /*
 *** parsing ***
@@ -202,8 +173,7 @@ int		dollar_check(char *str);
 *** signal ***
  */
 void	set_signal(void);
-void	reset_signal(void);
-void	init_shlvl(t_env *envs);
+void	ignore_signal(void);
 
 /*
 *** redirect ***
@@ -211,6 +181,12 @@ void	init_shlvl(t_env *envs);
 void	restore_inout(t_fd *fd);
 void	handle_redirect(t_token *token, t_fd *fd);
 
-void	ignore_signal(void);
+/*
+*** cmd ***
+*/
+char	**create_args(t_token *tokens, t_token *token);
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
+void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
+int		next_has_pipe(t_token *token);
 
 #endif
