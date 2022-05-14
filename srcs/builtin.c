@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 16:59:48 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 18:03:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	echo(char **args)
 			while (*args && *(args + 1))
 				join_putstr_fd(*args++, " ", 0, STDOUT);
 			if (*args)
-				join_putstr_fd(*args, "\n", 0, STDOUT);
+				join_putstr_fd(*args, 0, 0, STDOUT);
 			return ;
 		}
 	}
@@ -89,7 +89,7 @@ void	echo(char **args)
 	while (*args && *(args + 1))
 		join_putstr_fd(*args++, " ", 0, STDOUT);
 	if (*args)
-		join_putstr_fd(*args, 0, 0, STDOUT);
+		join_putstr_fd(*args, "\n", 0, STDOUT);
 }
 
 int	builtin(t_env *envs, char **args)

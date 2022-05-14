@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/13 21:53:16 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 21:56:31 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,9 @@ typedef struct s_lsts
 
 typedef struct s_fd
 {
-	int	in;
-	int	out;
-	int	fdin;
-	int	fdout;
+	int	sd[2];
+	int	fd[2];
+	int	pd[2];
 }				t_fd;
 
 typedef struct s_mini
@@ -142,7 +141,7 @@ int	pipe_count(t_token *token);
 t_exe	*init_exe(t_token *tokens);
 static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
 void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
-int		pre_exec(char **args, t_env *envs, t_token *lst);
+int		pre_exec(char **args, t_env *envs, int flag);
 void    parent_process(t_exe *exe, pid_t pid, int i);
 //
 void	exe_command(char **args, t_env *envs);
@@ -210,5 +209,7 @@ void	init_shlvl(t_env *envs);
 */
 void	restore_inout(t_fd *fd);
 void	handle_redirect(t_token *token, t_fd *fd);
+
+void	ignore_signal(void);
 
 #endif

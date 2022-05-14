@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 21:16:27 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 22:01:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,81 +118,58 @@ t_exe	*init_exe(t_token *tokens)
 	return (exe);
 }
 
-void find_cmd(char **args, char **env, char buff[], int buf_size );
+void	find_cmd(char **args, char **env, char buff[], int buf_size );
 
-int		pre_exec(char **args, t_env *envs, t_token *lst)
+int	pre_exec(char **args, t_env *envs, int flag)
 {
-	t_exe *exe;
-	int i;
-
-	exe = init_exe(lst);
-	i = 0;
-	while (lst != NULL)
+	if (!flag)
 	{
-		run_command(&lst,exe,i, envs, args);
-		i++;
-		exe->pip_cnt--;
-		while (lst != NULL)
+		if (!fork())
+			exe_command(args, envs);
+		else
 		{
-			if (lst->type == PIPE)
-				break ;
-			lst = lst->next;
+			ignore_signal();
+			wait(0);
+			set_signal();
 		}
-		if (lst == NULL)
-		{
-			free(exe);
-			exe = NULL;
-			break;
-		}
-		else if (lst->type == PIPE)
-			lst = lst->next;
 	}
+	else
+		exe_command(args, envs);
 	return (EXIT_SUCCESS);
-
 }
+
 static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args)
 {
 	pid_t	pid;
-	// pipe처리
-	if (exe->pip_cnt > 0)
-	{
-		if (i % 2 == 0)
-			pipe(exe->a);
-		else
-		{
-			exe->flag_b = 1;
-			pipe(exe->b);
-		}
-	}
-	reset_signal();
+
 	pid = fork();
 	if (pid < 0)
 		exit(EXIT_FAILURE);
 	else if (pid == 0)
-		child_process(*lst,exe,i,envs,args);
+		exe_command(args,envs);
 	else
 		parent_process(exe, pid, i);
 		// waitpid(pid, NULL, 0);
 }
+
 void	exe_command(char **args, t_env *envs)
 {
 	char	buf[4096];
-	char    **convertenv;
+	char	**convertenv;
 
-	ft_memset(buf,0,4096);
+	ft_memset(buf, 0, 4096);
 	convertenv = convert_env(envs);
 	find_excu(args[0], convertenv, buf, 4096);
-	// find_excu(exe->cmd_arg[0], convertenv, buf, 4096);
 	if (buf[0] == '\0')
 	{
-		fprintf(stderr,"command not found\n");
+		fprintf(stderr, "command not found\n");
 		g_data.exit_status = 127;
+		exit(0);
 	}
 	else
 	{
 		g_data.exit_status = 0;
-		execve(buf,args,convertenv);
-		// execve(buf,exe->cmd_arg,convertenv);
+		execve(buf, args, convertenv);
 	}
 }
 void	find_excu(char *command, char *envs[], char buffer[], int buf_size)

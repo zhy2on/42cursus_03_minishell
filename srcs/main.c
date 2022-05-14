@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/13 21:53:23 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 22:01:13 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,16 @@ void	eof_history(char *str)
 {
 	if (str == NULL)
 	{
-		// ft_putstr_fd("\033[1A",2);
-		// ft_putstr_fd("\033[6C",2);
-		ft_putstr_fd("\033[15D",1);
-		ft_putstr_fd("🐚minishell$ ",1);
-		ft_putstr_fd("exit\n",2);
+		ft_putstr_fd("\033[1A", 1);
+		ft_putstr_fd("🐚minishell$ ", 1);
+		ft_putstr_fd("exit\n", 2);
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
 		if (ft_strcmp(str, "exit") == 0)
 		{
-			ft_putendl_fd("exit",2);
+			ft_putendl_fd("exit", 2);
 			free(str);
 			exit(EXIT_SUCCESS);
 		}
@@ -82,46 +80,81 @@ void	eof_history(char *str)
 	}
 }
 
+int	next_has_pipe(t_token *token)
+{
+	while (token && token->type != PIPE)
+		token = token->next;
+	if (!token)
+		return (0);
+	return (1);
+}
+
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
+{
+	handle_redirect(cmd, &mini->fd);
+	if (builtin(&mini->envs, args) != SUCCESS)
+		pre_exec(args, &mini->envs, flag);
+	free(args);
+	return ;
+}
+
 void	handle_tokens(t_mini *mini, char **env)
 {
-	t_token	*token;
+	t_token	*cmd;
 	t_token	*ptr;
 	char	**args;
-	t_fd	fd;
 
 	ptr = mini->tokens.first;
+	if (!next_has_pipe(ptr))
+	{
+		cmd = ptr;
+		args = create_args(&mini->tokens, &ptr);
+		run_cmd(mini, cmd, args, 0);
+		return ;
+	}
 	while (ptr)
 	{
-		token = ptr;
+		if (ptr->type == PIPE)
+		{
+			ptr = ptr->next;
+			continue ;
+		}
+		cmd = ptr;
 		args = create_args(&mini->tokens, &ptr);
+		pipe(mini->fd.pd);
 		mini->pid = fork();
 		if (mini->pid == 0)
 		{
-			handle_redirect(token, &fd);
-			if (builtin(&mini->envs, args) != SUCCESS)
-				test_exec(args, &mini->envs, &mini->tokens);
-			free(args);
+			if (next_has_pipe(cmd))
+				dup2(mini->fd.pd[1], 1);
+			run_cmd(mini, cmd, args, 1);
 			exit(0);
 		}
 		else
 		{
-			wait(0);
+			dup2(mini->fd.pd[0], 0);
+			close(mini->fd.pd[1]);
 		}
 	}
+	while (waitpid(-1, 0, 0) > 0)
+		;
 }
 
 void	prompt(t_mini *mini, char **env)
 {
 	char	*str;
 
-	// set_signal();
 	while (1)
 	{
-		//restore_inout(&mini->fd);
+		set_signal();
+		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		//eof_history(str);
+		eof_history(str);
 		if (!*str)
+		{
+			free(str);
 			continue ;
+		}
 		mini->tokens.first = NULL;
 		if (parsing_cmd(str, mini) == ERROR)
 			continue ;
@@ -138,9 +171,8 @@ int	main(int ac, char **av, char **env)
 
 	i = 0;
 	mini.envs.first = NULL;
-	mini.fd.in = dup(STDIN);
-	mini.fd.out = dup(STDOUT);
-	mini.fd.fdout = -1;
+	mini.fd.sd[0] = dup(STDIN);
+	mini.fd.sd[1] = dup(STDOUT);
 	while (env[i])
 		add_env(&mini.envs, ft_strdup(env[i++]));
 	init_shlvl(&mini.envs);
