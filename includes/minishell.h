@@ -72,37 +72,31 @@ typedef struct s_exe
 	int	a[2];
 	int b[2];
 	int pip_cnt;
-	int redir_in;
-	int redir_out;
-	char **cmd_arg;
+	// int redir_in;
+	// int redir_out;
+	// char **cmd_arg;
 	int	flag_b;
-	int	heredoc_fd[2];
-	char *heredoc_buf;
-	pid_t	heredoc_pid;
-	int	heredoc_status;
+	// int	heredoc_fd[2];
+	// char *heredoc_buf;
+	// pid_t	heredoc_pid;
+	// int	heredoc_status;
 }	t_exe;
 
 typedef struct s_lsts
 {
 	t_env	envs;
 	t_token	tokens;
+	t_env	exps;
 }				t_lsts;
 
-//test
 typedef struct s_data
 {
-	//char			**env;
-	int				redir_in;
-	int				redir_out;
-	int				pip[2][2];
-	int				i;
-	int				ac;
-	int				fork;
+	unsigned char	exit_status;
 	int				exit;
-	int	exit_status;	
 }	t_data;
 
 t_data		g_data;
+
 
 /*
 *** builtin ***
@@ -126,7 +120,7 @@ int	pipe_count(t_token *token);
 t_exe	*init_exe(t_token *tokens);
 static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
 void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
-int		pre_exec(char **args, t_env *envs, t_token *lst);
+int		pre_exec(char **args, t_env *envs, t_token *tokens);
 void    parent_process(t_exe *exe, pid_t pid, int i);
 //
 void	exe_command(char **args, t_env *envs);
@@ -140,6 +134,7 @@ void    t_excute_cmd(t_token *tokens, char **args, t_env *envs);
 void 	t_exec_cmd(t_token *tokens, char **args, t_env *envs);
 void    set_pipe(void);
 void    connect_pipe(int fd[2], int io);
+void    s_connect_pipe(int fd[], int io);
 // redirect
 int	redirect_in(char *file);
 int	redirect_out(char *file);
@@ -153,7 +148,7 @@ void	remove_env(t_env *envs, char *key);
 t_env	*search_env(t_env *envs, char *key);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
-
+void	t_add_env(t_env *envs, char *name);
 /*
 *** token ***
 */

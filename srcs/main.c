@@ -147,7 +147,7 @@ int	main(int ac, char **av, char **env)
 	i = 0;
 	lsts.envs.first = NULL;
 	while (env[i])
-		add_env(&lsts.envs, ft_strdup(env[i++]));
+		add_env(&lsts.envs, env[i++]);
 	init_shlvl(&lsts.envs);
 	prompt(&lsts, env);
 	return (0);

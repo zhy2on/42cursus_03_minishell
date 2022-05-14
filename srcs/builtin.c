@@ -81,19 +81,19 @@ t_env	*sort_env_list(t_env *temp)
 	return (temp);
 }
 
-t_env	*new_copy_env_list(t_env *envs)
-{
-	t_env	*ret;
+// t_env	*new_copy_env_list(t_env *envs)
+// {
+// 	t_env	*ret;
 
-	envs = envs->first;
-	ret->fir
-	while (envs)
-	{
-		ret = get_env_node(ft_strdup(envs->key), ft_strdup(envs->value));
-		envs = envs->next;
-	}
-	return (ret);
-}
+// 	envs = envs->first;
+// 	ret->fir
+// 	while (envs)
+// 	{
+// 		ret = get_env_node(ft_strdup(envs->key), ft_strdup(envs->value));
+// 		envs = envs->next;
+// 	}
+// 	return (ret);
+// }
 
 t_env	*copy_env_list(t_env *envs)
 {
@@ -120,7 +120,7 @@ t_env	*copy_env_list(t_env *envs)
 			joinstr = ft_strjoin(ptr->key,"=");
 			joinstr = ft_strjoin(joinstr,ptr->value);
 			// fprintf(stderr,"join TEST: %s\n",joinstr);
-			t_add_env(temp,ft_strdup(joinstr));
+			add_env(temp,joinstr);
 		}
 		ptr = ptr->next;
 			// fprintf(stderr,"temp TEST: %s=%s\n",temp->first->key,temp->first->value);
@@ -146,9 +146,11 @@ void	export(t_env *envs, char **args)
 
 	//ptr = copy_env_list(envs);
 	// ptr = NULL;
+	// ptr = envs->first;
 	if (!args[1])
 	{
-		ptr = sort_env_list(*envs)->first;
+		ptr = copy_env_list(envs)->first;
+		// ptr = envs->first;
 		while (ptr)
 		{
 			printf("declare -x %s", ptr->key);
