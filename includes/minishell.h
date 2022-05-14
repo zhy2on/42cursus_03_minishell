@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:21:16 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:43:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,27 +68,6 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
-typedef struct s_exe
-{
-	int	a[2];
-	int b[2];
-	int pip_cnt;
-	int redir_in;
-	int redir_out;
-	char **cmd_arg;
-	int	flag_b;
-	int	heredoc_fd[2];
-	char *heredoc_buf;
-	pid_t	heredoc_pid;
-	int	heredoc_status;
-}	t_exe;
-
-typedef struct s_lsts
-{
-	t_env	envs;
-	t_token	tokens;
-}				t_lsts;
-
 typedef struct s_fd
 {
 	int	sd[2];
@@ -122,7 +101,6 @@ void	cd_sub(t_env *envs, char **args);
 *** exec ***
 */
 void	exec(char **args, t_env *envs);
-t_exe	*init_exe(t_token *tokens);
 int		pre_exec(char **args, t_env *envs, int flag);
 void	exe_command(char **args, t_env *envs);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
@@ -179,7 +157,7 @@ void	ignore_signal(void);
 *** redirect ***
 */
 void	restore_inout(t_fd *fd);
-void	handle_redirect(t_token *token, t_fd *fd);
+int		handle_redirect(t_token *token, t_fd *fd);
 
 /*
 *** cmd ***

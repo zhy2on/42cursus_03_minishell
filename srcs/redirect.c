@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 20:36:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 05:01:58 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,36 +18,51 @@ void	restore_inout(t_fd *fd)
 	dup2(fd->sd[1], STDOUT);
 }
 
-void	change_inout(t_token *token, t_fd *fd)
+int	change_inout_sub(t_token *token, t_fd *fd)
 {
-	if (fd->fd[1] > 0)
-		close(fd->fd[1]);
-	if (fd->fd[0] > 0)
-		close(fd->fd[0]);
-	if (!token->next)
-		return ;
-	if (token->type == REDIROUT)
-		fd->fd[1] = open(token->next->str,
-				O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
-	else if (token->type == APPEND)
-		fd->fd[1] = open(token->next->str,
-				O_CREAT | O_WRONLY | O_APPEND, S_IRWXU);
-	else if (token->type == REDIRIN)
-		fd->fd[0] = open(token->next->str, O_RDONLY, S_IRWXU);
-	if (fd->fd[1] == -1)
+	if (fd->fd[1] == -1 || fd->fd[0] == -1)
 	{
-		printf("No such file 어쩌구\n");
-		return ;
+		join_putstr_fd("minishell: ", token->next->str,
+			": No such file or directory\n", STDERR);
+		return (ERROR);
 	}
 	dup2(fd->fd[1], STDOUT);
+	dup2(fd->fd[0], STDIN);
+	return (SUCCESS);
 }
 
-void	handle_redirect(t_token *token, t_fd *fd)
+int	change_inout(t_token *token, t_fd *fd)
+{
+	if (!token->next)
+		return (SUCCESS);
+	if (token->type == REDIROUT)
+	{
+		close(fd->fd[1]);
+		fd->fd[1] = open(token->next->str,
+				O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+	}
+	else if (token->type == APPEND)
+	{
+		close(fd->fd[1]);
+		fd->fd[1] = open(token->next->str,
+				O_CREAT | O_WRONLY | O_APPEND, S_IRWXU);
+	}
+	else if (token->type == REDIRIN)
+	{
+		close(fd->fd[0]);
+		fd->fd[0] = open(token->next->str, O_RDONLY, S_IRWXU);
+	}
+	return (change_inout_sub(token, fd));
+}
+
+int	handle_redirect(t_token *token, t_fd *fd)
 {
 	while (token && token->type != PIPE)
 	{
 		if (token->type > DIR && token->type < PIPE)
-			change_inout(token, fd);
+			if (change_inout(token, fd) == ERROR)
+				return (ERROR);
 		token = token->next;
 	}
+	return (SUCCESS);
 }

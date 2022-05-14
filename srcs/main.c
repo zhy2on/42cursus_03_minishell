@@ -6,11 +6,30 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:21:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:31:39 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	parsing_cmd(char *str, t_mini *mini)
+{
+	int		i;
+	char	quot;
+	t_token	*tmp;
+
+	i = 0;
+	quot = '\0';
+	if (parsing_line(str, mini) == ERROR)
+		return (ERROR);
+	tmp = mini->tokens.first;
+	while (tmp)
+	{
+		printf("%d %s\n", tmp->type, tmp->str);
+		tmp = tmp->next;
+	}
+	return (SUCCESS);
+}
 
 void	prompt(t_mini *mini)
 {
@@ -22,7 +41,7 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		if (parsing_line(str, mini) == SUCCESS)
+		if (parsing_cmd(str, mini) == SUCCESS)
 		{
 			add_history(str);
 			cmd = mini->tokens.first;
