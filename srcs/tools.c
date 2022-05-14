@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 01:08:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 02:26:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,14 @@ int	join_putstr_fd(char *a, char *b, char *c, int fd)
 		ft_putstr_fd(b, fd);
 	if (c)
 		ft_putstr_fd(c, fd);
+	return (1);
+}
+
+int	next_has_pipe(t_token *token)
+{
+	while (token && token->type != PIPE)
+		token = token->next;
+	if (!token)
+		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 01:49:56 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 02:22:29 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,12 @@ int	parsing_line(char *str, t_mini *mini)
 	int		i;
 	char	quot;
 
+	if (!str)
+	{
+		ft_putstr_fd("\033[1A🐚minishell$ ", 1);
+		ft_putstr_fd("exit\n", 2);
+		exit(EXIT_SUCCESS);
+	}
 	i = 0;
 	quot = '\0';
 	trim_space(str, &quot, i);

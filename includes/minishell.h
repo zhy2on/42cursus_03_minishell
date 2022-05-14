@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 21:56:31 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 02:13:50 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,7 @@ t_token	*get_token_node(int type, char *str);
 int		is_quot(char s);
 int		is_sep(char s);
 int		join_putstr_fd(char *a, char *b, char *c, int fd);
+int		next_has_pipe(t_token *token);
 
 /*
 *** parsing ***

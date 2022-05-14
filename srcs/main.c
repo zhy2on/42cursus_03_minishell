@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 02:11:25 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 02:19:52 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,28 +46,6 @@ char	**create_args(t_token *tokens, t_token *token)
 	}
 	ret[i] = NULL;
 	return (ret);
-}
-
-void	eof_history(char *str)
-{
-	if (!str)
-	{
-		ft_putstr_fd("\033[1A", 1);
-		ft_putstr_fd("🐚minishell$ ", 1);
-		ft_putstr_fd("exit\n", 2);
-		exit(EXIT_SUCCESS);
-	}
-	else
-		add_history(str);
-}
-
-int	next_has_pipe(t_token *token)
-{
-	while (token && token->type != PIPE)
-		token = token->next;
-	if (!token)
-		return (0);
-	return (1);
 }
 
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
@@ -115,9 +93,9 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		eof_history(str);
 		if (parsing_line(str, mini) == SUCCESS)
 		{
+			add_history(str);
 			cmd = mini->tokens.first;
 			if (!next_has_pipe(cmd))
 				run_cmd(mini, cmd, create_args(&mini->tokens, cmd), 0);
