@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 01:47:28 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 02:11:25 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,6 @@ char	**create_args(t_token *tokens, t_token *token)
 	return (ret);
 }
 
-int	parsing_cmd(char *str, t_mini *mini)
-{
-	int		i;
-	char	quot;
-	t_token	*tmp;
-
-	i = 0;
-	quot = '\0';
-	if (parsing_line(str, mini) == ERROR)
-		return (ERROR);
-	tmp = mini->tokens.first;
-	while (tmp)
-	{
-		printf("%d %s\n", tmp->type, tmp->str);
-		tmp = tmp->next;
-	}
-	return (SUCCESS);
-}
-
 void	eof_history(char *str)
 {
 	if (!str)
@@ -95,21 +76,12 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 	if (builtin(&mini->envs, args) != SUCCESS)
 		pre_exec(args, &mini->envs, flag);
 	free(args);
-	return ;
 }
 
-void	handle_tokens(t_mini *mini)
+void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
-	t_token	*cmd;
 	char	**args;
 
-	cmd = mini->tokens.first;
-	if (!next_has_pipe(cmd))
-	{
-		args = create_args(&mini->tokens, cmd);
-		run_cmd(mini, cmd, args, 0);
-		return ;
-	}
 	while (cmd)
 	{
 		args = create_args(&mini->tokens, cmd);
@@ -136,24 +108,23 @@ void	handle_tokens(t_mini *mini)
 void	prompt(t_mini *mini)
 {
 	char	*str;
-	int		i;
-	char	quot;
+	t_token	*cmd;
 
-	i = 0;
-	quot = '\0';
 	while (1)
 	{
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
 		eof_history(str);
-		if (parsing_line(str, mini) == ERROR)
+		if (parsing_line(str, mini) == SUCCESS)
 		{
-			free(str);
-			continue ;
+			cmd = mini->tokens.first;
+			if (!next_has_pipe(cmd))
+				run_cmd(mini, cmd, create_args(&mini->tokens, cmd), 0);
+			else
+				run_cmd_with_pipe(mini, cmd);
+			free_token(&mini->tokens);
 		}
-		handle_tokens(mini);
-		free_token(&mini->tokens);
 		free(str);
 	}
 }
