@@ -6,20 +6,29 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 01:19:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 01:47:28 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	**create_args(t_token *tokens, t_token **pptr)
+t_token	*next_cmd(t_token *ptr)
+{
+	while (ptr && ptr->type != PIPE)
+		ptr = ptr->next;
+	if (ptr)
+		ptr = ptr->next;
+	return (ptr);
+}
+
+char	**create_args(t_token *tokens, t_token *token)
 {
 	int		i;
 	char	**ret;
 	t_token	*ptr;
 
 	i = 0;
-	ptr = *pptr;
+	ptr = token;
 	while (ptr && ptr->type != PIPE)
 	{
 		if (ptr->type <= ARG)
@@ -28,7 +37,7 @@ char	**create_args(t_token *tokens, t_token **pptr)
 	}
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
-	ptr = *pptr;
+	ptr = token;
 	while (ptr && ptr->type != PIPE)
 	{
 		if (ptr->type <= ARG)
@@ -36,7 +45,6 @@ char	**create_args(t_token *tokens, t_token **pptr)
 		ptr = ptr->next;
 	}
 	ret[i] = NULL;
-	*pptr = ptr;
 	return (ret);
 }
 
@@ -93,26 +101,18 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 void	handle_tokens(t_mini *mini)
 {
 	t_token	*cmd;
-	t_token	*ptr;
 	char	**args;
 
-	ptr = mini->tokens.first;
-	if (!next_has_pipe(ptr))
+	cmd = mini->tokens.first;
+	if (!next_has_pipe(cmd))
 	{
-		cmd = ptr;
-		args = create_args(&mini->tokens, &ptr);
+		args = create_args(&mini->tokens, cmd);
 		run_cmd(mini, cmd, args, 0);
 		return ;
 	}
-	while (ptr)
+	while (cmd)
 	{
-		if (ptr->type == PIPE)
-		{
-			ptr = ptr->next;
-			continue ;
-		}
-		cmd = ptr;
-		args = create_args(&mini->tokens, &ptr);
+		args = create_args(&mini->tokens, cmd);
 		pipe(mini->fd.pd);
 		mini->pid = fork();
 		if (mini->pid == 0)
@@ -127,6 +127,7 @@ void	handle_tokens(t_mini *mini)
 			dup2(mini->fd.pd[0], 0);
 			close(mini->fd.pd[1]);
 		}
+		cmd = next_cmd(cmd);
 	}
 	while (waitpid(-1, 0, 0) > 0)
 		;
@@ -135,14 +136,18 @@ void	handle_tokens(t_mini *mini)
 void	prompt(t_mini *mini)
 {
 	char	*str;
+	int		i;
+	char	quot;
 
+	i = 0;
+	quot = '\0';
 	while (1)
 	{
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
 		eof_history(str);
-		if (parsing_cmd(str, mini) == ERROR)
+		if (parsing_line(str, mini) == ERROR)
 		{
 			free(str);
 			continue ;
