@@ -11,17 +11,15 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-//pipex.ver
-void    s_connect_pipe(int fd[], int io)
+
+void	s_connect_pipe(int fd[], int io)
 {
-    dup2(fd[io], io);
-    close(fd[io]);
+	dup2(fd[io], io);
+	close(fd[io]);
 }
 
-void    close_pipe(int fd[])
+void	close_pipe(int fd[])
 {
-    close(fd[READ]);
-    close(fd[WRITE]);
+	close(fd[READ]);
+	close(fd[WRITE]);
 }
-
-// int pipe_count_list(t_)

@@ -12,12 +12,12 @@
 
 #include "../includes/minishell.h"
 
-void    init_shlvl(t_env *envs)
+void	init_shlvl(t_env *envs)
 {
-    t_env *shlvl_lst;
-    int     i;
+	t_env	*shlvl_lst;
+	int		i;
 
-   shlvl_lst = search_env(envs, "SHLVL");
-   i = ft_atoi(shlvl_lst->value);
-   shlvl_lst->value = ft_itoa(i + 1);
+	shlvl_lst = search_env(envs, "SHLVL");
+	i = ft_atoi(shlvl_lst->value);
+	shlvl_lst->value = ft_itoa(i + 1);
 }

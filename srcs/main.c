@@ -61,8 +61,6 @@ void	eof_history(char *str)
 {
 	if (str == NULL)
 	{
-		// ft_putstr_fd("\033[1A",2);
-		// ft_putstr_fd("\033[6C",2);
 		ft_putstr_fd("\033[15D",1);
 		ft_putstr_fd("🐚minishell$ ",1);
 		ft_putstr_fd("exit\n",2);
@@ -84,7 +82,6 @@ void	handle_args(t_lsts *lsts, char **env)
 {
 	t_token	*ptr;
 	char	**args;
-	int i =0;
 
 	ptr = lsts->tokens.first;
 	while (ptr)
@@ -95,14 +92,6 @@ void	handle_args(t_lsts *lsts, char **env)
 			continue ;
 		}
 		args = create_args(&lsts->tokens, &ptr);
-		i =0;
-		// printf("Test args :");
-		// while (args[i])
-		// {
-		// 	printf(" %s->",args[i]);
-		// 	i++;
-		// }
-		// printf("null\n");
 		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
@@ -117,13 +106,11 @@ void	prompt(t_lsts *lsts, char **env)
 {
 	char	*str;
 	
-	// set_signal();
 	while (1)
 	{	
 		str = NULL;
 		set_signal();
 		str = readline("🐚minishell$ ");
-		// fprintf(stderr,"%s\n",str);
 		eof_history(str);
 		if (!*str)
 		{
