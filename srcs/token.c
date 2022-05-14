@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 22:01:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 01:17:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ void	free_token(t_token *tokens)
 	t_token	*ptr;
 
 	ptr = tokens->first;
+	if (!ptr)
+		return ;
 	while (ptr)
 	{
 		prev = ptr;
 		ptr = ptr->next;
-		free(prev->str);
 		free(prev);
 	}
+	tokens->first = NULL;
 }
 
 void	set_token_type(t_token *tokens, t_token *token, int is_sep)

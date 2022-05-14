@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 22:01:13 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 01:19:55 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	parsing_cmd(char *str, t_mini *mini)
 
 void	eof_history(char *str)
 {
-	if (str == NULL)
+	if (!str)
 	{
 		ft_putstr_fd("\033[1A", 1);
 		ft_putstr_fd("🐚minishell$ ", 1);
@@ -69,15 +69,7 @@ void	eof_history(char *str)
 		exit(EXIT_SUCCESS);
 	}
 	else
-	{
-		if (ft_strcmp(str, "exit") == 0)
-		{
-			ft_putendl_fd("exit", 2);
-			free(str);
-			exit(EXIT_SUCCESS);
-		}
 		add_history(str);
-	}
 }
 
 int	next_has_pipe(t_token *token)
@@ -98,7 +90,7 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 	return ;
 }
 
-void	handle_tokens(t_mini *mini, char **env)
+void	handle_tokens(t_mini *mini)
 {
 	t_token	*cmd;
 	t_token	*ptr;
@@ -140,7 +132,7 @@ void	handle_tokens(t_mini *mini, char **env)
 		;
 }
 
-void	prompt(t_mini *mini, char **env)
+void	prompt(t_mini *mini)
 {
 	char	*str;
 
@@ -150,15 +142,12 @@ void	prompt(t_mini *mini, char **env)
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
 		eof_history(str);
-		if (!*str)
+		if (parsing_cmd(str, mini) == ERROR)
 		{
 			free(str);
 			continue ;
 		}
-		mini->tokens.first = NULL;
-		if (parsing_cmd(str, mini) == ERROR)
-			continue ;
-		handle_tokens(mini, env);
+		handle_tokens(mini);
 		free_token(&mini->tokens);
 		free(str);
 	}
@@ -167,15 +156,14 @@ void	prompt(t_mini *mini, char **env)
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
-	int		i;
 
-	i = 0;
 	mini.envs.first = NULL;
+	mini.tokens.first = NULL;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
-	while (env[i])
-		add_env(&mini.envs, ft_strdup(env[i++]));
+	while (*env)
+		add_env(&mini.envs, ft_strdup(*env++));
 	init_shlvl(&mini.envs);
-	prompt(&mini, env);
+	prompt(&mini);
 	return (0);
 }
