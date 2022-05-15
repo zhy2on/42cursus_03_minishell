@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 17:04:29 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 14:42:08 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@ char	*validate_key(char *key, char *cmd)
 	}
 	if (!ft_strcmp(cmd, "unset") && *s)
 	{
-		printf("minishell: unset: `%s': not a valid identifier\n", key);
+		join_putstr_fd("minishell: unset: `", key,
+			"': not a valid identifier\n", STDERR);
 		return (NULL);
 	}
 	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
 	{
-		printf("minishell: export: `%s': not a valid identifier\n", key);
+		join_putstr_fd("minishell: export: `", key,
+			"': not a valid identifier\n", STDERR);
 		return (NULL);
 	}
 	return (s);
@@ -38,31 +40,30 @@ char	*validate_key(char *key, char *cmd)
 
 void	remove_env(t_env *envs, char *key)
 {
+	t_env	*prev;
 	t_env	*ptr;
-	t_env	*tmp;
 
 	if (!envs->first || !validate_key(key, "unset"))
 		return ;
-	if (!ft_strcmp(envs->first->key, key))
+	prev = envs->first;
+	ptr = envs->first->next;
+	while (ptr)
 	{
-		tmp = envs->first;
-		envs->first = envs->first->next;
-		free(envs->first->key);
-		free(tmp);
-		return ;
-	}
-	ptr = envs->first;
-	while (ptr->next)
-	{
-		if (!ft_strcmp(ptr->next->key, key))
+		if (!ft_strcmp(ptr->key, key))
 		{
-			tmp = ptr->next;
-			ptr->next = ptr->next->next;
+			prev->next = ptr->next;
 			free(ptr->key);
-			free(tmp);
+			free(ptr);
 			return ;
 		}
+		prev = ptr;
 		ptr = ptr->next;
+	}
+	if (!ft_strcmp(prev->key, key))
+	{
+		free(prev->key);
+		free(prev);
+		envs->first = NULL;
 	}
 }
 
@@ -80,49 +81,45 @@ t_env	*search_env(t_env *envs, char *key)
 	return (NULL);
 }
 
-void	add_env(t_env *envs, char *name)
+void	add_env_sub(t_env *envs, char *key, char *value)
 {
-	char	*s;
-	char	*value;
 	t_env	*ptr;
 	char	**split;
 
-	s = validate_key(name, "export");
-	if (!s)
-		return ;
-	value = NULL;
-	split = ft_split(name, '=');
-	if (*s == '=')
-		value = split[1];
-	*s = '\0';
 	ptr = envs->first;
 	if (!ptr)
 	{
-		envs->first = get_env_node(name, value);
+		envs->first = get_env_node(key, value);
 		return ;
 	}
-	while (ptr && ft_strcmp(name, ptr->key))
+	while (ptr && ft_strcmp(key, ptr->key))
 	{
 		if (!ptr->next)
 		{
-			ptr->next = get_env_node(name, value);
+			ptr->next = get_env_node(key, value);
 			return ;
 		}
 		ptr = ptr->next;
 	}
 	if (ptr && value)
-		ptr->value = ft_strdup(value);
+	{
+		free(ptr->key);
+		ptr->key = key;
+		ptr->value = value;
+	}
 }
 
-void	env(t_env *envs)
+void	add_env(t_env *envs, char *name)
 {
-	t_env	*ptr;
+	char	*s;
+	char	*value;
 
-	ptr = envs->first;
-	while (ptr)
-	{
-		if (ptr->value)
-			printf("%s=%s\n", ptr->key, ptr->value);
-		ptr = ptr->next;
-	}
+	s = validate_key(name, "export");
+	if (!s)
+		return ;
+	value = NULL;
+	if (*s == '=')
+		value = s + 1;
+	*s = '\0';
+	add_env_sub(envs, name, value);
 }

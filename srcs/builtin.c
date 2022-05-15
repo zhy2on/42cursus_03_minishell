@@ -6,11 +6,27 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/14 18:28:04 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/15 14:39:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	env(t_env *envs)
+{
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
+	{
+		if (ptr->value)
+		{
+			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
+		}
+		ptr = ptr->next;
+	}
+}
 
 void	unset(t_env *envs, char **args)
 {
@@ -25,8 +41,8 @@ void	unset(t_env *envs, char **args)
 		{
 			if (!ft_isalnum(*s))
 			{
-				printf("minishell: unset: `%s': not a valid identifier\n",
-					*args);
+				join_putstr_fd("minishell: unset: `", *args,
+					"': not a valid identifier\n", STDERR);
 				break ;
 			}
 			s++;
@@ -99,10 +115,10 @@ void	export(t_env *envs, char **args)
 		ptr = copy_env_list(envs)->first;
 		while (ptr)
 		{
-			printf("declare -x %s", ptr->key);
+			join_putstr_fd("declare -x ", ptr->key, 0, STDOUT);
 			if (ptr->value)
-				printf("=\"%s\"", ptr->value);
-			printf("\n");
+				join_putstr_fd("=\"", ptr->value, "\"", STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
 			ptr = ptr->next;
 		}
 	}
@@ -121,7 +137,7 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1] && printf("\n"))
+	if (!args[1] && join_putstr_fd("\n", 0, 0, STDOUT))
 		return ;
 	ptr = args[1];
 	if (*ptr == '-')
@@ -132,17 +148,17 @@ void	echo(char **args)
 		{
 			args += 2;
 			while (*args && *(args + 1))
-				printf("%s ", *args++);
+				join_putstr_fd(*args++, " ", 0, STDOUT);
 			if (*args)
-				printf("%s", *args);
+				join_putstr_fd(*args, 0, 0, STDOUT);
 			return ;
 		}
 	}
 	args += 1;
 	while (*args && *(args + 1))
-		printf("%s ", *args++);
+		join_putstr_fd(*args++, " ", 0, STDOUT);
 	if (*args)
-		printf("%s\n", *args);
+		join_putstr_fd(*args, "\n", 0, STDOUT);
 }
 
 int	builtin(t_env *envs, char **args)
@@ -153,7 +169,7 @@ int	builtin(t_env *envs, char **args)
 	if (!args[0])
 		return (SUCCESS);
 	if (!ft_strcmp(args[0], "pwd"))
-		printf("%s\n", getcwd(cwd, PATH_MAX));
+		join_putstr_fd(getcwd(cwd, PATH_MAX), 0, 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
@@ -164,6 +180,8 @@ int	builtin(t_env *envs, char **args)
 		export(envs, args);
 	else if (!ft_strcmp(args[0], "unset"))
 		unset(envs, args);
+	else if (!ft_strcmp(args[0], "exit"))
+		exit(0);
 	else
 		return (ERROR);
 	return (SUCCESS);

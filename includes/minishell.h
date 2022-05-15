@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 21:11:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 14:39:47 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <limits.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
@@ -28,14 +29,14 @@
 
 enum e_token_type
 {
-	EMPTY = 0,
-	CMD = 1,
-	ARG = 2,
+	CMD = 0,
+	ARG = 1,
+	DIR = 2,
 	REDIROUT = 3,
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7,
+	PIPE = 7
 } ;
 
 enum e_std_type
@@ -67,35 +68,20 @@ typedef struct s_token
 	struct s_token	*next;
 }				t_token;
 
-typedef struct s_exe
+typedef struct s_fd
 {
-	int	a[2];
-	int b[2];
-	int pip_cnt;
-	// int redir_in;
-	// int redir_out;
-	// char **cmd_arg;
-	int	flag_b;
-	// int	heredoc_fd[2];
-	// char *heredoc_buf;
-	// pid_t	heredoc_pid;
-	// int	heredoc_status;
-}	t_exe;
+	int	sd[2];
+	int	fd[2];
+	int	pd[2];
+}				t_fd;
 
-typedef struct s_lsts
+typedef struct s_mini
 {
 	t_env	envs;
 	t_token	tokens;
-	t_env	exps;
-}				t_lsts;
-
-typedef struct s_data
-{
-	unsigned char	exit_status;
-	int				exit;
-}	t_data;
-
-t_data		g_data;
+	t_fd	fd;
+	pid_t	pid;
+}				t_mini;
 
 
 /*
@@ -116,29 +102,9 @@ void	cd_sub(t_env *envs, char **args);
 *** exec ***
 */
 void	exec(char **args, t_env *envs);
-int	pipe_count(t_token *token);
-t_exe	*init_exe(t_token *tokens);
-static	void	run_command(t_token **lst, t_exe *exe,  int i, t_env *envs, char **args);
-void    child_process(t_token *lst, t_exe *exe , int i,t_env *envs,char **args);
-int		pre_exec(char **args, t_env *envs, t_token *tokens);
-void    parent_process(t_exe *exe, pid_t pid, int i);
-//
+int		pre_exec(char **args, t_env *envs, int flag);
 void	exe_command(char **args, t_env *envs);
-void	find_excu(char *command, char *envs[], char buffer[], int buf_size);
-// test exec
-void    test_exec(char **args, t_env *envs, t_token *tokens);
-void    pre_execute(t_token *tokens);
-void    backup_execute(int *stdin, int *stdout);
-void    excute_token(t_token *tokens, char **args, t_env *envs);
-void    t_excute_cmd(t_token *tokens, char **args, t_env *envs);
-void 	t_exec_cmd(t_token *tokens, char **args, t_env *envs);
-void    set_pipe(void);
-void    connect_pipe(int fd[2], int io);
-void    s_connect_pipe(int fd[], int io);
-// redirect
-int	redirect_in(char *file);
-int	redirect_out(char *file);
-int redirect_out_append(char *file);
+void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
 
 /*
 *** env ***
@@ -155,6 +121,7 @@ void	t_add_env(t_env *envs, char *name);
 void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
 char	*str_to_token(char *start, char *end, t_env *envs);
+void	create_tokens(char *str, char *quot, int i, t_mini *mini);
 
 /*
 *** tools **
@@ -163,11 +130,15 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_quot(char s);
 int		is_sep(char s);
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
+int		next_has_pipe(t_token *token);
+int		sep_check(char *str);
+char	*validate_key(char *key, char *cmd);
 
 /*
 *** parsing ***
 */
-int		parsing_line(char *str, t_lsts *lsts);
+int		parsing_line(char *str, t_mini *mini);
 
 /*
 *** dollar ***
@@ -180,7 +151,20 @@ int		dollar_check(char *str);
 *** signal ***
  */
 void	set_signal(void);
-void	reset_signal(void);
-void	init_shlvl(t_env *envs);
+void	ignore_signal(void);
+
+/*
+*** redirect ***
+*/
+void	restore_inout(t_fd *fd);
+int		handle_redirect(t_token *token, t_fd *fd);
+
+/*
+*** cmd ***
+*/
+char	**create_args(t_token *tokens, t_token *token);
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
+void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
+int		next_has_pipe(t_token *token);
 
 #endif

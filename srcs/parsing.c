@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 20:17:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:17:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,61 +65,27 @@ void	trim_space(char *str, char *quot, int i)
 	*(str - i) = '\0';
 }
 
-int	check_empty_token(char *start, char *str, int i, t_lsts *lsts)
-{
-	char	prev;
-	char	next;
-
-	prev = *(str - 1);
-	next = *(str + 1);
-	if ((prev == *str) && (start == str - i + 1)
-		&& (is_sep(next) || !next))
-		add_token(&lsts->tokens, "", 0);
-	return (1);
-}
-
-void	create_tokens(char *str, char *quot, int i, t_lsts *lsts)
-{
-	char	*start;
-
-	start = str;
-	while (*str)
-	{
-		if (!*quot && is_quot(*str) && ++i)
-			*quot = *str;
-		else if (*quot && (*str == *quot) && ++i
-			&& check_empty_token(start, str, i, lsts))
-			*quot = '\0';
-		else if (i > 0)
-			*(str - i) = *str;
-		if (!*quot && is_sep(*str))
-		{
-			add_token(&lsts->tokens,
-				str_to_token(start, str - i, &lsts->envs), 0);
-			if (*(str - i) != ' ')
-				add_token(&lsts->tokens,
-					str_to_token(str - i, str - i + 1, &lsts->envs), 1);
-			start = str - i + 1;
-		}
-		str++;
-	}
-	add_token(&lsts->tokens, str_to_token(start, str - i, &lsts->envs), 0);
-}
-
-int	parsing_line(char *str, t_lsts *lsts)
+int	parsing_line(char *str, t_mini *mini)
 {
 	int		i;
 	char	quot;
 
+	if (!str)
+	{
+		ft_putstr_fd("\033[1A🐚minishell$ ", 1);
+		ft_putstr_fd("exit\n", 2);
+		exit(EXIT_SUCCESS);
+	}
 	i = 0;
 	quot = '\0';
 	trim_space(str, &quot, i);
 	printf("trim:%s$\n", str);
 	if (quot)
 	{
-		printf("minishell: syntax error with unclosed quotes\n");
+		join_putstr_fd("minishell: syntax error with unclosed quotes\n",
+			0, 0, STDERR);
 		return (ERROR);
 	}
-	create_tokens(str, &quot, i, lsts);
+	create_tokens(str, &quot, i, mini);
 	return (SUCCESS);
 }

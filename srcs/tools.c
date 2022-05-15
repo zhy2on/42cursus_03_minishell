@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/07 18:42:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 04:22:18 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@ t_token	*get_token_node(int type, char *str)
 	return (ret);
 }
 
+int	is_sep(char s)
+{
+	if (s == '<' || s == '>' || s == '|' || s == ' '
+		|| s == - '<' || s == - '>')
+		return (1);
+	return (0);
+}
+
 int	is_quot(char s)
 {
 	if (s == '\'' || s == '\"')
@@ -41,10 +49,13 @@ int	is_quot(char s)
 	return (0);
 }
 
-int	is_sep(char s)
+int	join_putstr_fd(char *a, char *b, char *c, int fd)
 {
-	if (s == '<' || s == '>' || s == '|' || s == ' '
-		|| s == - '<' || s == - '>')
-		return (1);
-	return (0);
+	if (a)
+		ft_putstr_fd(a, fd);
+	if (b)
+		ft_putstr_fd(b, fd);
+	if (c)
+		ft_putstr_fd(c, fd);
+	return (1);
 }

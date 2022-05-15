@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/10 20:22:45 by jihoh            ###   ########.fr       */
+/*   Created: 2022/05/15 04:13:04 by jihoh             #+#    #+#             */
+/*   Updated: 2022/05/15 04:29:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ void	free_token(t_token *tokens)
 	t_token	*ptr;
 
 	ptr = tokens->first;
+	if (!ptr)
+		return ;
 	while (ptr)
 	{
 		prev = ptr;
 		ptr = ptr->next;
-		free(prev->str);
 		free(prev);
 	}
+	tokens->first = NULL;
 }
 
 void	set_token_type(t_token *tokens, t_token *token, int is_sep)
@@ -34,9 +36,7 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 	prev = tokens->first;
 	while (prev != token && prev->next != token)
 		prev = prev->next;
-	if (!ft_strcmp(token->str, ""))
-		token->type = EMPTY;
-	else if (!ft_strcmp(token->str, ">") && is_sep)
+	if (!ft_strcmp(token->str, ">") && is_sep)
 		token->type = REDIROUT;
 	else if (!ft_strcmp(token->str, ">>") && is_sep)
 		token->type = APPEND;
@@ -46,8 +46,10 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 		token->type = HEREDOC;
 	else if (!ft_strcmp(token->str, "|") && is_sep)
 		token->type = PIPE;
-	else if (tokens->first == token || prev->type >= REDIROUT)
+	else if (tokens->first == token || prev->type == PIPE)
 		token->type = CMD;
+	else if (prev->type > DIR && prev->type < PIPE)
+		token->type = DIR;
 	else
 		token->type = ARG;
 }
@@ -71,66 +73,43 @@ void	add_token(t_token *tokens, char *str, int is_sep)
 	set_token_type(tokens, ptr->next, is_sep);
 }
 
-int	token_len(char *str, t_env *envs)
+int	check_empty_token(char *start, char *str, int i, t_mini *mini)
 {
-	int		i;
-	char	*value;
+	char	prev;
+	char	next;
 
-	i = 0;
+	prev = *(str - 1);
+	next = *(str + 1);
+	if ((prev == *str) && (start == str - i + 1)
+		&& (is_sep(next) || !next))
+		add_token(&mini->tokens, ft_strdup(""), 0);
+	return (1);
+}
+
+void	create_tokens(char *str, char *quot, int i, t_mini *mini)
+{
+	char	*start;
+
+	start = str;
 	while (*str)
 	{
-		if (*str == - '$')
+		if (!*quot && is_quot(*str) && ++i)
+			*quot = *str;
+		else if (*quot && (*str == *quot) && ++i
+			&& check_empty_token(start, str, i, mini))
+			*quot = '\0';
+		else if (i > 0)
+			*(str - i) = *str;
+		if (!*quot && is_sep(*str))
 		{
-			value = search_dollar_value(str, envs);
-			if (value)
-				i += ft_strlen(value);
-			str = end_of_dollar(str);
-			continue ;
+			add_token(&mini->tokens,
+				str_to_token(start, str - i, &mini->envs), 0);
+			if (*(str - i) != ' ')
+				add_token(&mini->tokens,
+					str_to_token(str - i, str - i + 1, &mini->envs), 1);
+			start = str - i + 1;
 		}
-		else if (*str == - '<' || *str == - '>')
-			i++;
-		i++;
 		str++;
 	}
-	return (i);
-}
-
-void	str_to_token_sub(char *str, char *ret, t_env *envs)
-{
-	char	*value;
-
-	while (*str)
-	{
-		if (*str == - '$')
-		{
-			value = search_dollar_value(str, envs);
-			while (value && *value)
-				*ret++ = *value++;
-			str = end_of_dollar(str);
-		}
-		else if (*str == - '>' || *str == - '<')
-		{
-			*str = -(*str);
-			*ret++ = *str;
-		}
-		*ret++ = *str++;
-	}
-	*ret = '\0';
-}
-
-char	*str_to_token(char *start, char *end, t_env *envs)
-{
-	char	*ret;
-	char	end_backup;
-
-	if (start == end)
-		return (NULL);
-	end_backup = *end;
-	*end = '\0';
-	ret = (char *)malloc(sizeof(char) * (token_len(start, envs) + 1));
-	if (!ret)
-		return (NULL);
-	str_to_token_sub(start, ret, envs);
-	*end = end_backup;
-	return (ret);
+	add_token(&mini->tokens, str_to_token(start, str - i, &mini->envs), 0);
 }
