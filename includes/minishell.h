@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:43:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 14:39:47 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct s_mini
 	pid_t	pid;
 }				t_mini;
 
+
 /*
 *** builtin ***
 */
@@ -113,7 +114,7 @@ void	remove_env(t_env *envs, char *key);
 t_env	*search_env(t_env *envs, char *key);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
-
+void	t_add_env(t_env *envs, char *name);
 /*
 *** token ***
 */
@@ -121,7 +122,6 @@ void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
 char	*str_to_token(char *start, char *end, t_env *envs);
 void	create_tokens(char *str, char *quot, int i, t_mini *mini);
-
 
 /*
 *** tools **

@@ -17,8 +17,8 @@ t_env	*get_env_node(char *key, char *value)
 	t_env	*ret;
 
 	ret = malloc(sizeof(t_env));
-	ret->key = key;
-	ret->value = value;
+	ret->key = ft_strdup(key);
+	ret->value = ft_strdup(value);
 	ret->next = NULL;
 	return (ret);
 }
@@ -29,7 +29,7 @@ t_token	*get_token_node(int type, char *str)
 
 	ret = malloc(sizeof(t_token));
 	ret->type = type;
-	ret->str = str;
+	ret->str = (str);
 	ret->next = NULL;
 	return (ret);
 }

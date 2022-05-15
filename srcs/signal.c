@@ -6,13 +6,10 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 20:37:36 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/15 04:01:15 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 14:41:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
- ** wc -l 하고 ctrl + c 누를 때 bash 와 다름 .. 그 경우 예외 처리 해줘야함.
-*/
 #include "../includes/minishell.h"
 
 static void	handler(int signo)
