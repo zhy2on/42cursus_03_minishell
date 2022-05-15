@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 16:14:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 17:50:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,9 @@ void	export(t_env *envs, char **args)
 	}
 	else
 	{
-		args = args + 1;
+		args += 1;
 		while (*args)
-		{
-			add_env(envs, ft_strdup(*args));
-			args++;
-		}
+			add_env(envs, ft_strdup(*args++));
 	}
 }
 

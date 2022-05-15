@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:22:18 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 17:47:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ t_env	*get_env_node(char *key, char *value)
 	t_env	*ret;
 
 	ret = malloc(sizeof(t_env));
-	ret->key = ft_strdup(key);
-	ret->value = ft_strdup(value);
+	ret->key = key;
+	ret->value = value;
 	ret->next = NULL;
 	return (ret);
 }
@@ -29,7 +29,7 @@ t_token	*get_token_node(int type, char *str)
 
 	ret = malloc(sizeof(t_token));
 	ret->type = type;
-	ret->str = (str);
+	ret->str = str;
 	ret->next = NULL;
 	return (ret);
 }

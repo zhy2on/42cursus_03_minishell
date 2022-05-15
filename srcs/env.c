@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:42:08 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 17:59:26 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,14 @@ char	*validate_key(char *key, char *cmd)
 			"': not a valid identifier\n", STDERR);
 		return (NULL);
 	}
-	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
+	if (!ft_strcmp(cmd, "export"))
 	{
-		join_putstr_fd("minishell: export: `", key,
-			"': not a valid identifier\n", STDERR);
-		return (NULL);
+		if ((*s && *s != '=') || (key == s && *s == '='))
+		{
+			join_putstr_fd("minishell: export: `", key,
+				"': not a valid identifier\n", STDERR);
+			return (NULL);
+		}
 	}
 	return (s);
 }
