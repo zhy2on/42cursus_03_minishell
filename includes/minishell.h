@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:39:47 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 16:27:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <fcntl.h>
 
 # define READ 0
 # define WRITE 1
@@ -82,7 +81,6 @@ typedef struct s_mini
 	t_fd	fd;
 	pid_t	pid;
 }				t_mini;
-
 
 /*
 *** builtin ***
@@ -152,6 +150,7 @@ int		dollar_check(char *str);
  */
 void	set_signal(void);
 void	ignore_signal(void);
+void	handler_2(int signo);
 
 /*
 *** redirect ***

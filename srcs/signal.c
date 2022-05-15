@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 20:37:36 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/15 14:41:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/15 17:13:28 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	handler(int signo)
+void	handler_1(int signo)
 {
 	char	*str;
 	int		cnt;
@@ -31,9 +31,21 @@ static void	handler(int signo)
 	}
 }
 
+void	handler_2(int signo)
+{
+	if (signo == SIGINT)
+		ft_putendl_fd("", STDERR);
+	else if (signo == SIGQUIT)
+	{
+		ft_putstr_fd("Quit: ", STDERR);
+		ft_putnbr_fd(signo, STDERR);
+		ft_putendl_fd("", STDERR);
+	}
+}
+
 void	set_signal(void)
 {
-	signal(SIGINT, handler);
+	signal(SIGINT, handler_1);
 	signal(SIGQUIT, SIG_IGN);
 }
 
