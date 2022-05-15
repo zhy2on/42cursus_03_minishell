@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:54:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 18:28:04 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,66 @@ void	unset(t_env *envs, char **args)
 	}
 }
 
+t_env	*sort_env_list(t_env *temp)
+{
+	t_env	*ptr;
+	t_env	*ptr2;
+	char	*temp_key;
+	char	*temp_value;
+
+	ptr = temp->first;
+	while (ptr)
+	{
+		ptr2 = ptr->next;
+		while (ptr2)
+		{
+			if (ft_strcmp(ptr->key, ptr2->key) > 0)
+			{
+				temp_key = ptr->key;
+				ptr->key = ptr2->key;
+				ptr2->key = temp_key;
+				temp_value = ptr->value;
+				ptr->value = ptr2->value;
+				ptr2->value = temp_value;
+			}
+			ptr2 = ptr2->next;
+		}
+		ptr = ptr->next;
+	}
+	return (temp);
+}
+
+t_env	*copy_env_list(t_env *envs)
+{
+	t_env	*ptr;
+	t_env	*ptr2;
+	t_env	*temp;
+	char	*joinstr;
+
+	temp = envs->first;
+	temp->first = NULL;
+	ptr = (envs)->first;
+	while (ptr)
+	{
+		if (ptr->key && ptr->value)
+		{
+			joinstr = NULL;
+			joinstr = ft_strjoin(ptr->key, "=");
+			joinstr = ft_strjoin(joinstr, ptr->value);
+			add_env(temp, joinstr);
+		}
+		ptr = ptr->next;
+	}
+	return (sort_env_list(temp));
+}
+
 void	export(t_env *envs, char **args)
 {
 	t_env	*ptr;
 
 	if (!args[1])
 	{
-		ptr = envs->first;
+		ptr = copy_env_list(envs)->first;
 		while (ptr)
 		{
 			printf("declare -x %s", ptr->key);
@@ -58,7 +111,7 @@ void	export(t_env *envs, char **args)
 		args = args + 1;
 		while (*args)
 		{
-			add_env(envs, *args);
+			add_env(envs, ft_strdup(*args));
 			args++;
 		}
 	}
@@ -68,29 +121,28 @@ void	echo(char **args)
 {
 	char	*ptr;
 
-	if (!args[1])
-		printf("\n");
+	if (!args[1] && printf("\n"))
+		return ;
 	ptr = args[1];
-	if (ptr && *ptr == '-')
+	if (*ptr == '-')
+	{
 		while (*(++ptr) == 'n')
 			;
-	if (!ptr || *ptr == '\0')
-	{
-		args = args + 2;
-		while (*(args + 1))
-			printf("%s ", *args++);
-		if (*args)
-			printf("%s", *args);
+		if (*ptr == '\0')
+		{
+			args += 2;
+			while (*args && *(args + 1))
+				printf("%s ", *args++);
+			if (*args)
+				printf("%s", *args);
+			return ;
+		}
 	}
-	else
-	{
-		args = args + 1;
-		while (*(args + 1))
-			printf("%s ", *args++);
-		if (*args)
-			printf("%s", *args);
-		printf("\n");
-	}
+	args += 1;
+	while (*args && *(args + 1))
+		printf("%s ", *args++);
+	if (*args)
+		printf("%s\n", *args);
 }
 
 int	builtin(t_env *envs, char **args)
@@ -98,9 +150,9 @@ int	builtin(t_env *envs, char **args)
 	char	cwd[PATH_MAX];
 	char	*ptr;
 
-	if (!ft_strcmp(args[0], "exit"))
-		exit(0);
-	else if (!ft_strcmp(args[0], "pwd"))
+	if (!args[0])
+		return (SUCCESS);
+	if (!ft_strcmp(args[0], "pwd"))
 		printf("%s\n", getcwd(cwd, PATH_MAX));
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);

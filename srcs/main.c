@@ -6,87 +6,136 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/03/27 21:54:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/10 21:14:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	parsing_cmd_sub(char *str, char **args, char *quot, int i)
+char	**create_args(t_token *tokens, t_token **pptr)
 {
-	while (*str)
+	int		i;
+	char	**ret;
+	t_token	*ptr;
+
+	i = 0;
+	ptr = *pptr;
+	while (ptr && ptr->type <= ARG)
 	{
-		if (!*quot && ft_isquot(*str))
-		{
-			*quot = *str;
-			i++;
-		}
-		else if (*str == *quot)
-		{
-			*quot = '\0';
-			i++;
-		}
-		else if (i > 0)
-			*(str - i) = *str;
-		if (!*quot && *str == ' ')
-		{
-			*(str - i) = '\0';
-			*args++ = str - i + 1;
-		}
-		str++;
+		i++;
+		ptr = ptr->next;
 	}
-	*args = NULL;
-	*(str - i) = '\0';
+	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	ptr = *pptr;
+	while (ptr && ptr->type <= ARG)
+	{
+		ret[i++] = ptr->str;
+		ptr = ptr->next;
+	}
+	ret[i] = NULL;
+	*pptr = ptr;
+	return (ret);
 }
 
-int	parsing_cmd(char *str, char **args)
+int	parsing_cmd(char *str, t_lsts *lsts)
 {
 	int		i;
 	char	quot;
+	t_token	*tmp;
 
 	i = 0;
-	*args++ = str;
 	quot = '\0';
-	parsing_cmd_sub(str, args, &quot, i);
-	if (quot)
-	{
-		printf("minishell: single quotate error\n");
+	if (parsing_line(str, lsts) == ERROR)
 		return (ERROR);
+	tmp = lsts->tokens.first;
+	while (tmp)
+	{
+		printf("%d %s\n", tmp->type, tmp->str);
+		tmp = tmp->next;
 	}
 	return (SUCCESS);
 }
 
-void	prompt(t_env *envs)
+void	eof_history(char *str)
 {
-	char	*str;
-	char	**args;
-	int		i;
-
-	while (1)
+	if (str == NULL)
 	{
-		args = malloc(sizeof(char *) * ARG_MAX);
-		str = readline("🐚minishell$ ");
-		if (parsing_cmd(str, args) == ERROR)
+		ft_putstr_fd("\033[15D",1);
+		ft_putstr_fd("🐚minishell$ ",1);
+		ft_putstr_fd("exit\n",2);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		if (ft_strcmp(str, "exit") == 0)
+		{
+			ft_putendl_fd("exit",2);
+			free(str);
+			exit(EXIT_SUCCESS);
+		}
+		add_history(str);
+	}
+}
+
+void	handle_args(t_lsts *lsts, char **env)
+{
+	t_token	*ptr;
+	char	**args;
+
+	ptr = lsts->tokens.first;
+	while (ptr)
+	{
+		if (ptr->type > ARG)
+		{
+			ptr = ptr->next;
 			continue ;
-		if (builtin(envs, args) == SUCCESS)
+		}
+		args = create_args(&lsts->tokens, &ptr);
+		if (builtin(&lsts->envs, args) == SUCCESS)
 			continue ;
 		else
-			exec(args);
+		{
+			pre_exec(args, &lsts->envs, &lsts->tokens);
+		}
 		free(args);
+	}
+}
+
+void	prompt(t_lsts *lsts, char **env)
+{
+	char	*str;
+	
+	while (1)
+	{	
+		str = NULL;
+		set_signal();
+		str = readline("🐚minishell$ ");
+		eof_history(str);
+		if (!*str)
+		{
+			free(str);
+			continue ;
+		}
+		lsts->tokens.first = NULL;
+		if (parsing_cmd(str, lsts) == ERROR)
+			continue ;
+		handle_args(lsts, env);
+		free_token(&lsts->tokens);
 		free(str);
 	}
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_env	envs;
+	t_lsts	lsts;
+	int		i;
 
-	envs.first = NULL;
-	while (*env)
-	{
-		add_env(&envs, *env);
-		env++;
-	}
-	prompt(&envs);
+	i = 0;
+	lsts.envs.first = NULL;
+	while (env[i])
+		add_env(&lsts.envs, ft_strdup(env[i++]));
+	init_shlvl(&lsts.envs);
+	prompt(&lsts, env);
 	return (0);
 }

@@ -1,2 +1,6 @@
 .vscode/
 srcs/a.out
+*.o
+libft/objs
+.DS_Store
+libft/libft.a

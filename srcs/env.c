@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/04/27 20:54:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/14 17:04:29 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	remove_env(t_env *envs, char *key)
 	{
 		tmp = envs->first;
 		envs->first = envs->first->next;
+		free(envs->first->key);
 		free(tmp);
 		return ;
 	}
@@ -57,6 +58,7 @@ void	remove_env(t_env *envs, char *key)
 		{
 			tmp = ptr->next;
 			ptr->next = ptr->next->next;
+			free(ptr->key);
 			free(tmp);
 			return ;
 		}
@@ -83,28 +85,33 @@ void	add_env(t_env *envs, char *name)
 	char	*s;
 	char	*value;
 	t_env	*ptr;
+	char	**split;
 
 	s = validate_key(name, "export");
 	if (!s)
 		return ;
 	value = NULL;
+	split = ft_split(name, '=');
 	if (*s == '=')
-		value = s + 1;
+		value = split[1];
 	*s = '\0';
 	ptr = envs->first;
 	if (!ptr)
 	{
-		envs->first = getnode(name, value);
+		envs->first = get_env_node(name, value);
 		return ;
 	}
 	while (ptr && ft_strcmp(name, ptr->key))
 	{
 		if (!ptr->next)
-			ptr->next = getnode(name, value);
+		{
+			ptr->next = get_env_node(name, value);
+			return ;
+		}
 		ptr = ptr->next;
 	}
 	if (ptr && value)
-		ptr->value = value;
+		ptr->value = ft_strdup(value);
 }
 
 void	env(t_env *envs)
