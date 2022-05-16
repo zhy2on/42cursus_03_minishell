@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 00:42:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 16:07:31 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_mini
 	t_token	tokens;
 	t_fd	fd;
 	pid_t	pid;
-	int		status;
+	uint8_t	status;
 }				t_mini;
 
 /*
@@ -86,7 +86,7 @@ typedef struct s_mini
 void	unset(t_env *envs, char **args);
 void	export(t_env *envs, char **args);
 void	echo(char **args);
-int		builtin(t_env *envs, char **args);
+int		builtin(t_mini *mini, t_env *envs, char **args);
 
 /*
 *** cd ***
@@ -111,6 +111,7 @@ t_env	*search_env(t_env *envs, char *key);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
 void	t_add_env(t_env *envs, char *name);
+
 /*
 *** token ***
 */
@@ -163,5 +164,10 @@ char	**create_args(t_token *tokens, t_token *token);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 int		next_has_pipe(t_token *token);
+
+/*
+*** sort_env ***
+*/
+t_env	*copy_env_list(t_env *envs);
 
 #endif

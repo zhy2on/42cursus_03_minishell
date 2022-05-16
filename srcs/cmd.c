@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 18:13:01 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 15:50:33 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 {
 	if (handle_redirect(cmd, &mini->fd) == ERROR)
 		return ;
-	if (builtin(&mini->envs, args) != SUCCESS)
+	if (builtin(mini, &mini->envs, args) != SUCCESS)
 		pre_exec(args, &mini->envs, flag);
 	free(args);
 }
