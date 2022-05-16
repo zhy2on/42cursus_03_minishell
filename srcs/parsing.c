@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 00:46:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:38:03 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	parsing_line(char *str, t_mini *mini)
 	i = 0;
 	quot = '\0';
 	trim_space(str, &quot, i);
-	printf("trim:%s$\n", str);
+	//printf("trim:%s$\n", str);
 	if (quot)
 	{
 		join_putstr_fd("minishell: syntax error with unclosed quotes\n",

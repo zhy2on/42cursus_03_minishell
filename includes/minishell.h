@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 16:07:31 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:45:46 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct s_fd
 	int	sd[2];
 	int	fd[2];
 	int	pd[2];
+	int	hd[2];
 }				t_fd;
 
 typedef struct s_mini
@@ -77,7 +78,7 @@ typedef struct s_mini
 	t_token	tokens;
 	t_fd	fd;
 	pid_t	pid;
-	uint8_t	status;
+	int		status;
 }				t_mini;
 
 /*
@@ -155,7 +156,7 @@ void	handler_2(int signo);
 *** redirect ***
 */
 void	restore_inout(t_fd *fd);
-int		handle_redirect(t_token *token, t_fd *fd);
+int		handle_redirect(t_mini *mini, t_token *token);
 
 /*
 *** cmd ***
