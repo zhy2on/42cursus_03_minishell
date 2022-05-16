@@ -19,10 +19,10 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <limits.h>
-# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
+# include <dirent.h>
 
 # define READ 0
 # define WRITE 1
@@ -31,12 +31,13 @@ enum e_token_type
 {
 	CMD = 0,
 	ARG = 1,
-	DIR = 2,
+	DIRE = 2,
 	REDIROUT = 3,
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7
+	PIPE = 7,
+	BUILTIN = 8
 } ;
 
 enum e_std_type
@@ -83,6 +84,12 @@ typedef struct s_mini
 	pid_t	pid;
 }				t_mini;
 
+typedef struct s_state
+{
+	int		exit_status;
+}				t_state;
+
+t_state		g_state;
 
 /*
 *** builtin ***
@@ -105,6 +112,9 @@ void	exec(char **args, t_env *envs);
 int		pre_exec(char **args, t_env *envs, int flag);
 void	exe_command(char **args, t_env *envs);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
+char	**convert_env(t_env *envs);
+int		j_lstsize(t_env *lst);
+void	check_newline(char buffer[]);
 
 /*
 *** env ***
@@ -115,6 +125,10 @@ t_env	*search_env(t_env *envs, char *key);
 void	add_env(t_env *envs, char *name);
 void	env(t_env *envs);
 void	t_add_env(t_env *envs, char *name);
+void	free_sort_env(t_env *envs);
+t_env	*copy_env_list(t_env *envs);
+t_env	*sort_env_list(t_env *temp);
+
 /*
 *** token ***
 */
@@ -162,9 +176,17 @@ int		handle_redirect(t_token *token, t_fd *fd);
 /*
 *** cmd ***
 */
-char	**create_args(t_token *tokens, t_token *token);
+char	**create_args(t_token *token);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 int		next_has_pipe(t_token *token);
+
+/*
+*** syntax ***
+*/
+int		syntax_check(t_token *token);
+int		check_type(int type);
+void	syntax_error(char *err);
+void	print_errmsg(char *str, char *msg);
 
 #endif

@@ -59,7 +59,7 @@ int	handle_redirect(t_token *token, t_fd *fd)
 {
 	while (token && token->type != PIPE)
 	{
-		if (token->type > DIR && token->type < PIPE)
+		if (token->type > DIRE && token->type < PIPE)
 			if (change_inout(token, fd) == ERROR)
 				return (ERROR);
 		token = token->next;

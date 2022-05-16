@@ -15,7 +15,6 @@
 static void	handler(int signo)
 {
 	char	*str;
-	int		cnt;
 
 	if (signo == SIGINT)
 	{

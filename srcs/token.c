@@ -48,8 +48,8 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 		token->type = PIPE;
 	else if (tokens->first == token || prev->type == PIPE)
 		token->type = CMD;
-	else if (prev->type > DIR && prev->type < PIPE)
-		token->type = DIR;
+	else if (prev->type > DIRE && prev->type < PIPE)
+		token->type = DIRE;
 	else
 		token->type = ARG;
 }

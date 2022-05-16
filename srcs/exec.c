@@ -6,80 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:40:26 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:29:50 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	j_lstsize(t_env *lst)
-{
-	int	i;
-
-	i = 0;
-	while (lst != NULL)
-	{
-		i++;
-		lst = lst->next;
-	}
-	return (i);
-}
-
-static char	**convert_env(t_env *envs)
-{
-	char	**env;
-	int		total_l;
-	int		i;
-	t_env	*env_lst;
-	int		lst_size;
-
-	env_lst = envs->first;
-	lst_size = j_lstsize(env_lst);
-	env = (char **)malloc(sizeof(char *) * (lst_size + 1));
-	i = 0;
-	while (i < lst_size && envs != NULL)
-	{
-		env[i] = ft_strdup(env_lst->key);
-		env[i] = ft_strjoin(env[i], "=");
-		env[i] = ft_strjoin(env[i], env_lst->value);
-		env_lst = env_lst->next;
-		i++;
-	}
-	env[i] = NULL;
-	return (env);
-}
-
-static void	check_newline(char buffer[])
-{
-	int	i;
-
-	i = 0;
-	while (buffer[i] != '\0')
-	{
-		if (buffer[i] == '\n')
-		{
-			buffer[i] = '\0';
-			break ;
-		}
-		i++;
-	}
-}
-
-static char	*str_convert(char *buf)
-{
-	int		i;
-	char	*str;
-
-	str = malloc(sizeof(char) * ft_strlen(buf) + 1);
-	i = 0;
-	while (buf[i])
-	{
-		str[i] = buf[i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
 
 int	pre_exec(char **args, t_env *envs, int flag)
 {
@@ -118,16 +49,21 @@ void	exe_command(char **args, t_env *envs)
 	}
 }
 
+void	setting_argv(char *argv[])
+{
+	argv[0] = "/usr/bin/which";
+	argv[1] = "-a";
+	argv[2] = NULL;
+	argv[3] = NULL;
+}
+
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size)
 {
 	char	*argv[4];
 	int		pd[2];
 	pid_t	pid;
 
-	argv[0] = "/usr/bin/which";
-	argv[1] = "-a";
-	argv[2] = NULL;
-	argv[3] = NULL;
+	setting_argv(argv);
 	pipe(pd);
 	pid = fork();
 	if (pid == 0)

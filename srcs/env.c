@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:42:08 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:57:27 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ char	*validate_key(char *key, char *cmd)
 	}
 	if (!ft_strcmp(cmd, "unset") && *s)
 	{
-		join_putstr_fd("minishell: unset: `", key,
+		join_putstr_fd("🐚minishell: unset: `", key,
 			"': not a valid identifier\n", STDERR);
 		return (NULL);
 	}
 	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
 	{
-		join_putstr_fd("minishell: export: `", key,
+		join_putstr_fd("🐚minishell: export: `", key,
 			"': not a valid identifier\n", STDERR);
 		return (NULL);
 	}
@@ -84,7 +84,6 @@ t_env	*search_env(t_env *envs, char *key)
 void	add_env_sub(t_env *envs, char *key, char *value)
 {
 	t_env	*ptr;
-	char	**split;
 
 	ptr = envs->first;
 	if (!ptr)
