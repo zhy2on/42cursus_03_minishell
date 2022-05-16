@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 16:27:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 00:42:55 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,6 @@
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-
-# define READ 0
-# define WRITE 1
 
 enum e_token_type
 {
@@ -80,6 +77,7 @@ typedef struct s_mini
 	t_token	tokens;
 	t_fd	fd;
 	pid_t	pid;
+	int		status;
 }				t_mini;
 
 /*
@@ -118,8 +116,8 @@ void	t_add_env(t_env *envs, char *name);
 */
 void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
-char	*str_to_token(char *start, char *end, t_env *envs);
-void	create_tokens(char *str, char *quot, int i, t_mini *mini);
+char	*str_to_token(t_mini *mini, char *start, char *end);
+void	create_tokens(t_mini *mini, char *str, char *quot, int i);
 
 /*
 *** tools **
@@ -141,7 +139,7 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** dollar ***
 */
-char	*search_dollar_value(char *str, t_env *envs);
+char	*search_dollar_value(t_mini *mini, char *str);
 char	*end_of_dollar(char *str);
 int		dollar_check(char *str);
 

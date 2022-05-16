@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:40:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 00:44:54 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	main(int ac, char **av, char **env)
 	mini.tokens.first = NULL;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
+	mini.status = 0;
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
 	init_shlvl(&mini.envs);

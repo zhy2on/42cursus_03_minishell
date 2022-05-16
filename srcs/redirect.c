@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 05:01:58 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 00:21:21 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,35 @@ void	restore_inout(t_fd *fd)
 {
 	dup2(fd->sd[0], STDIN);
 	dup2(fd->sd[1], STDOUT);
+}
+
+int	heredoc(t_token *token, t_fd *fd)
+{
+	char	*str;
+
+	if (fork() == 0)
+	{
+		close(fd->fd[0]);
+		fd->fd[0] = open("tmpfile", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+		while (1)
+		{
+			str = readline("> ");
+			if (!str)
+			{
+				ft_putstr_fd("\033[1A> ", STDOUT);
+				break ;
+			}
+			if (!ft_strcmp(str, token->next->str))
+				break ;
+			ft_putendl_fd(str, fd->fd[0]);
+		}
+		close(fd->fd[0]);
+		exit(0);
+	}
+	wait(0);
+	fd->fd[0] = open("tmpfile", O_RDONLY, S_IRWXU);
+	unlink("tmpfile");
+	return (1);
 }
 
 int	change_inout_sub(t_token *token, t_fd *fd)
@@ -52,6 +81,8 @@ int	change_inout(t_token *token, t_fd *fd)
 		close(fd->fd[0]);
 		fd->fd[0] = open(token->next->str, O_RDONLY, S_IRWXU);
 	}
+	else if (token->type == HEREDOC)
+		heredoc(token, fd);
 	return (change_inout_sub(token, fd));
 }
 

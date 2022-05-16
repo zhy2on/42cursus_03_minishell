@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:19:50 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 00:41:45 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	token_len(char *str, t_env *envs)
+int	token_len(t_mini *mini, char *str)
 {
 	int		i;
 	char	*value;
@@ -22,7 +22,7 @@ int	token_len(char *str, t_env *envs)
 	{
 		if (*str == - '$')
 		{
-			value = search_dollar_value(str, envs);
+			value = search_dollar_value(mini, str);
 			if (value)
 				i += ft_strlen(value);
 			str = end_of_dollar(str);
@@ -36,7 +36,7 @@ int	token_len(char *str, t_env *envs)
 	return (i);
 }
 
-void	str_to_token_sub(char *str, char *ret, t_env *envs)
+void	str_to_token_sub(t_mini *mini, char *str, char *ret)
 {
 	char	*value;
 
@@ -44,7 +44,7 @@ void	str_to_token_sub(char *str, char *ret, t_env *envs)
 	{
 		if (*str == - '$')
 		{
-			value = search_dollar_value(str, envs);
+			value = search_dollar_value(mini, str);
 			while (value && *value)
 				*ret++ = *value++;
 			str = end_of_dollar(str);
@@ -59,7 +59,7 @@ void	str_to_token_sub(char *str, char *ret, t_env *envs)
 	*ret = '\0';
 }
 
-char	*str_to_token(char *start, char *end, t_env *envs)
+char	*str_to_token(t_mini *mini, char *start, char *end)
 {
 	char	*ret;
 	char	end_backup;
@@ -68,10 +68,10 @@ char	*str_to_token(char *start, char *end, t_env *envs)
 		return (NULL);
 	end_backup = *end;
 	*end = '\0';
-	ret = (char *)malloc(sizeof(char) * (token_len(start, envs) + 1));
+	ret = (char *)malloc(sizeof(char) * (token_len(mini, start) + 1));
 	if (!ret)
 		return (NULL);
-	str_to_token_sub(start, ret, envs);
+	str_to_token_sub(mini, start, ret);
 	*end = end_backup;
 	return (ret);
 }
