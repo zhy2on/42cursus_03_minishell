@@ -6,43 +6,73 @@
 /*   By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:43:18 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/15 16:43:50 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/16 21:23:47 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-void    syntax_error(char *err)
-{
-	if  (!err)
-		ft_putendl_fd(err,2);
-}
 
-int check_type(int type)
+int	check_meta(t_token *tokens)
 {
-	if (type == HEREDOC || type == REDIROUT || type == REDIRIN \
-	|| type == APPEND || type == PIPE)
-		return (1);
+	if (tokens->type >= REDIROUT && tokens->type <= HEREDOC)
+	{
+		if (tokens->next->type >= REDIROUT && tokens->next->type <= HEREDOC)
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+			ft_putstr_fd("`", 2);
+			ft_putstr_fd(tokens->next->str, 2);
+			ft_putendl_fd("`", 2);
+			g_state.exit_status = 2;
+			return (2);
+		}
+	}
 	return (0);
 }
-int syntax_check(t_token *tokens)
+
+int	syntax_check_next(t_token *tokens)
 {
-	int ret;
-	
-	if (tokens != NULL && tokens->type == PIPE)
+	if (!tokens->next)
 	{
-		ft_putstr_fd("🐚minishell: syntax error near unexpected token ",2);
-		ft_putstr_fd("`",2);
-		ft_putstr_fd(tokens->str,2);
-		ft_putendl_fd("'",2);     
+		ft_putendl_fd \
+			("minishell: syntax error near unexpected token `newline'", 2);
 		g_state.exit_status = 2;
-		return (EXIT_FAILURE);
+		return (2);
 	}
-	// while (tokens)
-	// {
-	// 	if (check_type(tokens->type))
-	// 	{
-	// 		ret = 
-	// 	}
-	// }
-	return (1);
+	else if (opendir(tokens->next->str) && tokens->type != REDIRIN)
+	{
+		print_errmsg(tokens->next->str, "Is a Directory");
+		g_state.exit_status = 2;
+		return (g_state.exit_status);
+	}
+	else
+	{
+		if (check_meta(tokens) > 0)
+			return (g_state.exit_status);
+	}
+	return (EXIT_SUCCESS);
+}
+
+int	syntax_check(t_token *token)
+{
+	int		ret;
+	t_token	*tokens;
+
+	tokens = token->first;
+	if (tokens->type == PIPE)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		g_state.exit_status = 2;
+		return (2);
+	}
+	while (tokens)
+	{
+		if (check_type(tokens->type))
+		{
+			ret = syntax_check_next(tokens);
+			if (ret > 0)
+				return (ret);
+		}
+		tokens = tokens->next;
+	}
+	return (0);
 }
