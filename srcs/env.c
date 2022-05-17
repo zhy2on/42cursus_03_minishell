@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 16:41:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:14:00 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ t_env	*search_env(t_env *envs, char *key)
 void	add_env_sub(t_env *envs, char *key, char *value)
 {
 	t_env	*ptr;
-	char	**split;
 
 	ptr = envs->first;
 	if (!ptr)

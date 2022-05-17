@@ -49,10 +49,11 @@ void	prompt(t_mini *mini)
 		str = readline("🐚minishell$ ");
 		if (parsing_cmd(str, mini) == SUCCESS)
 		{
+			syntax_check(&mini->tokens);
 			add_history(str);
 			cmd = mini->tokens.first;
 			if (!next_has_pipe(cmd))
-				run_cmd(mini, cmd, create_args(&mini->tokens, cmd), 0);
+				run_cmd(mini, cmd, create_args(cmd), 0);
 			else
 				run_cmd_with_pipe(mini, cmd);
 			free_token(&mini->tokens);
@@ -75,8 +76,9 @@ void	init_shlvl(t_env *envs)
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
-	t_env	*shlvl;
 
+	ac = 0;
+	av[1] = NULL;
 	mini.envs.first = NULL;
 	mini.tokens.first = NULL;
 	mini.fd.sd[0] = dup(STDIN);

@@ -30,7 +30,7 @@ t_token	*next_cmd(t_token *ptr)
 	return (ptr);
 }
 
-char	**create_args(t_token *tokens, t_token *token)
+char	**create_args(t_token *token)
 {
 	int		i;
 	char	**ret;
@@ -91,7 +91,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 
 	while (cmd)
 	{
-		args = create_args(&mini->tokens, cmd);
+		args = create_args(cmd);
 		pipe(mini->fd.pd);
 		signal(SIGQUIT, SIG_DFL);
 		mini->pid = fork();

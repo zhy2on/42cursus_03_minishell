@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 20:55:34 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:10:32 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	handle_redirect(t_mini *mini, t_token *token)
 	set_heredoc_fd(mini, token);
 	while (token && token->type != PIPE)
 	{
-		if (token->type > DIR && token->type < PIPE)
+		if (token->type > DIRE && token->type < PIPE)
 		{
 			if (change_inout(mini, token) == ERROR)
 				return (ERROR);

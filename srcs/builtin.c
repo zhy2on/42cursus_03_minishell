@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 19:35:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:13:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void	ft_exit(t_mini *mini, char **args)
 void	unset(t_env *envs, char **args)
 {
 	char	*s;
-	t_env	*ptr;
 
 	args = args + 1;
 	while (*args)
@@ -125,12 +124,11 @@ void	echo(char **args)
 int	builtin(t_mini *mini, t_env *envs, char **args)
 {
 	char	cwd[PATH_MAX];
-	char	*ptr;
 
 	if (!args[0])
 		return (SUCCESS);
 	if (!ft_strcmp(args[0], "pwd"))
-		join_putstr_fd(getcwd(cwd, PATH_MAX), 0, 0, STDOUT);
+		join_putstr_fd(getcwd(cwd, PATH_MAX), "\n", 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
