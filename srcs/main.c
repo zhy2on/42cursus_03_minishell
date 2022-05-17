@@ -6,11 +6,17 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:40:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:46:26 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	restore_inout(t_fd *fd)
+{
+	dup2(fd->sd[0], STDIN);
+	dup2(fd->sd[1], STDOUT);
+}
 
 int	parsing_cmd(char *str, t_mini *mini)
 {
@@ -77,6 +83,7 @@ int	main(int ac, char **av, char **env)
 	mini.tokens.first = NULL;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
+	mini.status = 0;
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
 	init_shlvl(&mini.envs);

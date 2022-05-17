@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 20:29:50 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:07:02 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,20 @@
 
 int	pre_exec(char **args, t_env *envs, int flag)
 {
+	int	status;
+
 	if (!flag)
 	{
-		if (!fork())
+		signal(SIGQUIT, SIG_DFL);
+		if (fork() == 0)
 			exe_command(args, envs);
 		else
 		{
 			ignore_signal();
-			wait(0);
+			wait(&status);
 			set_signal();
+			if (WIFSIGNALED(status))
+				handler_2(WTERMSIG(status));
 		}
 	}
 	else
@@ -44,9 +49,7 @@ void	exe_command(char **args, t_env *envs)
 		exit(127);
 	}
 	else
-	{
 		execve(buf, args, convertenv);
-	}
 }
 
 void	setting_argv(char *argv[])
@@ -74,12 +77,9 @@ void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size)
 		execve("/usr/bin/which", argv, envs);
 		exit(EXIT_SUCCESS);
 	}
-	else
-	{
-		close(pd[1]);
-		waitpid(pid, NULL, 0);
-		read(pd[0], buffer, buf_size);
-		buffer[ft_strlen(buffer) - 1] = '\0';
-		check_newline(buffer);
-	}
+	close(pd[1]);
+	waitpid(pid, NULL, 0);
+	read(pd[0], buffer, buf_size);
+	buffer[ft_strlen(buffer) - 1] = '\0';
+	check_newline(buffer);
 }

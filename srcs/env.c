@@ -6,37 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 20:57:27 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:14:00 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-char	*validate_key(char *key, char *cmd)
-{
-	char	*s;
-
-	s = key;
-	if (ft_isalpha(*s) || *s == '_')
-	{
-		s++;
-		while (ft_isalnum(*s) || *s == '_')
-			s++;
-	}
-	if (!ft_strcmp(cmd, "unset") && *s)
-	{
-		join_putstr_fd("🐚minishell: unset: `", key,
-			"': not a valid identifier\n", STDERR);
-		return (NULL);
-	}
-	if (!ft_strcmp(cmd, "export") && (*s && *s != '='))
-	{
-		join_putstr_fd("🐚minishell: export: `", key,
-			"': not a valid identifier\n", STDERR);
-		return (NULL);
-	}
-	return (s);
-}
 
 void	remove_env(t_env *envs, char *key)
 {
@@ -121,4 +95,20 @@ void	add_env(t_env *envs, char *name)
 		value = s + 1;
 	*s = '\0';
 	add_env_sub(envs, name, value);
+}
+
+void	env(t_env *envs)
+{
+	t_env	*ptr;
+
+	ptr = envs->first;
+	while (ptr)
+	{
+		if (ptr->value)
+		{
+			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
+		}
+		ptr = ptr->next;
+	}
 }

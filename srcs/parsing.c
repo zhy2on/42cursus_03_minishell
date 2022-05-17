@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:17:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 21:53:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,35 @@ void	replace_char(char **pstr, char *quot, int *i)
 	{
 		*(s + 1) = -(*(s + 1));
 		(*pstr)++;
-		(*i)++;
+		*i += 1;
 	}
+}
+
+int	trim_space_sub(char **pstr, char *quot, int *i)
+{
+	char	*s;
+
+	s = *pstr;
+	if (!*quot && *s == ' ')
+	{
+		if (!(is_sep(*(s - 1)) || sep_check(s)))
+		{
+			*(s - *i) = *s;
+			s++;
+		}
+		while (*s == ' ' && ++(*i))
+			s++;
+		*pstr = s;
+		return (1);
+	}
+	else if (!*quot && (*s == '>' && *(s + 1) == '|'))
+	{
+		*(s - *i) = *s;
+		(*pstr) += 2;
+		*i += 1;
+		return (1);
+	}
+	return (0);
 }
 
 void	trim_space(char *str, char *quot, int i)
@@ -48,17 +75,8 @@ void	trim_space(char *str, char *quot, int i)
 			*quot = *str;
 		else if (*str == *quot)
 			*quot = '\0';
-		else if (!*quot && *str == ' ')
-		{
-			if (!(is_sep(*(str - 1)) || sep_check(str)))
-			{
-				*(str - i) = *str;
-				str++;
-			}
-			while (*str == ' ' && ++i)
-				str++;
+		else if (trim_space_sub(&str, quot, &i))
 			continue ;
-		}
 		*(str - i) = *str;
 		str++;
 	}
@@ -67,17 +85,17 @@ void	trim_space(char *str, char *quot, int i)
 
 int	parsing_line(char *str, t_mini *mini)
 {
-	int		i;
 	char	quot;
+	int		i;
 
 	if (!str)
 	{
-		ft_putstr_fd("\033[1A🐚minishell$ ", 1);
-		ft_putstr_fd("exit\n", 2);
+		ft_putstr_fd("\033[1A🐚minishell$ ", STDOUT);
+		ft_putstr_fd("exit\n", STDERR);
 		exit(EXIT_SUCCESS);
 	}
-	i = 0;
 	quot = '\0';
+	i = 0;
 	trim_space(str, &quot, i);
 	printf("trim:%s$\n", str);
 	if (quot)
@@ -86,6 +104,6 @@ int	parsing_line(char *str, t_mini *mini)
 			0, 0, STDERR);
 		return (ERROR);
 	}
-	create_tokens(str, &quot, i, mini);
+	create_tokens(mini, str, &quot, i);
 	return (SUCCESS);
 }

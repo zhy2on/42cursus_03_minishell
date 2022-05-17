@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 04:13:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:29:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:12:41 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	check_empty_token(char *start, char *str, int i, t_mini *mini)
 	return (1);
 }
 
-void	create_tokens(char *str, char *quot, int i, t_mini *mini)
+void	create_tokens(t_mini *mini, char *str, char *quot, int i)
 {
 	char	*start;
 
@@ -103,13 +103,13 @@ void	create_tokens(char *str, char *quot, int i, t_mini *mini)
 		if (!*quot && is_sep(*str))
 		{
 			add_token(&mini->tokens,
-				str_to_token(start, str - i, &mini->envs), 0);
+				str_to_token(mini, start, str - i), 0);
 			if (*(str - i) != ' ')
 				add_token(&mini->tokens,
-					str_to_token(str - i, str - i + 1, &mini->envs), 1);
+					str_to_token(mini, str - i, str - i + 1), 1);
 			start = str - i + 1;
 		}
 		str++;
 	}
-	add_token(&mini->tokens, str_to_token(start, str - i, &mini->envs), 0);
+	add_token(&mini->tokens, str_to_token(mini, start, str - i), 0);
 }

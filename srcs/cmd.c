@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 04:43:32 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/16 20:54:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,21 +59,41 @@ char	**create_args(t_token *token)
 
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 {
-	if (handle_redirect(cmd, &mini->fd) == ERROR)
+	if (handle_redirect(mini, cmd) == ERROR)
 		return ;
-	if (builtin(&mini->envs, args) != SUCCESS)
+	if (builtin(mini, &mini->envs, args) != SUCCESS)
 		pre_exec(args, &mini->envs, flag);
 	free(args);
+}
+
+void	wait_pipe_pid(void)
+{
+	int	status;
+	int	flag;
+
+	flag = 0;
+	ignore_signal();
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		if (WIFSIGNALED(status) && !flag)
+		{
+			handler_2(WTERMSIG(status));
+			flag = 1;
+		}
+	}
+	set_signal();
 }
 
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
 	char	**args;
+	int		status;
 
 	while (cmd)
 	{
 		args = create_args(cmd);
 		pipe(mini->fd.pd);
+		signal(SIGQUIT, SIG_DFL);
 		mini->pid = fork();
 		if (mini->pid == 0)
 		{
@@ -89,6 +109,5 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		}
 		cmd = next_cmd(cmd);
 	}
-	while (waitpid(-1, 0, 0) > 0)
-		;
+	wait_pipe_pid();
 }

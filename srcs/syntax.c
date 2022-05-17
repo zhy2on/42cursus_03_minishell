@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_msg.c                                        :+:      :+:    :+:   */
+/*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:43:18 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/16 21:23:47 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:12:31 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	check_meta(t_token *tokens)
 			ft_putstr_fd("`", 2);
 			ft_putstr_fd(tokens->next->str, 2);
 			ft_putendl_fd("`", 2);
-			g_state.exit_status = 2;
+			g_status = 2;
 			return (2);
 		}
 	}
@@ -35,19 +35,19 @@ int	syntax_check_next(t_token *tokens)
 	{
 		ft_putendl_fd \
 			("minishell: syntax error near unexpected token `newline'", 2);
-		g_state.exit_status = 2;
+		g_status = 2;
 		return (2);
 	}
 	else if (opendir(tokens->next->str) && tokens->type != REDIRIN)
 	{
 		print_errmsg(tokens->next->str, "Is a Directory");
-		g_state.exit_status = 2;
-		return (g_state.exit_status);
+		g_status = 2;
+		return (g_status);
 	}
 	else
 	{
 		if (check_meta(tokens) > 0)
-			return (g_state.exit_status);
+			return (g_status);
 	}
 	return (EXIT_SUCCESS);
 }
@@ -61,7 +61,7 @@ int	syntax_check(t_token *token)
 	if (tokens->type == PIPE)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-		g_state.exit_status = 2;
+		g_status = 2;
 		return (2);
 	}
 	while (tokens)

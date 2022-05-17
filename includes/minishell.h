@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/15 14:39:47 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:11:30 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,6 @@
 # include <fcntl.h>
 # include <dirent.h>
 
-# define READ 0
-# define WRITE 1
-
 enum e_token_type
 {
 	CMD = 0,
@@ -36,8 +33,7 @@ enum e_token_type
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7,
-	BUILTIN = 8
+	PIPE = 7
 } ;
 
 enum e_std_type
@@ -74,6 +70,7 @@ typedef struct s_fd
 	int	sd[2];
 	int	fd[2];
 	int	pd[2];
+	int	hd[2];
 }				t_fd;
 
 typedef struct s_mini
@@ -82,14 +79,10 @@ typedef struct s_mini
 	t_token	tokens;
 	t_fd	fd;
 	pid_t	pid;
+	int		status;
 }				t_mini;
 
-typedef struct s_state
-{
-	int		exit_status;
-}				t_state;
-
-t_state		g_state;
+int		g_status;
 
 /*
 *** builtin ***
@@ -97,7 +90,7 @@ t_state		g_state;
 void	unset(t_env *envs, char **args);
 void	export(t_env *envs, char **args);
 void	echo(char **args);
-int		builtin(t_env *envs, char **args);
+int		builtin(t_mini *mini, t_env *envs, char **args);
 
 /*
 *** cd ***
@@ -134,8 +127,8 @@ t_env	*sort_env_list(t_env *temp);
 */
 void	add_token(t_token *tokens, char *str, int is_sep);
 void	free_token(t_token *tokens);
-char	*str_to_token(char *start, char *end, t_env *envs);
-void	create_tokens(char *str, char *quot, int i, t_mini *mini);
+char	*str_to_token(t_mini *mini, char *start, char *end);
+void	create_tokens(t_mini *mini, char *str, char *quot, int i);
 
 /*
 *** tools **
@@ -157,7 +150,7 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** dollar ***
 */
-char	*search_dollar_value(char *str, t_env *envs);
+char	*search_dollar_value(t_mini *mini, char *str);
 char	*end_of_dollar(char *str);
 int		dollar_check(char *str);
 
@@ -166,12 +159,13 @@ int		dollar_check(char *str);
  */
 void	set_signal(void);
 void	ignore_signal(void);
+void	handler_2(int signo);
 
 /*
 *** redirect ***
 */
 void	restore_inout(t_fd *fd);
-int		handle_redirect(t_token *token, t_fd *fd);
+int		handle_redirect(t_mini *mini, t_token *token);
 
 /*
 *** cmd ***

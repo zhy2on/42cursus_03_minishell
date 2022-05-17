@@ -6,26 +6,67 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 21:17:48 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:13:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	env(t_env *envs)
+void	status_error_check(t_mini *mini, char *str)
 {
-	t_env	*ptr;
+	int		cnt;
+	char	*s;
 
-	ptr = envs->first;
-	while (ptr)
+	s = str;
+	while (*s == '0')
+		s++;
+	mini->status = mini->status * ft_atoi(s);
+	if (!*s)
 	{
-		if (ptr->value)
-		{
-			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
-			join_putstr_fd("\n", 0, 0, STDOUT);
-		}
-		ptr = ptr->next;
+		ft_putendl_fd("exit", STDOUT);
+		exit(0);
 	}
+	cnt = 0;
+	while (ft_isdigit(*s))
+	{
+		s++;
+		cnt++;
+	}
+	if (*s || cnt >= 20)
+	{
+		ft_putendl_fd("exit", STDERR);
+		join_putstr_fd("minishell: exit: ", str,
+			": numeric argument required\n", STDERR);
+		exit(255);
+	}
+}
+
+void	ft_exit(t_mini *mini, char **args)
+{
+	char	*str;
+
+	if (!args[1])
+	{
+		ft_putendl_fd("exit", STDOUT);
+		exit(mini->status);
+	}
+	args++;
+	str = *args;
+	mini->status = 1;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			mini->status = -1;
+		str++;
+	}
+	status_error_check(mini, str);
+	if (*(args + 1))
+	{
+		ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR);
+		return ;
+	}
+	ft_putendl_fd("exit", STDOUT);
+	exit(mini->status);
 }
 
 void	unset(t_env *envs, char **args)
@@ -49,34 +90,6 @@ void	unset(t_env *envs, char **args)
 		if (!*s)
 			remove_env(envs, *args);
 		args++;
-	}
-}
-
-void	export(t_env *envs, char **args)
-{
-	t_env	*ptr;
-
-	if (!args[1])
-	{
-		ptr = copy_env_list(envs)->first;
-		while (ptr)
-		{
-			join_putstr_fd("declare -x ", ptr->key, 0, STDOUT);
-			if (ptr->value)
-				join_putstr_fd("=\"", ptr->value, "\"", STDOUT);
-			join_putstr_fd("\n", 0, 0, STDOUT);
-			ptr = ptr->next;
-		}
-		free_sort_env(envs->first);
-	}
-	else
-	{
-		args = args + 1;
-		while (*args)
-		{
-			add_env(envs, ft_strdup(*args));
-			args++;
-		}
 	}
 }
 
@@ -108,7 +121,7 @@ void	echo(char **args)
 		join_putstr_fd(*args, "\n", 0, STDOUT);
 }
 
-int	builtin(t_env *envs, char **args)
+int	builtin(t_mini *mini, t_env *envs, char **args)
 {
 	char	cwd[PATH_MAX];
 
@@ -127,7 +140,7 @@ int	builtin(t_env *envs, char **args)
 	else if (!ft_strcmp(args[0], "unset"))
 		unset(envs, args);
 	else if (!ft_strcmp(args[0], "exit"))
-		exit(0);
+		ft_exit(mini, args);
 	else
 		return (ERROR);
 	return (SUCCESS);
