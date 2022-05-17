@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:40:21 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 22:04:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	prompt(t_mini *mini)
 				run_cmd(mini, cmd, create_args(cmd), 0);
 			else
 				run_cmd_with_pipe(mini, cmd);
-			free_token(&mini->tokens);
 		}
+		free_token(&mini->tokens);
 		free(str);
 	}
 }

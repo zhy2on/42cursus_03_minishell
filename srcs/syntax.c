@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:43:18 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/17 21:08:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 22:03:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int	syntax_check_next(t_mini *mini, t_token *tokens)
 {
 	if (!tokens->next)
 	{
-		ft_putendl_fd("minishell: syntax error near unexpected token `newline'",
-			STDERR);
+		join_putstr_fd("minishell: syntax error near unexpected token",
+			"`newline'\n", 0, STDERR);
 		mini->exit_code = 2;
 		return (0);
 	}
@@ -34,7 +34,7 @@ int	syntax_check_next(t_mini *mini, t_token *tokens)
 		if (tokens->next->type >= REDIROUT && tokens->next->type <= HEREDOC)
 		{
 			join_putstr_fd("minishell: syntax error near unexpected token `",
-				tokens->next->str, "'", STDERR);
+				tokens->next->str, "'\n", STDERR);
 			mini->exit_code = 2;
 			return (0);
 		}
@@ -50,7 +50,8 @@ int	syntax_check(t_mini *mini, t_token *token)
 	tokens = token->first;
 	if (tokens->type == PIPE)
 	{
-		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		join_putstr_fd("minishell: syntax error near unexpected token",
+			"`|'\n", 0, STDERR);
 		mini->exit_code = 2;
 		return (0);
 	}
