@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 20:46:26 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 18:39:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 {
 	if (handle_redirect(mini, cmd) == ERROR)
 		return ;
-	g_exit_code = builtin(&mini->envs, args);
-	if (g_exit_code != SUCCESS)
+	if (builtin(&mini->envs, args) != SUCCESS)
 		pre_exec(args, &mini->envs, flag);
 	free(args);
 }
