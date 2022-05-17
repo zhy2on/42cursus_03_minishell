@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 17:24:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 21:33:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,8 @@ typedef struct s_mini
 	t_env	envs;
 	t_token	tokens;
 	t_fd	fd;
-	pid_t	pid;
+	uint8_t	exit_code;
 }				t_mini;
-
-int		g_exit_code;
 
 /*
 *** parsing ***
@@ -95,16 +93,9 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** syntax ***
 */
-int		check_meta(t_token *tokens);
-int		syntax_check_next(t_token *tokens);
-int		syntax_check(t_token *token);
-
-/*
-*** syntax_utils ***
-*/
-void	syntax_error(char *err);
-void	print_errmsg(char *str, char *msg);
 int		check_type(int type);
+int		syntax_check_next(t_mini *mini, t_token *tokens);
+int		syntax_check(t_mini *mini, t_token *token);
 
 /*
 *** dollar ***
@@ -140,17 +131,17 @@ int		next_has_pipe(t_token *token);
 /*
 *** builtin ***
 */
-void	status_error_check(char *str);
-void	ft_exit(char **args);
-void	unset(t_env *envs, char **args);
-void	echo(char **args);
-int		builtin(t_env *envs, char **args);
+void	status_error_check(t_mini *mini, int sign, char *str);
+void	ft_exit(t_mini *mini, char **args);
+void	unset(t_mini *mini, t_env *envs, char **args);
+void	echo(t_mini *mini, char **args);
+int		builtin(t_mini *mini, char **args);
 
 /*
 *** cd ***
 */
-void	cd(t_env *envs, char **args);
-void	cd_sub(t_env *envs, char **args);
+void	cd(t_mini *mini, t_env *envs, char **args);
+void	cd_sub(t_mini *mini, t_env *envs, char **args);
 
 /*
 *** env ***
@@ -158,8 +149,8 @@ void	cd_sub(t_env *envs, char **args);
 void	remove_env(t_env *envs, char *key);
 t_env	*search_env(t_env *envs, char *key);
 void	add_env_sub(t_env *envs, char *key, char *value);
-void	add_env(t_env *envs, char *name);
-void	env(t_env *envs);
+int		add_env(t_env *envs, char *name);
+void	env(t_mini *mini, t_env *envs);
 
 /*
 *** export ***
@@ -168,7 +159,7 @@ char	*validate_key(char *key, char *cmd);
 void	free_sort_env(t_env *envs);
 t_env	*sort_env_list(t_env *temp);
 t_env	*copy_env_list(t_env *envs);
-void	export(t_env *envs, char **args);
+void	export(t_mini *mini, t_env *envs, char **args);
 
 /*
 *** redirect ***
@@ -182,17 +173,11 @@ int		handle_redirect(t_mini *mini, t_token *token);
 /*
 *** exec ***
 */
-int		pre_exec(char **args, t_env *envs, int flag);
-void	exe_command(char **args, t_env *envs);
-void	setting_argv(char *argv[]);
-void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
-
-/*
-*** exec_utils ***
-*/
-int		j_lstsize(t_env *lst);
 char	**convert_env(t_env *envs);
-void	check_newline(char buffer[]);
+int		pre_exec(t_mini *mini, char **args, int flag);
+void	exe_command(t_mini *mini, char **args);
+void	check_newline(char *buffer);
+void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
 
 /*
 *** tools ***
@@ -206,7 +191,7 @@ int		join_putstr_fd(char *a, char *b, char *c, int fd);
 /*
 *** signal ***
 */
-void	set_exit_code(int status);
+void	set_exit_code(t_mini *mini, int status);
 void	handler_1(int signo);
 void	handler_2(int signo);
 void	set_signal(void);

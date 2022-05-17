@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 18:39:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 21:40:21 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ void	restore_inout(t_fd *fd)
 
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 {
-	if (handle_redirect(mini, cmd) == ERROR)
+	if (!handle_redirect(mini, cmd))
 		return ;
-	if (builtin(&mini->envs, args) != SUCCESS)
-		pre_exec(args, &mini->envs, flag);
+	if (!builtin(mini, args))
+		pre_exec(mini, args, flag);
 	free(args);
 }
 
@@ -37,9 +37,8 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		if (parsing_line(str, mini) == SUCCESS)
+		if (parsing_line(str, mini) && syntax_check(mini, &mini->tokens))
 		{
-			syntax_check(&mini->tokens);
 			add_history(str);
 			cmd = mini->tokens.first;
 			if (!next_has_pipe(cmd))

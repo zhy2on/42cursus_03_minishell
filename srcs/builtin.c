@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:13:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 21:16:28 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	status_error_check(char *str)
+void	status_error_check(t_mini *mini, int sign, char *str)
 {
 	int		cnt;
 	char	*s;
@@ -20,7 +20,7 @@ void	status_error_check(char *str)
 	s = str;
 	while (*s == '0')
 		s++;
-	g_exit_code = g_exit_code * ft_atoi(s);
+	mini->exit_code = sign * ft_atoi(s);
 	if (!*s)
 	{
 		ft_putendl_fd("exit", STDOUT);
@@ -41,62 +41,54 @@ void	status_error_check(char *str)
 	}
 }
 
-void	ft_exit(char **args)
+void	ft_exit(t_mini *mini, char **args)
 {
 	char	*str;
+	int		sign;
 
 	if (!args[1])
 	{
 		ft_putendl_fd("exit", STDOUT);
-		exit(g_exit_code);
+		exit(mini->exit_code);
 	}
-	args++;
-	str = *args;
-	g_exit_code = 1;
+	str = *(++args);
+	sign = 1;
 	if (*str == '+' || *str == '-')
 	{
 		if (*str == '-')
-			g_exit_code = -1;
+			sign = -1;
 		str++;
 	}
-	status_error_check(str);
+	status_error_check(mini, sign, str);
 	if (*(args + 1))
 	{
 		ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR);
+		mini->exit_code = ERROR;
 		return ;
 	}
 	ft_putendl_fd("exit", STDOUT);
-	exit(g_exit_code);
+	exit(mini->exit_code);
 }
 
-void	unset(t_env *envs, char **args)
+void	unset(t_mini *mini, t_env *envs, char **args)
 {
-	char	*s;
-
+	mini->exit_code = SUCCESS;
 	args = args + 1;
 	while (*args)
 	{
-		s = *args;
-		while (*s)
-		{
-			if (!ft_isalnum(*s))
-			{
-				join_putstr_fd("minishell: unset: `", *args,
-					"': not a valid identifier\n", STDERR);
-				break ;
-			}
-			s++;
-		}
-		if (!*s)
+		if (!validate_key(*args, "unset"))
+			mini->exit_code = ERROR;
+		else
 			remove_env(envs, *args);
 		args++;
 	}
 }
 
-void	echo(char **args)
+void	echo(t_mini *mini, char **args)
 {
 	char	*ptr;
 
+	mini->exit_code = SUCCESS;
 	if (!args[1] && join_putstr_fd("\n", 0, 0, STDOUT))
 		return ;
 	ptr = args[1];
@@ -121,27 +113,27 @@ void	echo(char **args)
 		join_putstr_fd(*args, "\n", 0, STDOUT);
 }
 
-int	builtin(t_env *envs, char **args)
+int	builtin(t_mini *mini, char **args)
 {
 	char	cwd[PATH_MAX];
 
 	if (!args[0])
-		return (SUCCESS);
+		return (1);
 	if (!ft_strcmp(args[0], "pwd"))
 		join_putstr_fd(getcwd(cwd, PATH_MAX), "\n", 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
-		cd(envs, args);
+		cd(mini, &mini->envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
-		echo(args);
+		echo(mini, args);
 	else if (!ft_strcmp(args[0], "env"))
-		env(envs);
+		env(mini, &mini->envs);
 	else if (!ft_strcmp(args[0], "export"))
-		export(envs, args);
+		export(mini, &mini->envs, args);
 	else if (!ft_strcmp(args[0], "unset"))
-		unset(envs, args);
+		unset(mini, &mini->envs, args);
 	else if (!ft_strcmp(args[0], "exit"))
-		ft_exit(args);
+		ft_exit(mini, args);
 	else
-		return (ERROR);
-	return (SUCCESS);
+		return (0);
+	return (1);
 }

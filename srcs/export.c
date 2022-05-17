@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:22:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:07:44 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 20:31:17 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,13 @@ t_env	*copy_env_list(t_env *envs)
 	return (sort_env_list(temp));
 }
 
-void	export(t_env *envs, char **args)
+void	export(t_mini *mini, t_env *envs, char **args)
 {
 	t_env	*ptr;
 
 	if (!args[1])
 	{
+		mini->exit_code = SUCCESS;
 		ptr = copy_env_list(envs)->first;
 		while (ptr)
 		{
@@ -129,8 +130,12 @@ void	export(t_env *envs, char **args)
 	}
 	else
 	{
+		mini->exit_code = SUCCESS;
 		args += 1;
 		while (*args)
-			add_env(envs, ft_strdup(*args++));
+		{
+			if (!add_env(envs, ft_strdup(*args++)))
+				mini->exit_code = ERROR;
+		}
 	}
 }

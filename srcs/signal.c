@@ -6,21 +6,21 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 20:37:36 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/15 17:13:28 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 21:18:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	set_exit_code(int status)
+void	set_exit_code(t_mini *mini, int status)
 {
 	if (WIFSIGNALED(status))
 	{
 		handler_2(WTERMSIG(status));
-		g_exit_code = 128 + WTERMSIG(status);
+		mini->exit_code = 128 + WTERMSIG(status);
 	}
 	else
-		g_exit_code = WEXITSTATUS(status);
+		mini->exit_code = WEXITSTATUS(status);
 }
 
 void	handler_1(int signo)

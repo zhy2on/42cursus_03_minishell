@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:34:20 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 21:43:31 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	heredoc(t_mini *mini, t_token *token)
 	}
 	close(mini->fd.hd[1]);
 	wait(&status);
+	if (!WIFEXITED(status))
+		mini->exit_code = ERROR;
 }
 
 void	set_heredoc_fd(t_mini *mini, t_token *token)
@@ -54,29 +56,29 @@ int	change_inout_sub(t_mini *mini, t_token *token)
 	{
 		if (mini->fd.fd[1] == -1)
 		{
+			mini->exit_code = ERROR;
 			join_putstr_fd("minishell: ", token->next->str,
 				": No such file or directory\n", STDERR);
-			return (ERROR);
+			return (0);
 		}
 	}
 	else if (token->type == REDIRIN || token->type == HEREDOC)
 	{
 		if (mini->fd.fd[0] == -1)
 		{
+			mini->exit_code = ERROR;
 			join_putstr_fd("minishell: ", token->next->str,
 				": No such file or directory\n", STDERR);
-			return (ERROR);
+			return (0);
 		}
 	}
 	dup2(mini->fd.fd[1], STDOUT);
 	dup2(mini->fd.fd[0], STDIN);
-	return (SUCCESS);
+	return (1);
 }
 
 int	change_inout(t_mini *mini, t_token *token)
 {
-	if (!token->next)
-		return (SUCCESS);
 	if (token->type == REDIROUT)
 	{
 		close(mini->fd.fd[1]);
@@ -104,15 +106,16 @@ int	change_inout(t_mini *mini, t_token *token)
 
 int	handle_redirect(t_mini *mini, t_token *token)
 {
+	mini->exit_code = SUCCESS;
 	set_heredoc_fd(mini, token);
 	while (token && token->type != PIPE)
 	{
 		if (token->type > DIRE && token->type < PIPE)
 		{
-			if (change_inout(mini, token) == ERROR)
-				return (ERROR);
+			if (!change_inout(mini, token))
+				return (0);
 		}
 		token = token->next;
 	}
-	return (SUCCESS);
+	return (1);
 }

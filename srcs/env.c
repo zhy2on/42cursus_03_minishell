@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:14:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 20:28:17 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,25 +82,27 @@ void	add_env_sub(t_env *envs, char *key, char *value)
 	}
 }
 
-void	add_env(t_env *envs, char *name)
+int	add_env(t_env *envs, char *name)
 {
 	char	*s;
 	char	*value;
 
 	s = validate_key(name, "export");
 	if (!s)
-		return ;
+		return (0);
 	value = NULL;
 	if (*s == '=')
 		value = s + 1;
 	*s = '\0';
 	add_env_sub(envs, name, value);
+	return (1);
 }
 
-void	env(t_env *envs)
+void	env(t_mini *mini, t_env *envs)
 {
 	t_env	*ptr;
 
+	mini->exit_code = SUCCESS;
 	ptr = envs->first;
 	while (ptr)
 	{

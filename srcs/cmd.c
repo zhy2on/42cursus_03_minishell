@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:30:33 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/17 21:37:24 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	**create_args(t_token *token)
 	return (ret);
 }
 
-void	wait_pipe_pid(void)
+void	wait_pipe_pid(t_mini *mini)
 {
 	int	flag;
 	int	status;
@@ -71,6 +71,7 @@ void	wait_pipe_pid(void)
 			handler_2(WTERMSIG(status));
 			flag = 1;
 		}
+		set_exit_code(mini, status);
 	}
 	set_signal();
 }
@@ -84,8 +85,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		args = create_args(cmd);
 		pipe(mini->fd.pd);
 		signal(SIGQUIT, SIG_DFL);
-		mini->pid = fork();
-		if (mini->pid == 0)
+		if (fork() == 0)
 		{
 			if (next_has_pipe(cmd))
 				dup2(mini->fd.pd[1], 1);
@@ -99,5 +99,5 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		}
 		cmd = next_cmd(cmd);
 	}
-	wait_pipe_pid();
+	wait_pipe_pid(mini);
 }
