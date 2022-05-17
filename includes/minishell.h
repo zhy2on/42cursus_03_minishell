@@ -40,7 +40,7 @@ enum e_std_type
 {
 	STDIN = 0,
 	STDOUT = 1,
-	STDERR = 22222
+	STDERR = 2
 } ;
 
 enum e_return_type
