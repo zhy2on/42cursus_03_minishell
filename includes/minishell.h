@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:33:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 22:05:55 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ int		handle_redirect(t_mini *mini, t_token *token);
 *** exec ***
 */
 char	**convert_env(t_env *envs);
-int		pre_exec(t_mini *mini, char **args, int flag);
+void	pre_exec(t_mini *mini, char **args, int flag);
 void	exe_command(t_mini *mini, char **args);
 void	check_newline(char *buffer);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);

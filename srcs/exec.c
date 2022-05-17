@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:46:58 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 22:05:48 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**convert_env(t_env *envs)
 	return (env);
 }
 
-int	pre_exec(t_mini *mini, char **args, int flag)
+void	pre_exec(t_mini *mini, char **args, int flag)
 {
 	int	status;
 
@@ -60,7 +60,6 @@ int	pre_exec(t_mini *mini, char **args, int flag)
 	}
 	else
 		exe_command(mini, args);
-	return (SUCCESS);
 }
 
 void	exe_command(t_mini *mini, char **args)
