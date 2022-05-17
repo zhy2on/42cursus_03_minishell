@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: minjune <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/07/20 15:22:50 by minjune           #+#    #+#              #
-#    Updated: 2022/05/12 12:49:57 by junyopar         ###   ########.fr        #
+#    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
+#    Updated: 2022/05/17 18:18:20 by junyopar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ FLAGS = -Wall -Wextra -Werror
 LIBRARIES = -lft -L$(LIBFT_DIRECTORY) -lreadline -L$(READLINE_DIRECTORY)
 INCLUDES = -I$(HEADERS_DIRECTORY) -I$(LIBFT_HEADERS) -I$(READLINE_HEADERS)
 
-USERS 		:= $(shell Users)
+USERS := $(shell Users)
 
 READLINE_DIRECTORY = /Users/$(USERS)/.brew/opt/readline/lib/
 READLINE_HEADERS = /Users/$(USERS)/.brew/opt/readline/include/
