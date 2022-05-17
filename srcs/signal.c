@@ -12,6 +12,17 @@
 
 #include "../includes/minishell.h"
 
+void	set_exit_code(int status)
+{
+	if (WIFSIGNALED(status))
+	{
+		handler_2(WTERMSIG(status));
+		g_exit_code = 128 + WTERMSIG(status);
+	}
+	else
+		g_exit_code = WEXITSTATUS(status);
+}
+
 void	handler_1(int signo)
 {
 	char	*str;

@@ -91,7 +91,6 @@ t_env	*sort_env_list(t_env *temp)
 t_env	*copy_env_list(t_env *envs)
 {
 	t_env	*ptr;
-	t_env	*ptr2;
 	t_env	*temp;
 	char	*joinstr;
 

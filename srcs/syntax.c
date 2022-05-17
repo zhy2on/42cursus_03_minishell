@@ -22,7 +22,7 @@ int	check_meta(t_token *tokens)
 			ft_putstr_fd("`", 2);
 			ft_putstr_fd(tokens->next->str, 2);
 			ft_putendl_fd("`", 2);
-			g_status = 2;
+			g_exit_code = 2;
 			return (2);
 		}
 	}
@@ -35,19 +35,19 @@ int	syntax_check_next(t_token *tokens)
 	{
 		ft_putendl_fd \
 			("minishell: syntax error near unexpected token `newline'", 2);
-		g_status = 2;
-		return (2);
+		g_exit_code = 2;
+		return (g_exit_code);
 	}
 	else if (opendir(tokens->next->str) && tokens->type != REDIRIN)
 	{
 		print_errmsg(tokens->next->str, "Is a Directory");
-		g_status = 2;
-		return (g_status);
+		g_exit_code = 2;
+		return (g_exit_code);
 	}
 	else
 	{
 		if (check_meta(tokens) > 0)
-			return (g_status);
+			return (g_exit_code);
 	}
 	return (EXIT_SUCCESS);
 }
@@ -61,8 +61,8 @@ int	syntax_check(t_token *token)
 	if (tokens->type == PIPE)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-		g_status = 2;
-		return (2);
+		g_exit_code = 2;
+		return (g_exit_code);
 	}
 	while (tokens)
 	{

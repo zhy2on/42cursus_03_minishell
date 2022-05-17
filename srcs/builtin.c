@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	status_error_check(t_mini *mini, char *str)
+void	status_error_check(char *str)
 {
 	int		cnt;
 	char	*s;
@@ -20,7 +20,7 @@ void	status_error_check(t_mini *mini, char *str)
 	s = str;
 	while (*s == '0')
 		s++;
-	mini->status = mini->status * ft_atoi(s);
+	g_exit_code = g_exit_code * ft_atoi(s);
 	if (!*s)
 	{
 		ft_putendl_fd("exit", STDOUT);
@@ -41,32 +41,32 @@ void	status_error_check(t_mini *mini, char *str)
 	}
 }
 
-void	ft_exit(t_mini *mini, char **args)
+void	ft_exit(char **args)
 {
 	char	*str;
 
 	if (!args[1])
 	{
 		ft_putendl_fd("exit", STDOUT);
-		exit(mini->status);
+		exit(g_exit_code);
 	}
 	args++;
 	str = *args;
-	mini->status = 1;
+	g_exit_code = 1;
 	if (*str == '+' || *str == '-')
 	{
 		if (*str == '-')
-			mini->status = -1;
+			g_exit_code = -1;
 		str++;
 	}
-	status_error_check(mini, str);
+	status_error_check(str);
 	if (*(args + 1))
 	{
 		ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR);
 		return ;
 	}
 	ft_putendl_fd("exit", STDOUT);
-	exit(mini->status);
+	exit(g_exit_code);
 }
 
 void	unset(t_env *envs, char **args)
@@ -121,7 +121,7 @@ void	echo(char **args)
 		join_putstr_fd(*args, "\n", 0, STDOUT);
 }
 
-int	builtin(t_mini *mini, t_env *envs, char **args)
+int	builtin(t_env *envs, char **args)
 {
 	char	cwd[PATH_MAX];
 
@@ -140,7 +140,7 @@ int	builtin(t_mini *mini, t_env *envs, char **args)
 	else if (!ft_strcmp(args[0], "unset"))
 		unset(envs, args);
 	else if (!ft_strcmp(args[0], "exit"))
-		ft_exit(mini, args);
+		ft_exit(args);
 	else
 		return (ERROR);
 	return (SUCCESS);

@@ -26,8 +26,7 @@ int	pre_exec(char **args, t_env *envs, int flag)
 			ignore_signal();
 			wait(&status);
 			set_signal();
-			if (WIFSIGNALED(status))
-				handler_2(WTERMSIG(status));
+			set_exit_code(status);
 		}
 	}
 	else
@@ -45,8 +44,10 @@ void	exe_command(char **args, t_env *envs)
 	find_abs_exe(args[0], convertenv, buf, 4096);
 	if (buf[0] == '\0')
 	{
-		fprintf(stderr, "command not found\n");
-		exit(127);
+		join_putstr_fd("minishell: ", args[0],
+			": command not found\n", STDERR);
+		g_exit_code = 127;
+		exit(g_exit_code);
 	}
 	else
 		execve(buf, args, convertenv);

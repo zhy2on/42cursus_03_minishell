@@ -97,7 +97,6 @@ int	parsing_line(char *str, t_mini *mini)
 	quot = '\0';
 	i = 0;
 	trim_space(str, &quot, i);
-	printf("trim:%s$\n", str);
 	if (quot)
 	{
 		join_putstr_fd("minishell: syntax error with unclosed quotes\n",

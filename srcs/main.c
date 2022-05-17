@@ -18,23 +18,14 @@ void	restore_inout(t_fd *fd)
 	dup2(fd->sd[1], STDOUT);
 }
 
-int	parsing_cmd(char *str, t_mini *mini)
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 {
-	int		i;
-	char	quot;
-	t_token	*tmp;
-
-	i = 0;
-	quot = '\0';
-	if (parsing_line(str, mini) == ERROR)
-		return (ERROR);
-	tmp = mini->tokens.first;
-	while (tmp)
-	{
-		printf("%d %s\n", tmp->type, tmp->str);
-		tmp = tmp->next;
-	}
-	return (SUCCESS);
+	if (handle_redirect(mini, cmd) == ERROR)
+		return ;
+	g_exit_code = builtin(&mini->envs, args);
+	if (g_exit_code != SUCCESS)
+		pre_exec(args, &mini->envs, flag);
+	free(args);
 }
 
 void	prompt(t_mini *mini)
@@ -47,7 +38,7 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		if (parsing_cmd(str, mini) == SUCCESS)
+		if (parsing_line(str, mini) == SUCCESS)
 		{
 			syntax_check(&mini->tokens);
 			add_history(str);
@@ -83,7 +74,6 @@ int	main(int ac, char **av, char **env)
 	mini.tokens.first = NULL;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
-	mini.status = 0;
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
 	init_shlvl(&mini.envs);

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:10:32 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:34:20 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	heredoc(t_mini *mini, t_token *token)
 {
 	char	*str;
+	int		status;
 
 	pipe(mini->fd.hd);
 	if (fork() == 0)
@@ -34,7 +35,7 @@ void	heredoc(t_mini *mini, t_token *token)
 		exit(0);
 	}
 	close(mini->fd.hd[1]);
-	wait(&mini->status);
+	wait(&status);
 }
 
 void	set_heredoc_fd(t_mini *mini, t_token *token)

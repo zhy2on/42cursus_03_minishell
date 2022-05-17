@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 20:54:56 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/17 16:30:33 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,10 @@ char	**create_args(t_token *token)
 	return (ret);
 }
 
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
-{
-	if (handle_redirect(mini, cmd) == ERROR)
-		return ;
-	if (builtin(mini, &mini->envs, args) != SUCCESS)
-		pre_exec(args, &mini->envs, flag);
-	free(args);
-}
-
 void	wait_pipe_pid(void)
 {
-	int	status;
 	int	flag;
+	int	status;
 
 	flag = 0;
 	ignore_signal();
@@ -87,7 +78,6 @@ void	wait_pipe_pid(void)
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
 	char	**args;
-	int		status;
 
 	while (cmd)
 	{
