@@ -115,7 +115,7 @@ int	builtin(t_env *envs, char **args)
 	if (!args[0])
 		return (SUCCESS);
 	if (!ft_strcmp(args[0], "pwd"))
-		join_putstr_fd(getcwd(cwd, PATH_MAX), 0, 0, STDOUT);
+		join_putstr_fd(getcwd(cwd, PATH_MAX), "\n", 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(envs, args);
 	else if (!ft_strcmp(args[0], "echo"))
