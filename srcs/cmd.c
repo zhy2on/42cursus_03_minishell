@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/18 16:09:59 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 16:23:44 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,19 @@ char	**create_args(t_token *token)
 	return (ret);
 }
 
-void	wait_pipe_pid(t_mini *mini)
+void	wait_pipe_pid(t_mini *mini, pid_t last_pid)
 {
 	int	flag;
 	int	status;
+	int	pid;
 
 	flag = 0;
 	ignore_signal();
-	while (waitpid(-1, &status, 0) > 0)
+	while (1)
 	{
+		pid = waitpid(-1, &status, 0);
+		if (pid <= 0)
+			break ;
 		if (WIFSIGNALED(status))
 		{
 			if (!flag)
@@ -73,9 +77,10 @@ void	wait_pipe_pid(t_mini *mini)
 				handler_2(WTERMSIG(status));
 				flag = 1;
 			}
-			mini->exit_code = 128 + WTERMSIG(status);
+			if (last_pid == pid)
+				mini->exit_code = 128 + WTERMSIG(status);
 		}
-		else
+		else if (last_pid == pid)
 			mini->exit_code = WEXITSTATUS(status);
 	}
 	set_signal();
@@ -84,13 +89,15 @@ void	wait_pipe_pid(t_mini *mini)
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
 	char	**args;
+	pid_t	pid;
 
 	while (cmd)
 	{
 		args = create_args(cmd);
 		pipe(mini->fd.pd);
 		signal(SIGQUIT, SIG_DFL);
-		if (fork() == 0)
+		pid = fork();
+		if (pid == 0)
 		{
 			if (next_has_pipe(cmd))
 				dup2(mini->fd.pd[1], 1);
@@ -104,5 +111,5 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		}
 		cmd = next_cmd(cmd);
 	}
-	wait_pipe_pid(mini);
+	wait_pipe_pid(mini, pid);
 }

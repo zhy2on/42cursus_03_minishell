@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/18 15:34:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 16:26:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,10 +125,12 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 /*
 *** cmd ***
 */
-char	**create_args(t_token *token);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
-void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 int		next_has_pipe(t_token *token);
+t_token	*next_cmd(t_token *ptr);
+char	**create_args(t_token *token);
+void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
+void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*
 *** builtin ***
