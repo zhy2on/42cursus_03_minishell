@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 22:05:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 15:34:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <dirent.h>
+# include <sys/stat.h>
 
 enum e_token_type
 {
@@ -78,7 +79,7 @@ typedef struct s_mini
 	t_env	envs;
 	t_token	tokens;
 	t_fd	fd;
-	uint8_t	exit_code;
+	int		exit_code;
 }				t_mini;
 
 /*
@@ -93,8 +94,9 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** syntax ***
 */
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		check_type(int type);
-int		syntax_check_next(t_mini *mini, t_token *tokens);
+int		syntax_check_next(t_mini *mini, t_token *prev, t_token *token);
 int		syntax_check(t_mini *mini, t_token *token);
 
 /*
@@ -176,7 +178,7 @@ int		handle_redirect(t_mini *mini, t_token *token);
 char	**convert_env(t_env *envs);
 void	pre_exec(t_mini *mini, char **args, int flag);
 void	exe_command(t_mini *mini, char **args);
-void	check_newline(char *buffer);
+void	stat_check(char *args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
 
 /*
@@ -186,7 +188,7 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_sep(char s);
 int		is_quot(char s);
-int		join_putstr_fd(char *a, char *b, char *c, int fd);
+void	check_newline(char *buffer);
 
 /*
 *** signal ***

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 22:04:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 15:29:45 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		if (parsing_line(str, mini) && syntax_check(mini, &mini->tokens))
+		if (parsing_line(str, mini) && syntax_check(mini, mini->tokens.first))
 		{
 			add_history(str);
 			cmd = mini->tokens.first;
@@ -70,6 +70,7 @@ int	main(int ac, char **av, char **env)
 	av[1] = NULL;
 	mini.envs.first = NULL;
 	mini.tokens.first = NULL;
+	mini.exit_code = 0;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
 	while (*env)

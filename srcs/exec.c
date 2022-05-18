@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 22:05:48 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 15:38:53 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,38 +62,46 @@ void	pre_exec(t_mini *mini, char **args, int flag)
 		exe_command(mini, args);
 }
 
+void	stat_check(char *args)
+{
+	struct stat	statbuf;
+
+	stat(args, &statbuf);
+	if (S_ISREG(statbuf.st_mode))
+	{
+		if (!(statbuf.st_mode & S_IXUSR))
+		{
+			join_putstr_fd("minishell: ", args,
+				": Permission denied\n", STDERR);
+			exit(126);
+		}
+	}
+	else if (S_ISDIR(statbuf.st_mode))
+	{
+		join_putstr_fd("minishell: ", args,
+			": is a directory\n", STDERR);
+		exit(126);
+	}
+	else
+	{
+		join_putstr_fd("minishell: ", args,
+			": command not found\n", STDERR);
+		exit(127);
+	}
+}
+
 void	exe_command(t_mini *mini, char **args)
 {
-	char	buf[4096];
-	char	**convertenv;
+	char		buf[4096];
+	char		**convertenv;
 
 	ft_memset(buf, 0, 4096);
 	convertenv = convert_env(&mini->envs);
 	find_abs_exe(args[0], convertenv, buf, 4096);
 	if (buf[0] == '\0')
-	{
-		join_putstr_fd("minishell: ", args[0],
-			": command not found\n", STDERR);
-		exit(127);
-	}
+		stat_check(args[0]);
 	else
 		execve(buf, args, convertenv);
-}
-
-void	check_newline(char *buffer)
-{
-	int	i;
-
-	i = 0;
-	while (buffer[i] != '\0')
-	{
-		if (buffer[i] == '\n')
-		{
-			buffer[i] = '\0';
-			break ;
-		}
-		i++;
-	}
 }
 
 void	find_abs_exe(char *command, char **envs, char *buffer, int buf_size)

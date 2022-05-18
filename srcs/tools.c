@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:12:48 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 15:33:33 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_env	*get_env_node(char *key, char *value)
 	t_env	*ret;
 
 	ret = malloc(sizeof(t_env));
+	if (!ret)
+		return (NULL);
 	ret->key = key;
 	ret->value = value;
 	ret->next = NULL;
@@ -28,6 +30,8 @@ t_token	*get_token_node(int type, char *str)
 	t_token	*ret;
 
 	ret = malloc(sizeof(t_token));
+	if (!ret)
+		return (NULL);
 	ret->type = type;
 	ret->str = str;
 	ret->next = NULL;
@@ -49,13 +53,18 @@ int	is_quot(char s)
 	return (0);
 }
 
-int	join_putstr_fd(char *a, char *b, char *c, int fd)
+void	check_newline(char *buffer)
 {
-	if (a)
-		ft_putstr_fd(a, fd);
-	if (b)
-		ft_putstr_fd(b, fd);
-	if (c)
-		ft_putstr_fd(c, fd);
-	return (1);
+	int	i;
+
+	i = 0;
+	while (buffer[i] != '\0')
+	{
+		if (buffer[i] == '\n')
+		{
+			buffer[i] = '\0';
+			break ;
+		}
+		i++;
+	}
 }

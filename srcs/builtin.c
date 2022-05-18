@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:16:28 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 14:57:08 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	ft_exit(t_mini *mini, char **args)
 	if (!args[1])
 	{
 		ft_putendl_fd("exit", STDOUT);
-		exit(mini->exit_code);
+		exit((uint8_t)mini->exit_code);
 	}
 	str = *(++args);
 	sign = 1;
@@ -67,7 +67,7 @@ void	ft_exit(t_mini *mini, char **args)
 		return ;
 	}
 	ft_putendl_fd("exit", STDOUT);
-	exit(mini->exit_code);
+	exit((uint8_t)mini->exit_code);
 }
 
 void	unset(t_mini *mini, t_env *envs, char **args)

@@ -6,11 +6,22 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:43:18 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/17 22:03:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 15:33:04 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	join_putstr_fd(char *a, char *b, char *c, int fd)
+{
+	if (a)
+		ft_putstr_fd(a, fd);
+	if (b)
+		ft_putstr_fd(b, fd);
+	if (c)
+		ft_putstr_fd(c, fd);
+	return (1);
+}
 
 int	check_type(int type)
 {
@@ -20,22 +31,28 @@ int	check_type(int type)
 	return (0);
 }
 
-int	syntax_check_next(t_mini *mini, t_token *tokens)
+int	syntax_check_next(t_mini *mini, t_token *prev, t_token *token)
 {
-	if (!tokens->next)
+	if (token->type == PIPE)
 	{
-		join_putstr_fd("minishell: syntax error near unexpected token",
+		if (prev->type >= REDIROUT && prev->type <= PIPE)
+			join_putstr_fd("minishell: syntax error near unexpected token ",
+				"`|'\n", 0, STDERR);
+	}
+	else if (!token->next)
+	{
+		join_putstr_fd("minishell: syntax error near unexpected token ",
 			"`newline'\n", 0, STDERR);
-		mini->exit_code = 2;
+		mini->exit_code = 258;
 		return (0);
 	}
-	else if (tokens->type >= REDIROUT && tokens->type <= HEREDOC)
+	else if (token->type >= REDIROUT && token->type <= HEREDOC)
 	{
-		if (tokens->next->type >= REDIROUT && tokens->next->type <= HEREDOC)
+		if (token->next->type >= REDIROUT && token->next->type <= HEREDOC)
 		{
 			join_putstr_fd("minishell: syntax error near unexpected token `",
-				tokens->next->str, "'\n", STDERR);
-			mini->exit_code = 2;
+				token->next->str, "'\n", STDERR);
+			mini->exit_code = 258;
 			return (0);
 		}
 	}
@@ -44,25 +61,28 @@ int	syntax_check_next(t_mini *mini, t_token *tokens)
 
 int	syntax_check(t_mini *mini, t_token *token)
 {
-	int		ret;
-	t_token	*tokens;
+	t_token	*prev;
 
-	tokens = token->first;
-	if (tokens->type == PIPE)
+	if (!token->next && check_type(token->type))
 	{
-		join_putstr_fd("minishell: syntax error near unexpected token",
-			"`|'\n", 0, STDERR);
-		mini->exit_code = 2;
+		if (token->type == PIPE)
+			join_putstr_fd("minishell: syntax error near unexpected token ",
+				"`|'\n", 0, STDERR);
+		else
+			join_putstr_fd("minishell: syntax error near unexpected token ",
+				"`newline'\n", 0, STDERR);
+		mini->exit_code = 258;
 		return (0);
 	}
-	while (tokens)
+	while (token->next)
 	{
-		if (check_type(tokens->type))
+		prev = token;
+		token = token->next;
+		if (check_type(token->type))
 		{
-			if (!syntax_check_next(mini, tokens))
+			if (!syntax_check_next(mini, prev, token))
 				return (0);
 		}
-		tokens = tokens->next;
 	}
 	return (1);
 }
