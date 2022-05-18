@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:43:18 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/18 15:33:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 16:44:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	syntax_check_next(t_mini *mini, t_token *prev, t_token *token)
 		if (prev->type >= REDIROUT && prev->type <= PIPE)
 			join_putstr_fd("minishell: syntax error near unexpected token ",
 				"`|'\n", 0, STDERR);
+		mini->exit_code = 258;
 	}
 	else if (!token->next)
 	{

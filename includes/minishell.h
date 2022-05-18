@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/18 16:26:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 00:49:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,14 @@ typedef struct s_mini
 }				t_mini;
 
 /*
+*** main ***
+*/
+void	restore_inout(t_fd *fd);
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
+void	prompt(t_mini *mini);
+void	init_shlvl(t_env *envs);
+
+/*
 *** parsing ***
 */
 int		sep_check(char *str);
@@ -125,7 +133,6 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 /*
 *** cmd ***
 */
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 int		next_has_pipe(t_token *token);
 t_token	*next_cmd(t_token *ptr);
 char	**create_args(t_token *token);
@@ -135,8 +142,6 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 /*
 *** builtin ***
 */
-void	status_error_check(t_mini *mini, int sign, char *str);
-void	ft_exit(t_mini *mini, char **args);
 void	unset(t_mini *mini, t_env *envs, char **args);
 void	echo(t_mini *mini, char **args);
 int		builtin(t_mini *mini, char **args);
@@ -144,6 +149,7 @@ int		builtin(t_mini *mini, char **args);
 /*
 *** cd ***
 */
+int		cd_home(t_mini *mini, t_env *envs, char **args);
 void	cd(t_mini *mini, t_env *envs, char **args);
 void	cd_sub(t_mini *mini, t_env *envs, char **args);
 
@@ -157,6 +163,13 @@ int		add_env(t_env *envs, char *name);
 void	env(t_mini *mini, t_env *envs);
 
 /*
+*** exit ***
+*/
+void	set_exit_code(t_mini *mini, int status);
+void	status_error_check(t_mini *mini, int sign, char *str);
+void	ft_exit(t_mini *mini, char **args);
+
+/*
 *** export ***
 */
 char	*validate_key(char *key, char *cmd);
@@ -168,8 +181,8 @@ void	export(t_mini *mini, t_env *envs, char **args);
 /*
 *** redirect ***
 */
-void	heredoc(t_mini *mini, t_token *token);
-void	set_heredoc_fd(t_mini *mini, t_token *token);
+int		heredoc(t_mini *mini, t_token *token);
+int		set_heredoc_fd(t_mini *mini, t_token *token);
 int		change_inout_sub(t_mini *mini, t_token *token);
 int		change_inout(t_mini *mini, t_token *token);
 int		handle_redirect(t_mini *mini, t_token *token);
@@ -179,9 +192,18 @@ int		handle_redirect(t_mini *mini, t_token *token);
 */
 char	**convert_env(t_env *envs);
 void	pre_exec(t_mini *mini, char **args, int flag);
-void	exe_command(t_mini *mini, char **args);
 void	stat_check(char *args);
+void	exe_command(t_mini *mini, char **args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
+
+/*
+*** signal ***
+*/
+void	handler_1(int signo);
+void	handler_2(int signo);
+void	handler_3(int signo);
+void	set_signal(void);
+void	ignore_signal(void);
 
 /*
 *** tools ***
@@ -191,14 +213,5 @@ t_token	*get_token_node(int type, char *str);
 int		is_sep(char s);
 int		is_quot(char s);
 void	check_newline(char *buffer);
-
-/*
-*** signal ***
-*/
-void	set_exit_code(t_mini *mini, int status);
-void	handler_1(int signo);
-void	handler_2(int signo);
-void	set_signal(void);
-void	ignore_signal(void);
 
 #endif

@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:43:31 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 00:41:36 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	heredoc(t_mini *mini, t_token *token)
+int	heredoc(t_mini *mini, t_token *token)
 {
 	char	*str;
 	int		status;
@@ -20,34 +20,43 @@ void	heredoc(t_mini *mini, t_token *token)
 	pipe(mini->fd.hd);
 	if (fork() == 0)
 	{
+		signal(SIGINT, handler_3);
 		while (1)
 		{
 			str = readline("> ");
-			if (!str)
-			{
-				ft_putstr_fd("\033[1A> ", STDOUT);
+			if (!str && join_putstr_fd("\033[1A> ", 0, 0, STDOUT))
 				break ;
-			}
 			if (!ft_strcmp(str, token->next->str))
 				break ;
 			ft_putendl_fd(str, mini->fd.hd[1]);
 		}
 		exit(0);
 	}
+	ignore_signal();
 	close(mini->fd.hd[1]);
 	wait(&status);
-	if (!WIFEXITED(status))
-		mini->exit_code = ERROR;
+	set_signal();
+	return (!WEXITSTATUS(status));
 }
 
-void	set_heredoc_fd(t_mini *mini, t_token *token)
+int	set_heredoc_fd(t_mini *mini, t_token *token)
 {
 	while (token)
 	{
 		if (token->type == HEREDOC)
-			heredoc(mini, token);
+		{
+			if (!heredoc(mini, token))
+			{
+				mini->exit_code = ERROR;
+				restore_inout(&mini->fd);
+				return (0);
+			}
+			else
+				mini->exit_code = SUCCESS;
+		}
 		token = token->next;
 	}
+	return (1);
 }
 
 int	change_inout_sub(t_mini *mini, t_token *token)
@@ -61,6 +70,7 @@ int	change_inout_sub(t_mini *mini, t_token *token)
 				": No such file or directory\n", STDERR);
 			return (0);
 		}
+		mini->exit_code = SUCCESS;
 	}
 	else if (token->type == REDIRIN || token->type == HEREDOC)
 	{
@@ -71,6 +81,7 @@ int	change_inout_sub(t_mini *mini, t_token *token)
 				": No such file or directory\n", STDERR);
 			return (0);
 		}
+		mini->exit_code = SUCCESS;
 	}
 	dup2(mini->fd.fd[1], STDOUT);
 	dup2(mini->fd.fd[0], STDIN);
@@ -106,8 +117,8 @@ int	change_inout(t_mini *mini, t_token *token)
 
 int	handle_redirect(t_mini *mini, t_token *token)
 {
-	mini->exit_code = SUCCESS;
-	set_heredoc_fd(mini, token);
+	if (!set_heredoc_fd(mini, token))
+		return (0);
 	while (token && token->type != PIPE)
 	{
 		if (token->type > DIRE && token->type < PIPE)
