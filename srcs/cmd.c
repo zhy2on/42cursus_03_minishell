@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 21:37:24 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/18 16:09:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,17 @@ void	wait_pipe_pid(t_mini *mini)
 	ignore_signal();
 	while (waitpid(-1, &status, 0) > 0)
 	{
-		if (WIFSIGNALED(status) && !flag)
+		if (WIFSIGNALED(status))
 		{
-			handler_2(WTERMSIG(status));
-			flag = 1;
+			if (!flag)
+			{
+				handler_2(WTERMSIG(status));
+				flag = 1;
+			}
+			mini->exit_code = 128 + WTERMSIG(status);
 		}
-		set_exit_code(mini, status);
+		else
+			mini->exit_code = WEXITSTATUS(status);
 	}
 	set_signal();
 }
