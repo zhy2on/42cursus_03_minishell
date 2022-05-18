@@ -3,93 +3,78 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+         #
+#    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/17 18:18:20 by junyopar         ###   ########.fr        #
+#    Updated: 2022/05/19 03:09:37 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 CC = gcc
-FLAGS = -Wall -Wextra -Werror
-LIBRARIES = -lft -L$(LIBFT_DIRECTORY) -lreadline -L$(READLINE_DIRECTORY)
-INCLUDES = -I$(HEADERS_DIRECTORY) -I$(LIBFT_HEADERS) -I$(READLINE_HEADERS)
+CFLAG = -Wall -Wextra -Werror
+LIBFLAG= -lft -L$(LIBFT_DIR) -lreadline -L$(READLINE_DIR)
+INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
 USERS := $(shell Users)
 
-READLINE_DIRECTORY = /Users/$(USERS)/.brew/opt/readline/lib/
-READLINE_HEADERS = /Users/$(USERS)/.brew/opt/readline/include/
+# READLINE_DIRECTORY = /Users/$(USERS)/.brew/opt/readline/lib/
+# READLINE_HEADERS = /Users/$(USERS)/.brew/opt/readline/include/
 
-LIBFT = $(LIBFT_DIRECTORY)libft.a
-LIBFT_DIRECTORY = ./libft/
-LIBFT_HEADERS = $(LIBFT_DIRECTORY)
+READLINE_DIR = /opt/homebrew/opt/readline/lib/
+READLINE_INC = /opt/homebrew/opt/readline/include/
 
-HEADERS_LIST = minishell.h
-HEADERS_DIRECTORY = ./includes/
-HEADERS = $(addprefix $(HEADERS_DIRECTORY), $(HEADERS_LIST))
+LIBFT_DIR = ./libft/
+LIBFT_INC = $(LIBF_DIR)includes/
+LIBFT = $(LIFT_DIR)libft.a
 
-SOURCES_DIRECTORY = ./srcs/
-SOURCES_LIST = main.c \
-				signal.c \
-				builtin.c \
-				cd.c \
-				cmd.c \
-				dollar.c \
-				env.c \
-				exec.c \
-				export.c \
-				exec_utils.c \
-				parsing.c \
-				redirect.c \
-				str_to_token.c \
-				syntax.c \
-				syntax_utils.c \
-				token.c \
-				tools.c
-SOURCES = $(addprefix $(SOURCES_DIRECTORY), $(SOURCES_LIST))
+INC_DIR = ./includes/
+INC_LIST = minishell.h
+INCS = $(addprefix $(INC_DIR), $(INC_LIST))
 
-OBJECTS_DIRECTORY = ./objects/
-OBJECTS_LIST = $(patsubst %.c, %.o, $(SOURCES_LIST))
-OBJECTS	= $(addprefix $(OBJECTS_DIRECTORY), $(OBJECTS_LIST))
+SRC_DIR = ./srcs/
+SRC_LIST = builtin.c env.c main.c str_to_token.c \
+				cd.c exec.c parsing.c syntax.c \
+				cmd.c exit.c redirect.c token.c \
+				dollar.c export.c signal.c tools.c
+SRCS = $(addprefix $(SRC_DIR), $(SRC_LIST))
 
-RED = \033[0;31m
-BLUE = \033[0;34m
+OBJ_DIR = ./objs/
+OBJ_LIST = $(SRC_LIST:.c=.o)
+OBJS = $(addprefix $(OBJ_DIR), $(OBJ_LIST))
+
+CLEAN = "\033[2K \033[A"
+RED = \033[31m
+GREEN = \033[32m
+YELLOW = \033[33m
 RESET = \033[0m
 
-all: $(NAME)
+all : $(NAME)
 
-$(NAME): $(LIBFT) $(OBJECTS_DIRECTORY) $(OBJECTS)
-	@$(CC) $(FLAGS) $(LIBRARIES) $(INCLUDES) $(OBJECTS) -o $(NAME)
-	@echo "\n$(BLUE)$(NAME) : object files created$(RESET)"
-	@echo "$(BLUE)$(NAME) : $(NAME) created$(RESET)"
+$(NAME) : $(LIBFT) $(OBJS)
+	@echo $(CLEAN)
+	@$(CC) $(CFLAG) $(LIBFLAG) $(INCFLAG) $(OBJS) -o $(NAME)
+	@echo "$(GREEN)[$(NAME)]: done$(RESET)"
 
-$(OBJECTS_DIRECTORY):
-	@mkdir -p $(OBJECTS_DIRECTORY)
-	@echo "$(BLUE)$(NAME) : $(OBJECTS_DIRECTORY) created$(RESET)"
+$(OBJ_DIR)%.o : $(SRC_DIR)%.c $(INCS)
+	@mkdir -p $(OBJ_DIR)
+	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
+	@$(CC) $(CFLAG) -c $< -o $@ $(INCFLAG)
 
-$(OBJECTS_DIRECTORY)%.o : $(SOURCES_DIRECTORY)%.c $(HEADERS)
-	@$(CC) $(FLAGS) -c $(INCLUDES) $< -o $@
-	@echo "$(BLUE).$(RESET)\c"
-
-$(LIBFT):
-	@$(MAKE) -sC $(LIBFT_DIRECTORY)
-	@echo "$(BLUE)$(NAME) : $(LIBFT) created$(RESET)"
+$(LIBFT) :
+	@make -sC $(LIBFT_DIR)
 
 clean:
-	@$(MAKE) -sC $(LIBFT_DIRECTORY) clean
-	@echo "$(RED)$(NAME) : libft object files deleted$(RESET)"
-	@rm -rf $(OBJECTS_DIRECTORY)
-	@echo "$(RED)$(NAME) : $(OBJECTS_DIRECTORY) deleted$(RESET)"
+	@make -sC $(LIBFT_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@echo "$(RED)[$(NAME)]: clean$(RESET)"
 
 fclean: clean
-	@rm -f $(LIBFT)
-	@echo "$(RED)$(NAME) : $(LIBFT) deleted$(RESET)"
-	@rm -f $(NAME)
-	@echo "$(RED)$(NAME) : $(NAME) deleted$(RESET)"
+	@rm -rf $(LIBFT_DIR)$(LIBFT)
+	@echo "$(RED)[$(LIBFT)]: deleted$(RESET)"
+	@rm -rf $(NAME)
+	@echo "$(RED)[$(NAME)]: deleted$(RESET)"
 
-re:
-	@$(MAKE) fclean
-	@$(MAKE) all
+re: fclean all
 
 .PHONY: all clean fclean re
