@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/14 18:03:00 by jihoh             #+#    #+#              #
-#    Updated: 2022/05/19 03:02:37 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/19 17:11:06 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,9 @@ CFLAG	= -Wall -Wextra -Werror
 INC		= -I$(INC_DIR)
 
 INC_DIR = includes/
+INC_LIST = libft.h get_next_line.h
+INCS = $(addprefix $(INC_DIR), $(INC_LIST))
+
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
@@ -61,7 +64,7 @@ bonus : $(OBJS) $(OBJS_BONUS)
 	@ar -cr $(NAME) $^
 	@echo "$(GREEN)[$(NAME)]: bonus done$(RESET)"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCS)
 	@mkdir -p $(OBJ_DIR)
 	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
 	@$(CC) $(CFLAG) -c $< -o $@ -I $(INC_DIR)
