@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 03:20:46 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:50:30 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ enum e_return_type
 
 typedef struct s_env
 {
-	struct s_env	*first;
 	char			*key;
 	char			*value;
 	struct s_env	*next;
@@ -59,7 +58,6 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	struct s_token	*first;
 	int				type;
 	char			*str;
 	struct s_token	*next;
@@ -75,8 +73,8 @@ typedef struct s_fd
 
 typedef struct s_mini
 {
-	t_env	envs;
-	t_token	tokens;
+	t_env	*envs;
+	t_token	*tokens;
 	t_fd	fd;
 	int		exit_code;
 }				t_mini;
@@ -87,7 +85,7 @@ typedef struct s_mini
 void	restore_inout(t_fd *fd);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 void	prompt(t_mini *mini);
-void	init_shlvl(t_env *envs);
+void	init_shlvl(t_env **penvs);
 
 /*
 *** parsing ***
@@ -116,9 +114,9 @@ char	*search_dollar_value(t_mini *mini, char *str);
 /*
 *** token ***
 */
-void	free_token(t_token *tokens);
+void	free_token(t_token **ptokens);
 void	set_token_type(t_token *tokens, t_token *token, int is_sep);
-void	add_token(t_token *tokens, char *str, int is_sep);
+void	add_token(t_token **ptokens, char *str, int is_sep);
 int		check_empty_token(char *start, char *str, int i, t_mini *mini);
 void	create_tokens(t_mini *mini, char *str, char *quot, int i);
 
@@ -141,25 +139,25 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 /*
 *** builtin ***
 */
-void	unset(t_mini *mini, t_env *envs, char **args);
+void	unset(t_mini *mini, char **args);
 void	echo(t_mini *mini, char **args);
 int		builtin(t_mini *mini, char **args);
 
 /*
 *** cd ***
 */
-int		cd_home(t_mini *mini, t_env *envs, char **args);
-void	cd(t_mini *mini, t_env *envs, char **args);
-void	cd_sub(t_mini *mini, t_env *envs, char **args);
+int		cd_home(t_mini *mini, char **args);
+void	cd(t_mini *mini, char **args);
+void	cd_sub(t_mini *mini, char **args);
 
 /*
 *** env ***
 */
-void	remove_env(t_env *envs, char *key);
+void	remove_env(t_env **penvs, char *key);
 t_env	*search_env(t_env *envs, char *key);
-void	add_env_sub(t_env *envs, char *key, char *value);
-int		add_env(t_env *envs, char *name);
-void	env(t_mini *mini, t_env *envs);
+void	add_env_sub(t_env **penvs, char *key, char *value);
+int		add_env(t_env **penvs, char *name);
+void	env(t_mini *mini);
 
 /*
 *** exit ***
@@ -175,7 +173,7 @@ char	*validate_key(char *key, char *cmd);
 void	free_sort_env(t_env *envs);
 t_env	*sort_env_list(t_env *temp);
 t_env	*copy_env_list(t_env *envs);
-void	export(t_mini *mini, t_env *envs, char **args);
+void	export(t_mini *mini, char **args);
 
 /*
 *** redirect ***

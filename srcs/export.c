@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:22:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 20:31:17 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:52:12 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_env	*sort_env_list(t_env *temp)
 	char	*temp_key;
 	char	*temp_value;
 
-	ptr = temp->first;
+	ptr = temp;
 	while (ptr)
 	{
 		ptr2 = ptr->next;
@@ -90,13 +90,12 @@ t_env	*sort_env_list(t_env *temp)
 
 t_env	*copy_env_list(t_env *envs)
 {
+	t_env	*copied_list;
 	t_env	*ptr;
-	t_env	*temp;
 	char	*joinstr;
 
-	temp = envs->first;
-	temp->first = NULL;
-	ptr = (envs)->first;
+	copied_list = NULL;
+	ptr = envs;
 	while (ptr)
 	{
 		if (ptr->key && ptr->value)
@@ -104,21 +103,21 @@ t_env	*copy_env_list(t_env *envs)
 			joinstr = NULL;
 			joinstr = ft_strjoin(ptr->key, "=");
 			joinstr = ft_strjoin(joinstr, ptr->value);
-			add_env(temp, joinstr);
+			add_env(&copied_list, joinstr);
 		}
 		ptr = ptr->next;
 	}
-	return (sort_env_list(temp));
+	return (sort_env_list(copied_list));
 }
 
-void	export(t_mini *mini, t_env *envs, char **args)
+void	export(t_mini *mini, char **args)
 {
 	t_env	*ptr;
 
 	if (!args[1])
 	{
 		mini->exit_code = SUCCESS;
-		ptr = copy_env_list(envs)->first;
+		ptr = copy_env_list(mini->envs);
 		while (ptr)
 		{
 			join_putstr_fd("declare -x ", ptr->key, 0, STDOUT);
@@ -134,7 +133,7 @@ void	export(t_mini *mini, t_env *envs, char **args)
 		args += 1;
 		while (*args)
 		{
-			if (!add_env(envs, ft_strdup(*args++)))
+			if (!add_env(&mini->envs, ft_strdup(*args++)))
 				mini->exit_code = ERROR;
 		}
 	}

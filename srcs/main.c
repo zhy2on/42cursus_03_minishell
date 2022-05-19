@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 00:40:51 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:51:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ void	prompt(t_mini *mini)
 		set_signal();
 		restore_inout(&mini->fd);
 		str = readline("🐚minishell$ ");
-		if (parsing_line(str, mini) && syntax_check(mini, mini->tokens.first))
+		if (parsing_line(str, mini) && syntax_check(mini, mini->tokens))
 		{
 			add_history(str);
-			cmd = mini->tokens.first;
+			cmd = mini->tokens;
 			if (!next_has_pipe(cmd))
 				run_cmd(mini, cmd, create_args(cmd), 0);
 			else
@@ -51,30 +51,32 @@ void	prompt(t_mini *mini)
 	}
 }
 
-void	init_shlvl(t_env *envs)
+void	init_shlvl(t_env **penvs)
 {
 	t_env	*shlvl;
 	char	*value;
 
-	shlvl = search_env(envs, "SHLVL");
+	shlvl = search_env(*penvs, "SHLVL");
 	value = ft_itoa(ft_atoi(shlvl->value) + 1);
-	add_env(envs, ft_strjoin("SHLVL=", value));
+	add_env(penvs, ft_strjoin("SHLVL=", value));
 	free(value);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
+	t_env	*ptr;
 
 	ac = 0;
 	av[1] = NULL;
-	mini.envs.first = NULL;
-	mini.tokens.first = NULL;
+	mini.envs = NULL;
+	mini.tokens = NULL;
 	mini.exit_code = 0;
 	mini.fd.sd[0] = dup(STDIN);
 	mini.fd.sd[1] = dup(STDOUT);
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
+	ptr = mini.envs;
 	init_shlvl(&mini.envs);
 	prompt(&mini);
 	return (0);

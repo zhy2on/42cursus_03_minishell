@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/18 16:05:16 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:21:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ char	**convert_env(t_env *envs)
 	t_env	*env_lst;
 	int		lst_size;
 
-	env_lst = envs->first;
+	env_lst = envs;
 	lst_size = 0;
 	while (env_lst != NULL)
 	{
 		lst_size++;
 		env_lst = env_lst->next;
 	}
-	env_lst = envs->first;
+	env_lst = envs;
 	env = (char **)malloc(sizeof(char *) * (lst_size + 1));
 	i = 0;
 	while (i < lst_size && envs != NULL)
@@ -96,7 +96,7 @@ void	exe_command(t_mini *mini, char **args)
 	char		**convertenv;
 
 	ft_memset(buf, 0, 4096);
-	convertenv = convert_env(&mini->envs);
+	convertenv = convert_env(mini->envs);
 	find_abs_exe(args[0], convertenv, buf, 4096);
 	if (buf[0] == '\0')
 		stat_check(args[0]);

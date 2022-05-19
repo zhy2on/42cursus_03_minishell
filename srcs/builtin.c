@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 00:43:22 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:50:36 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	unset(t_mini *mini, t_env *envs, char **args)
+void	unset(t_mini *mini, char **args)
 {
 	mini->exit_code = SUCCESS;
 	args = args + 1;
@@ -21,7 +21,7 @@ void	unset(t_mini *mini, t_env *envs, char **args)
 		if (!validate_key(*args, "unset"))
 			mini->exit_code = ERROR;
 		else
-			remove_env(envs, *args);
+			remove_env(&mini->envs, *args);
 		args++;
 	}
 }
@@ -64,15 +64,15 @@ int	builtin(t_mini *mini, char **args)
 	if (!ft_strcmp(args[0], "pwd"))
 		join_putstr_fd(getcwd(cwd, PATH_MAX), "\n", 0, STDOUT);
 	else if (!ft_strcmp(args[0], "cd"))
-		cd(mini, &mini->envs, args);
+		cd(mini, args);
 	else if (!ft_strcmp(args[0], "echo"))
 		echo(mini, args);
 	else if (!ft_strcmp(args[0], "env"))
-		env(mini, &mini->envs);
+		env(mini);
 	else if (!ft_strcmp(args[0], "export"))
-		export(mini, &mini->envs, args);
+		export(mini, args);
 	else if (!ft_strcmp(args[0], "unset"))
-		unset(mini, &mini->envs, args);
+		unset(mini, args);
 	else if (!ft_strcmp(args[0], "exit"))
 		ft_exit(mini, args);
 	else
