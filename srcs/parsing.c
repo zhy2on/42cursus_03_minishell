@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/18 16:43:48 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 15:49:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,7 @@ int	parsing_line(char *str, t_mini *mini)
 		return (0);
 	}
 	create_tokens(mini, str, &quot, i);
+	if (!mini->tokens.first)
+		return (0);
 	return (1);
 }
