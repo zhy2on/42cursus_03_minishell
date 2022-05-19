@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 00:18:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 01:47:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ typedef struct s_mini
 void	restore_inout(t_fd *fd);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 void	prompt(t_mini *mini);
+
+/*
+*** init ***
+*/
+void	init_mini(t_mini *mini);
 void	init_shlvl(t_env **penvs);
 
 /*
