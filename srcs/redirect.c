@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 00:41:36 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 01:06:54 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	heredoc(t_mini *mini, t_token *token)
 	if (fork() == 0)
 	{
 		signal(SIGINT, handler_3);
+		close(mini->fd.hd[0]);
 		while (1)
 		{
 			str = readline("> ");
@@ -29,11 +30,12 @@ int	heredoc(t_mini *mini, t_token *token)
 			if (!ft_strcmp(str, token->next->str))
 				break ;
 			ft_putendl_fd(str, mini->fd.hd[1]);
+			free(str);
 		}
 		exit(0);
 	}
-	ignore_signal();
 	close(mini->fd.hd[1]);
+	ignore_signal();
 	wait(&status);
 	set_signal();
 	return (!WEXITSTATUS(status));
@@ -45,10 +47,10 @@ int	set_heredoc_fd(t_mini *mini, t_token *token)
 	{
 		if (token->type == HEREDOC)
 		{
+			close(mini->fd.hd[0]);
 			if (!heredoc(mini, token))
 			{
 				mini->exit_code = ERROR;
-				restore_inout(&mini->fd);
 				return (0);
 			}
 			else
@@ -59,7 +61,7 @@ int	set_heredoc_fd(t_mini *mini, t_token *token)
 	return (1);
 }
 
-int	change_inout_sub(t_mini *mini, t_token *token)
+int	check_redir_fd_error(t_mini *mini, t_token *token)
 {
 	if (token->type == REDIROUT || token->type == APPEND)
 	{
@@ -72,7 +74,7 @@ int	change_inout_sub(t_mini *mini, t_token *token)
 		}
 		mini->exit_code = SUCCESS;
 	}
-	else if (token->type == REDIRIN || token->type == HEREDOC)
+	else if (token->type == REDIRIN)
 	{
 		if (mini->fd.fd[0] == -1)
 		{
@@ -83,12 +85,10 @@ int	change_inout_sub(t_mini *mini, t_token *token)
 		}
 		mini->exit_code = SUCCESS;
 	}
-	dup2(mini->fd.fd[1], STDOUT);
-	dup2(mini->fd.fd[0], STDIN);
 	return (1);
 }
 
-int	change_inout(t_mini *mini, t_token *token)
+int	set_redir_fd(t_mini *mini, t_token *token)
 {
 	if (token->type == REDIROUT)
 	{
@@ -112,21 +112,31 @@ int	change_inout(t_mini *mini, t_token *token)
 		close(mini->fd.fd[0]);
 		mini->fd.fd[0] = mini->fd.hd[0];
 	}
-	return (change_inout_sub(mini, token));
+	return (check_redir_fd_error(mini, token));
 }
 
 int	handle_redirect(t_mini *mini, t_token *token)
 {
+	mini->fd.fd[0] = -1;
+	mini->fd.fd[1] = -1;
 	if (!set_heredoc_fd(mini, token))
 		return (0);
 	while (token && token->type != PIPE)
 	{
 		if (token->type > DIRE && token->type < PIPE)
-		{
-			if (!change_inout(mini, token))
+			if (!set_redir_fd(mini, token))
 				return (0);
-		}
 		token = token->next;
+	}
+	if (mini->fd.fd[0] > 0)
+	{
+		dup2(mini->fd.fd[0], STDIN);
+		close(mini->fd.fd[0]);
+	}
+	if (mini->fd.fd[1] > 0)
+	{
+		dup2(mini->fd.fd[1], STDOUT);
+		close(mini->fd.fd[1]);
 	}
 	return (1);
 }
