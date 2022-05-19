@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 01:06:54 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 01:40:41 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	heredoc(t_mini *mini, t_token *token)
 	if (fork() == 0)
 	{
 		signal(SIGINT, handler_3);
-		close(mini->fd.hd[0]);
 		while (1)
 		{
 			str = readline("> ");
@@ -35,6 +34,7 @@ int	heredoc(t_mini *mini, t_token *token)
 		exit(0);
 	}
 	close(mini->fd.hd[1]);
+	dup2(mini->fd.hd[0], STDIN);
 	ignore_signal();
 	wait(&status);
 	set_signal();
@@ -48,6 +48,7 @@ int	set_heredoc_fd(t_mini *mini, t_token *token)
 		if (token->type == HEREDOC)
 		{
 			close(mini->fd.hd[0]);
+			restore_inout(&mini->fd);
 			if (!heredoc(mini, token))
 			{
 				mini->exit_code = ERROR;
@@ -117,8 +118,8 @@ int	set_redir_fd(t_mini *mini, t_token *token)
 
 int	handle_redirect(t_mini *mini, t_token *token)
 {
-	mini->fd.fd[0] = -1;
-	mini->fd.fd[1] = -1;
+	close(mini->fd.fd[0]);
+	close(mini->fd.fd[1]);
 	if (!set_heredoc_fd(mini, token))
 		return (0);
 	while (token && token->type != PIPE)
@@ -129,14 +130,8 @@ int	handle_redirect(t_mini *mini, t_token *token)
 		token = token->next;
 	}
 	if (mini->fd.fd[0] > 0)
-	{
 		dup2(mini->fd.fd[0], STDIN);
-		close(mini->fd.fd[0]);
-	}
 	if (mini->fd.fd[1] > 0)
-	{
 		dup2(mini->fd.fd[1], STDOUT);
-		close(mini->fd.fd[1]);
-	}
 	return (1);
 }

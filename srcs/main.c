@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 01:05:59 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 01:47:17 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,21 +47,11 @@ void	prompt(t_mini *mini)
 				run_cmd(mini, cmd, create_args(cmd), 0);
 			else
 				run_cmd_with_pipe(mini, cmd);
+			printf("%d %d\n", mini->fd.pd[0], mini->fd.pd[1]);
 		}
 		free_token(&mini->tokens);
 		free(str);
 	}
-}
-
-void	init_shlvl(t_env **penvs)
-{
-	t_env	*shlvl;
-	char	*value;
-
-	shlvl = search_env(*penvs, "SHLVL");
-	value = ft_itoa(ft_atoi(shlvl->value) + 1);
-	add_env(penvs, ft_strjoin("SHLVL=", value));
-	free(value);
 }
 
 int	main(int ac, char **av, char **env)
@@ -71,13 +61,7 @@ int	main(int ac, char **av, char **env)
 
 	ac = 0;
 	av[1] = NULL;
-	mini.envs = NULL;
-	mini.tokens = NULL;
-	mini.exit_code = 0;
-	mini.fd.sd[0] = dup(STDIN);
-	mini.fd.sd[1] = dup(STDOUT);
-	mini.fd.hd[0] = -1;
-	mini.fd.hd[1] = -1;
+	init_mini(&mini);
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
 	ptr = mini.envs;
