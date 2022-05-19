@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/19 03:09:37 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/19 17:31:43 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,18 +51,16 @@ RESET = \033[0m
 
 all : $(NAME)
 
-$(NAME) : $(LIBFT) $(OBJS)
+$(NAME) : $(OBJS)
 	@echo $(CLEAN)
+	@make -sC $(LIBFT_DIR)
 	@$(CC) $(CFLAG) $(LIBFLAG) $(INCFLAG) $(OBJS) -o $(NAME)
 	@echo "$(GREEN)[$(NAME)]: done$(RESET)"
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c $(INCS)
 	@mkdir -p $(OBJ_DIR)
-	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
 	@$(CC) $(CFLAG) -c $< -o $@ $(INCFLAG)
-
-$(LIBFT) :
-	@make -sC $(LIBFT_DIR)
+	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
 
 clean:
 	@make -sC $(LIBFT_DIR) clean
