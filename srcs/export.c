@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 15:22:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 18:52:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 19:04:30 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,17 +93,24 @@ t_env	*copy_env_list(t_env *envs)
 	t_env	*copied_list;
 	t_env	*ptr;
 	char	*joinstr;
+	char	*tmp;
 
 	copied_list = NULL;
 	ptr = envs;
 	while (ptr)
 	{
-		if (ptr->key && ptr->value)
+		if (ptr->key)
 		{
-			joinstr = NULL;
-			joinstr = ft_strjoin(ptr->key, "=");
-			joinstr = ft_strjoin(joinstr, ptr->value);
-			add_env(&copied_list, joinstr);
+			if (ptr->value)
+			{
+				joinstr = NULL;
+				tmp = ft_strjoin(ptr->key, "=");
+				joinstr = ft_strjoin(tmp, ptr->value);
+				add_env(&copied_list, joinstr);
+				free(tmp);
+			}
+			else
+				add_env(&copied_list, ft_strdup(ptr->key));
 		}
 		ptr = ptr->next;
 	}
