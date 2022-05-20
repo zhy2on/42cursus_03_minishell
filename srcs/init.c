@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 01:40:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 01:47:45 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 18:03:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,22 @@ void	init_shlvl(t_env **penvs)
 	free(value);
 }
 
+void	init_fd(t_mini *mini)
+{
+	close(mini->fd.fd[0]);
+	mini->fd.fd[0] = -1;
+	close(mini->fd.fd[1]);
+	mini->fd.fd[1] = -1;
+	close(mini->fd.pd[0]);
+	mini->fd.pd[0] = -1;
+	close(mini->fd.pd[1]);
+	mini->fd.pd[1] = -1;
+	close(mini->fd.hd[0]);
+	mini->fd.hd[0] = -1;
+	close(mini->fd.hd[1]);
+	mini->fd.hd[1] = -1;
+}
+
 void	init_mini(t_mini *mini)
 {
 	mini->envs = NULL;
@@ -30,10 +46,5 @@ void	init_mini(t_mini *mini)
 	mini->exit_code = 0;
 	mini->fd.sd[0] = dup(STDIN);
 	mini->fd.sd[1] = dup(STDOUT);
-	mini->fd.fd[0] = -1;
-	mini->fd.fd[1] = -1;
-	mini->fd.pd[0] = -1;
-	mini->fd.pd[1] = -1;
-	mini->fd.hd[0] = -1;
-	mini->fd.hd[1] = -1;
+	init_fd(mini);
 }

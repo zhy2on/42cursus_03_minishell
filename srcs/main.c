@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 01:55:47 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 18:04:06 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	prompt(t_mini *mini)
 	{
 		set_signal();
 		restore_inout(&mini->fd);
+		init_fd(mini);
 		str = readline("🐚minishell$ ");
 		if (!*str)
 			continue ;
