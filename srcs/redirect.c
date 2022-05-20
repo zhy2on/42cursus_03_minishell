@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 01:40:41 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:41:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int	handle_redirect(t_mini *mini, t_token *token)
 				return (0);
 		token = token->next;
 	}
-	if (mini->fd.fd[0] > 0)
+	if (mini->fd.fd[0] > 0 && mini->fd.fd[0] != mini->fd.hd[0])
 		dup2(mini->fd.fd[0], STDIN);
 	if (mini->fd.fd[1] > 0)
 		dup2(mini->fd.fd[1], STDOUT);
