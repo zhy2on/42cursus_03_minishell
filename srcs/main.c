@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:04:06 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 18:42:16 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,6 @@ void	restore_inout(t_fd *fd)
 {
 	dup2(fd->sd[0], STDIN);
 	dup2(fd->sd[1], STDOUT);
-}
-
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
-{
-	if (!handle_redirect(mini, cmd))
-		return ;
-	if (!builtin(mini, args))
-		pre_exec(mini, args, flag);
-	free(args);
 }
 
 void	prompt(t_mini *mini)

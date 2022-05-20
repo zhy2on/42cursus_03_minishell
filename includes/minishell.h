@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:03:57 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 18:42:10 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ typedef struct s_mini
 *** main ***
 */
 void	restore_inout(t_fd *fd);
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 void	prompt(t_mini *mini);
 
 /*
@@ -136,10 +135,16 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 /*
 *** cmd ***
 */
-int		next_has_pipe(t_token *token);
 t_token	*next_cmd(t_token *ptr);
 char	**create_args(t_token *token);
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
+
+/*
+*** pipe_cmd ***
+*/
+int		next_has_pipe(t_token *token);
 void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
+void	set_pipe(int bd[2], int pd[2], int next_has_pipe);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*
