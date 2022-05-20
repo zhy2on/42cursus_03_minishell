@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 19:25:45 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:48:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ typedef struct s_mini
 /*
 *** main ***
 */
-void	restore_inout(t_fd *fd);
 void	prompt(t_mini *mini);
 
 /*
 *** init ***
 */
+void	init_inout(t_mini *mini);
 void	init_fd(t_mini *mini);
 void	init_mini(t_mini *mini);
 void	init_shlvl(t_env **penvs);

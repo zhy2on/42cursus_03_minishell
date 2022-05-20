@@ -6,17 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:54:07 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:49:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	restore_inout(t_fd *fd)
-{
-	dup2(fd->sd[0], STDIN);
-	dup2(fd->sd[1], STDOUT);
-}
 
 void	prompt(t_mini *mini)
 {
@@ -25,9 +19,9 @@ void	prompt(t_mini *mini)
 
 	while (1)
 	{
-		set_signal();
-		restore_inout(&mini->fd);
+		init_inout(mini);
 		init_fd(mini);
+		set_signal();
 		str = readline("🐚minishell$ ");
 		if (str && *str)
 			add_history(str);

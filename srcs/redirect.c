@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 19:41:38 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:48:46 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	set_heredoc_fd(t_mini *mini, t_token *token)
 		if (token->type == HEREDOC)
 		{
 			close(mini->fd.hd[0]);
-			restore_inout(&mini->fd);
+			init_inout(mini);
 			if (!heredoc(mini, token))
 			{
 				mini->exit_code = ERROR;

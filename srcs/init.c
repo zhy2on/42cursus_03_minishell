@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 01:40:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:40:32 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:48:44 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ void	init_fd(t_mini *mini)
 	mini->fd.pd[1] = -1;
 	mini->fd.hd[0] = -1;
 	mini->fd.hd[1] = -1;
+}
+
+void	init_inout(t_mini *mini)
+{
+	dup2(mini->fd.sd[0], STDIN);
+	dup2(mini->fd.sd[1], STDOUT);
 }
 
 void	init_mini(t_mini *mini)
