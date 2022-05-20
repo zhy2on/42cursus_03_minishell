@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:42:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:25:45 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 */
 int		next_has_pipe(t_token *token);
 void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
-void	set_pipe(int bd[2], int pd[2], int next_has_pipe);
+void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*

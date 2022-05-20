@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:42:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 19:25:24 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	wait_pipe_pid(t_mini *mini, pid_t last_pid)
 	set_signal();
 }
 
-void	set_pipe(int bd[2], int pd[2], int next_has_pipe)
+void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe)
 {
 	if (bd[0] > 0)
 	{
@@ -82,7 +82,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		pid = fork();
 		if (pid == 0)
 		{
-			set_pipe(bd, mini->fd.pd, next_has_pipe(cmd));
+			set_pipe_inout(bd, mini->fd.pd, next_has_pipe(cmd));
 			run_cmd(mini, cmd, args, 1);
 		}
 		close(bd[0]);
