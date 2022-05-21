@@ -92,12 +92,12 @@ void	stat_check(char *args)
 
 void	exe_command(t_mini *mini, char **args)
 {
-	char		buf[4096];
+	char		buf[PATH_MAX];
 	char		**convertenv;
 
-	ft_memset(buf, 0, 4096);
+	ft_memset(buf, 0, PATH_MAX);
 	convertenv = convert_env(mini->envs);
-	find_abs_exe(args[0], convertenv, buf, 4096);
+	find_abs_exe(args[0], convertenv, buf, PATH_MAX);
 	if (buf[0] == '\0')
 		stat_check(args[0]);
 	else
