@@ -18,11 +18,8 @@ INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
 USERS := $(shell Users)
 
-# READLINE_DIRECTORY = /Users/$(USERS)/.brew/opt/readline/lib/
-# READLINE_HEADERS = /Users/$(USERS)/.brew/opt/readline/include/
-
-READLINE_DIR = /opt/homebrew/opt/readline/lib/
-READLINE_INC = /opt/homebrew/opt/readline/include/
+READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib/
+READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include/
 
 LIBFT_DIR = ./libft/
 LIBFT_INC = $(LIBF_DIR)includes/
