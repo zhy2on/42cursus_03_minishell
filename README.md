@@ -8,3 +8,5 @@
 - Test: 테스트 코드
 - Chore: 사소한 수정
 - Remove: 파일 삭제
+
+![image](https://user-images.githubusercontent.com/65796820/169678901-82bb2593-7eac-4ac6-8236-cb25af068172.png)
