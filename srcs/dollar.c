@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 17:31:33 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 16:56:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:23:00 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ char	*search_dollar_value(t_mini *mini, char *str)
 	if (!end)
 		return ("$");
 	if (end == str + 2 && *(str + 1) == '?')
-		return (ft_itoa(mini->status));
+		return (ft_itoa(mini->exit_code));
 	end_backup = *end;
 	*end = '\0';
-	ptr = search_env(&mini->envs, str + 1);
+	ptr = search_env(mini->envs, str + 1);
 	if (ptr)
 		ret = ptr->value;
 	*end = end_backup;

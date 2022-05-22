@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/01 21:40:49 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 17:24:04 by jihoh            ###   ########.fr       */
+/*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
+/*   Updated: 2022/05/22 21:03:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
-# include <dirent.h>
+# include <sys/stat.h>
 
 enum e_token_type
 {
@@ -45,13 +45,12 @@ enum e_std_type
 
 enum e_return_type
 {
-	SUCCESS = 1,
-	ERROR = 0
+	SUCCESS = 0,
+	ERROR = 1
 } ;
 
 typedef struct s_env
 {
-	struct s_env	*first;
 	char			*key;
 	char			*value;
 	struct s_env	*next;
@@ -59,7 +58,6 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	struct s_token	*first;
 	int				type;
 	char			*str;
 	struct s_token	*next;
@@ -75,13 +73,24 @@ typedef struct s_fd
 
 typedef struct s_mini
 {
-	t_env	envs;
-	t_token	tokens;
+	t_env	*envs;
+	t_token	*tokens;
 	t_fd	fd;
-	pid_t	pid;
+	int		exit_code;
 }				t_mini;
 
-int		g_exit_code;
+/*
+*** main ***
+*/
+void	prompt(t_mini *mini);
+
+/*
+*** init ***
+*/
+void	init_inout(t_mini *mini);
+void	init_fd(t_mini *mini);
+void	init_mini(t_mini *mini);
+void	init_shlvl(t_env **penvs);
 
 /*
 *** parsing ***
@@ -95,16 +104,10 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** syntax ***
 */
-int		check_meta(t_token *tokens);
-int		syntax_check_next(t_token *tokens);
-int		syntax_check(t_token *token);
-
-/*
-*** syntax_utils ***
-*/
-void	syntax_error(char *err);
-void	print_errmsg(char *str, char *msg);
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		check_type(int type);
+int		syntax_check_next(t_mini *mini, t_token *prev, t_token *token);
+int		syntax_check(t_mini *mini, t_token *token);
 
 /*
 *** dollar ***
@@ -116,9 +119,9 @@ char	*search_dollar_value(t_mini *mini, char *str);
 /*
 *** token ***
 */
-void	free_token(t_token *tokens);
+void	free_token(t_token **ptokens);
 void	set_token_type(t_token *tokens, t_token *token, int is_sep);
-void	add_token(t_token *tokens, char *str, int is_sep);
+void	add_token(t_token **ptokens, char *str, int is_sep);
 int		check_empty_token(char *start, char *str, int i, t_mini *mini);
 void	create_tokens(t_mini *mini, char *str, char *quot, int i);
 
@@ -132,34 +135,47 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 /*
 *** cmd ***
 */
+t_token	*next_cmd(t_token *ptr);
 char	**create_args(t_token *token);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
-void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
+
+/*
+*** pipe_cmd ***
+*/
 int		next_has_pipe(t_token *token);
+void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
+void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe);
+void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*
 *** builtin ***
 */
-void	status_error_check(char *str);
-void	ft_exit(char **args);
-void	unset(t_env *envs, char **args);
-void	echo(char **args);
-int		builtin(t_mini *mini, t_env *envs, char **args);
+void	unset(t_mini *mini, char **args);
+void	echo(t_mini *mini, char **args);
+int		builtin(t_mini *mini, char **args);
 
 /*
 *** cd ***
 */
-void	cd(t_env *envs, char **args);
-void	cd_sub(t_env *envs, char **args);
+int		cd_home(t_mini *mini, char **args);
+void	cd(t_mini *mini, char **args);
+void	cd_sub(t_mini *mini, char **args);
 
 /*
 *** env ***
 */
-void	remove_env(t_env *envs, char *key);
+void	remove_env(t_env **penvs, char *key);
 t_env	*search_env(t_env *envs, char *key);
-void	add_env_sub(t_env *envs, char *key, char *value);
-void	add_env(t_env *envs, char *name);
-void	env(t_env *envs);
+void	add_env_sub(t_env **penvs, char *key, char *value);
+int		add_env(t_env **penvs, char *name);
+void	env(t_mini *mini);
+
+/*
+*** exit ***
+*/
+void	set_exit_code(t_mini *mini, int status);
+void	status_error_check(t_mini *mini, int sign, char *str);
+void	ft_exit(t_mini *mini, char **args);
 
 /*
 *** export ***
@@ -168,13 +184,13 @@ char	*validate_key(char *key, char *cmd);
 void	free_sort_env(t_env *envs);
 t_env	*sort_env_list(t_env *temp);
 t_env	*copy_env_list(t_env *envs);
-void	export(t_env *envs, char **args);
+void	export(t_mini *mini, char **args);
 
 /*
 *** redirect ***
 */
-void	heredoc(t_mini *mini, t_token *token);
-void	set_heredoc_fd(t_mini *mini, t_token *token);
+int		heredoc(t_mini *mini, t_token *token);
+int		set_heredoc_fd(t_mini *mini, t_token *token);
 int		change_inout_sub(t_mini *mini, t_token *token);
 int		change_inout(t_mini *mini, t_token *token);
 int		handle_redirect(t_mini *mini, t_token *token);
@@ -182,17 +198,20 @@ int		handle_redirect(t_mini *mini, t_token *token);
 /*
 *** exec ***
 */
-int		pre_exec(char **args, t_env *envs, int flag);
-void	exe_command(char **args, t_env *envs);
-void	setting_argv(char *argv[]);
+char	**convert_env(t_env *envs);
+void	pre_exec(t_mini *mini, char **args, int flag);
+void	stat_check(char *args);
+void	exe_command(t_mini *mini, char **args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
 
 /*
-*** exec_utils ***
+*** signal ***
 */
-int		j_lstsize(t_env *lst);
-char	**convert_env(t_env *envs);
-void	check_newline(char buffer[]);
+void	handler_1(int signo);
+void	handler_2(int signo);
+void	handler_3(int signo);
+void	set_signal(void);
+void	ignore_signal(void);
 
 /*
 *** tools ***
@@ -201,14 +220,6 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_sep(char s);
 int		is_quot(char s);
-int		join_putstr_fd(char *a, char *b, char *c, int fd);
-
-/*
-*** signal ***
-*/
-void	handler_1(int signo);
-void	handler_2(int signo);
-void	set_signal(void);
-void	ignore_signal(void);
+void	check_newline(char *buffer);
 
 #endif

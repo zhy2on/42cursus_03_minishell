@@ -3,141 +3,73 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: junyopar <student.42.kr>                   +#+  +:+       +#+         #
+#    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/05/16 19:48:40 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/16 19:54:09 by junyopar         ###   ########.fr        #
+#    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
+#    Updated: 2022/05/22 21:05:04 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC			:=	gcc
-CFLAGS		:=	-g -Wall -Wextra -Werror
-CHECK		:=	-fsanitize=address
+NAME = minishell
+CC = gcc
+CFLAG = -Wall -Wextra -Werror
+LIBFLAG= -lft -L$(LIBFT_DIR) -lreadline -L$(READLINE_DIR)
+INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
-OS 			:= $(shell uname)
-USERS 		:= $(shell Users)
-#ifeq ($(OS), Linux)
-#RDLINE_DIR	:=	/usr/share/readline/
-#RDLINE_INC	:=	/usr/include/readline/
-#else ifeq ($(USERS), junyopar)
-RDLINE_DIR	:=	/Users/$(USERS)/.brew/opt/readline/lib/
-RDLINE_INC	:=	/Users/$(USERS)/.brew/opt/readline/include/
+USERS := $(shell Users)
 
+READLINE_DIR = /opt/homebrew/opt/readline/lib
+READLINE_INC = /opt/homebrew/opt/readline/include
 
+LIBFT_DIR = ./libft/
+LIBFT_INC = $(LIBF_DIR)includes/
+LIBFT = $(LIFT_DIR)libft.a
 
-#else ifeq ($(USERS), donpark)
-#RDLINE_DIR	:=	/Users/junyopar/.brew/opt/readline/lib/
-#RDLINE_INC	:=	/Users/junyopar/.brew/opt/readline/include/
-#endif
+INC_DIR = ./includes/
+INC_LIST = minishell.h
+INCS = $(addprefix $(INC_DIR), $(INC_LIST))
 
-LIBFT_DIR	:=	./libft/
-LIBFT_LIB	:=	$(LIBFT_DIR)libft.a
-LIBFT_INC	:=	$(LIBFT_DIR)
+SRC_DIR = ./srcs/
+SRC_LIST = builtin.c env.c main.c str_to_token.c \
+				cd.c exec.c parsing.c syntax.c \
+				cmd.c exit.c redirect.c token.c \
+				dollar.c export.c signal.c tools.c init.c pipe_cmd.c
+SRCS = $(addprefix $(SRC_DIR), $(SRC_LIST))
 
-INC_DIR		:=	./includes/
-INCLUDES	:=	minishell.h
-INCS		:=	$(addprefix $(INC_DIR), $(INCLUDES))
+OBJ_DIR = ./objs/
+OBJ_LIST = $(SRC_LIST:.c=.o)
+OBJS = $(addprefix $(OBJ_DIR), $(OBJ_LIST))
 
-SRCS_DIR	:=	./srcs/
-SOURCES		:=	main.c \
-				signal.c \
-				builtin.c \
-				cd.c \
-				cmd.c \
-				dollar.c \
-				env.c \
-				env_utils.c \
-				exec.c \
-				exec_utils.c \
-				parsing.c \
-				redirect.c \
-				str_to_token.c \
-				syntax.c \
-				syntax_utils.c \
-				token.c \
-				tools.c
-
-SRCS		:=	$(addprefix $(SRCS_DIR), $(SOURCES))
-
-OBJS_DIR	:=	./obj/
-OBJECTS		:=	$(SOURCES:.c=.o)
-OBJS		:=	$(addprefix $(OBJS_DIR), $(OBJECTS))
-
-LIBRARY		:= -L$(LIBFT_DIR) -lft -L$(RDLINE_DIR) -lreadline
-HEADERS		:= -I$(INC_DIR) -I$(RDLINE_INC) -I$(LIBFT_INC)
-
-NAME		:=	minishell
-
-# colors
-RED			:=	\033[31m
-GREEN 		:=	\033[32m
-YELLOW 		:=	\033[33m
-BLUE 		:=	\033[34m
-MAGENTA		:=	\033[35m
-CYAN		:=	\033[36m
-WHITE		:=	\033[37m
-PINK		:=	\033[38;5;201m
-OBJS_DOT	:=	\033[38;5;201m\033[48;5;252m\033[1m\033[3m
-MENT		:=	\033[38;5;191m\033[1m
-RE_MENT		:=	\033[38;5;63m\033[1m
-RESET		:=	\033[0m
-
-.PHONY		:=	all $(NAME) clean fclean re
-
-$(NAME) : $(LIBFT_LIB) $(OBJS_DIR) $(OBJS)
-	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(LIBRARY) $(HEADERS)
-	@echo "\n$(GREEN)object files were created$(RESET)"
-	@echo "$(RED)minishell created.$(RESET)"
-
-$(OBJS_DIR) :
-	@mkdir -p $(OBJS_DIR)
-	# @mkdir -p $(OBJS_DIR)utils
-	# @mkdir -p $(OBJS_DIR)pwd
-	# @mkdir -p $(OBJS_DIR)echo
-	# @mkdir -p $(OBJS_DIR)cd
-	# @mkdir -p $(OBJS_DIR)env
-	# @mkdir -p $(OBJS_DIR)export
-	# @mkdir -p $(OBJS_DIR)unset
-	@echo "$(MENT)[ Created obj directory ... ]$(RESET)"
-
-$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-	@$(CC) -c $< -o $@ $(CFLAGS) $(HEADERS)
-	@echo "$(GREEN).$(RESET)\c"
-
-$(LIBFT_LIB) :
-	@$(MAKE) -sC $(LIBFT_DIR)
-	@$(MAKE) clean -sC $(LIBFT_DIR)
-	@echo "$(YELLOW)[ Created libft.a ... ]$(RESET)"
+CLEAN = "\033[2K \033[A"
+RED = \033[31m
+GREEN = \033[32m
+YELLOW = \033[33m
+RESET = \033[0m
 
 all : $(NAME)
 
-clean :
-	@$(MAKE) clean -sC $(LIBFT_DIR)
-	@rm -rf $(OBJS_DIR)
-	@echo "$(MENT)[Removing object files]"
-	@echo "$(MAGENTA)$(OBJS)$(RESET)"
+$(NAME) : $(OBJS)
+	@echo $(CLEAN)
+	@make -sC $(LIBFT_DIR)
+	@$(CC) $(CFLAG) $(LIBFLAG) $(INCFLAG) $(OBJS) -o $(NAME)
+	@echo "$(GREEN)[$(NAME)]: done$(RESET)"
 
-fclean : clean
-	@$(MAKE) fclean -sC $(LIBFT_DIR)
-	@rm -f $(NAME)
-	@echo "$(MENT)[Removing $(NAME)]$(RESET)"
-	@echo "$(NAME):$(MAGENTA) deleted$(RESET)"
+$(OBJ_DIR)%.o : $(SRC_DIR)%.c $(INCS)
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAG) -c $< -o $@ $(INCFLAG)
+	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
 
-ment_re :
-	@echo "$(RE_MENT)[make re]$(RESET)"
+clean:
+	@make -sC $(LIBFT_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@echo "$(RED)[$(NAME)]: clean$(RESET)"
 
-re : ment_re fclean all
-	@echo "$(RE_MENT)[make re done.]$(RESET)"
+fclean: clean
+	@rm -rf $(LIBFT_DIR)$(LIBFT)
+	@echo "$(RED)[$(LIBFT)]: deleted$(RESET)"
+	@rm -rf $(NAME)
+	@echo "$(RED)[$(NAME)]: deleted$(RESET)"
 
-norm :
-	@echo "$(MENT)[Norminette test]$(RESET)"
-	@find ./libft -name "*.c" -exec norminette {} \;
-	@find ./libft -name "*.h" -exec norminette {} \;
-	@echo "$(CYAN)\c"
-	@find ./srcs -name "*.c" -exec norminette {} \;
-	@find ./includes -name "*.h" -exec norminette {} \;
-	@echo "$(RESET)"
+re: fclean all
 
-tester :
-	@gcc tester.c libft/libft.a
-	@./a.out
+.PHONY: all clean fclean re

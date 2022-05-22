@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/16 21:53:23 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/20 18:54:42 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,20 @@ int	parsing_line(char *str, t_mini *mini)
 	{
 		ft_putstr_fd("\033[1A🐚minishell$ ", STDOUT);
 		ft_putstr_fd("exit\n", STDERR);
-		exit(EXIT_SUCCESS);
+		exit((uint8_t)mini->exit_code);
 	}
 	quot = '\0';
 	i = 0;
 	trim_space(str, &quot, i);
-	printf("trim:%s$\n", str);
 	if (quot)
 	{
 		join_putstr_fd("minishell: syntax error with unclosed quotes\n",
 			0, 0, STDERR);
-		return (ERROR);
+		mini->exit_code = 258;
+		return (0);
 	}
 	create_tokens(mini, str, &quot, i);
-	return (SUCCESS);
+	if (!mini->tokens)
+		return (0);
+	return (1);
 }

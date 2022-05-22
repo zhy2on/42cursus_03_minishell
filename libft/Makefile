@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/14 18:03:00 by jihoh             #+#    #+#              #
-#    Updated: 2022/02/09 19:09:59 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/19 17:11:06 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,9 @@ CFLAG	= -Wall -Wextra -Werror
 INC		= -I$(INC_DIR)
 
 INC_DIR = includes/
+INC_LIST = libft.h get_next_line.h
+INCS = $(addprefix $(INC_DIR), $(INC_LIST))
+
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
@@ -43,30 +46,36 @@ OBJS = $(addprefix $(OBJ_DIR), $(OBJS_NAME))
 OBJS_BONUS_NAME = $(SRCS_BN:.c=.o)
 OBJS_BONUS = $(addprefix $(OBJ_DIR), $(OBJS_BONUS_NAME))
 
+CLEAN = "\033[2K \033[A"
+RED = \033[31m
+GREEN = \033[32m
+YELLOW = \033[33m
+RESET = \033[0m
+
 all : $(NAME)
 
 $(NAME) : $(OBJS)
-	@echo "\033[2K \033[A"
+	@echo $(CLEAN)
 	@ar -cr $@ $^
-	@echo "\033[32m[$(NAME)]: done\033[0m"
+	@echo "$(GREEN)[$(NAME)]: done$(RESET)"
 
 bonus : $(OBJS) $(OBJS_BONUS)
-	@echo "\033[2K \033[A"
+	@echo $(CLEAN)
 	@ar -cr $(NAME) $^
-	@echo "\033[32m[$(NAME)]: bonus done\033[0m"
+	@echo "$(GREEN)[$(NAME)]: bonus done$(RESET)"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCS)
 	@mkdir -p $(OBJ_DIR)
-	@echo "\033[2K [$(NAME)]: Compilation of $< \033[A"
+	@echo "\033[2K $(YELLOW)[$(NAME)]: Compiling $< $(RESET)\033[A"
 	@$(CC) $(CFLAG) -c $< -o $@ -I $(INC_DIR)
 
 clean :
 	@rm -rf $(OBJS) $(OBJS_BONUS) $(OBJ_DIR)
-	@echo "\033[31m[ ✔ ] clean\033[0m"
+	@echo "$(RED)[$(NAME)]: clean$(RESET)"
 
 fclean : clean
 	@rm -rf $(NAME)
-	@echo "\033[31m[ ✔ ] fclean\033[0m"
+	@echo "$(RED)[$(NAME)]: deleted$(RESET)"
 
 re : fclean all
 

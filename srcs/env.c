@@ -6,21 +6,21 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 20:36:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/17 16:14:00 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/19 18:47:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	remove_env(t_env *envs, char *key)
+void	remove_env(t_env **envs, char *key)
 {
 	t_env	*prev;
 	t_env	*ptr;
 
-	if (!envs->first || !validate_key(key, "unset"))
+	if (!(*envs) || !validate_key(key, "unset"))
 		return ;
-	prev = envs->first;
-	ptr = envs->first->next;
+	prev = *envs;
+	ptr = (*envs)->next;
 	while (ptr)
 	{
 		if (!ft_strcmp(ptr->key, key))
@@ -37,7 +37,7 @@ void	remove_env(t_env *envs, char *key)
 	{
 		free(prev->key);
 		free(prev);
-		envs->first = NULL;
+		*envs = NULL;
 	}
 }
 
@@ -45,7 +45,7 @@ t_env	*search_env(t_env *envs, char *key)
 {
 	t_env	*ptr;
 
-	ptr = envs->first;
+	ptr = envs;
 	while (ptr)
 	{
 		if (!ft_strcmp(ptr->key, key))
@@ -55,14 +55,14 @@ t_env	*search_env(t_env *envs, char *key)
 	return (NULL);
 }
 
-void	add_env_sub(t_env *envs, char *key, char *value)
+void	add_env_sub(t_env **penvs, char *key, char *value)
 {
 	t_env	*ptr;
 
-	ptr = envs->first;
+	ptr = *penvs;
 	if (!ptr)
 	{
-		envs->first = get_env_node(key, value);
+		*penvs = get_env_node(key, value);
 		return ;
 	}
 	while (ptr && ft_strcmp(key, ptr->key))
@@ -82,26 +82,28 @@ void	add_env_sub(t_env *envs, char *key, char *value)
 	}
 }
 
-void	add_env(t_env *envs, char *name)
+int	add_env(t_env **penvs, char *name)
 {
 	char	*s;
 	char	*value;
 
 	s = validate_key(name, "export");
 	if (!s)
-		return ;
+		return (0);
 	value = NULL;
 	if (*s == '=')
 		value = s + 1;
 	*s = '\0';
-	add_env_sub(envs, name, value);
+	add_env_sub(penvs, name, value);
+	return (1);
 }
 
-void	env(t_env *envs)
+void	env(t_mini *mini)
 {
 	t_env	*ptr;
 
-	ptr = envs->first;
+	mini->exit_code = SUCCESS;
+	ptr = mini->envs;
 	while (ptr)
 	{
 		if (ptr->value)
