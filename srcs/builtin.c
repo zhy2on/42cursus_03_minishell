@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 18:50:36 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/22 19:11:11 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ int	builtin(t_mini *mini, char **args)
 	if (!args[0])
 		return (1);
 	if (!ft_strcmp(args[0], "pwd"))
+	{
 		join_putstr_fd(getcwd(cwd, PATH_MAX), "\n", 0, STDOUT);
+		mini->exit_code = SUCCESS;
+	}
 	else if (!ft_strcmp(args[0], "cd"))
 		cd(mini, args);
 	else if (!ft_strcmp(args[0], "echo"))
