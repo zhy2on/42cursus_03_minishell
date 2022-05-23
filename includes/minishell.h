@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/22 21:03:37 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 18:54:21 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ enum e_token_type
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7
+	PIPE = 7,
+	OPEN_PR = 8,
+	CLOSE_PR = 9,
+	AND = 10,
+	OR = 11
 } ;
 
 enum e_std_type
@@ -60,6 +64,7 @@ typedef struct s_token
 {
 	int				type;
 	char			*str;
+	struct s_token	*prev;
 	struct s_token	*next;
 }				t_token;
 
@@ -68,6 +73,7 @@ typedef struct s_fd
 	int	sd[2];
 	int	fd[2];
 	int	pd[2];
+	int	bd[2];
 	int	hd[2];
 }				t_fd;
 
@@ -77,6 +83,8 @@ typedef struct s_mini
 	t_token	*tokens;
 	t_fd	fd;
 	int		exit_code;
+	int		is_prev_pipe;
+	int		is_next_pipe;
 }				t_mini;
 
 /*
@@ -144,7 +152,7 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
 */
 int		next_has_pipe(t_token *token);
 void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
-void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe);
+void	set_pipe_inout(t_mini *mini, int is_prev_pipe, int is_next_pipe);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 04:13:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 18:51:09 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 18:34:18 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	add_token(t_token **ptokens, char *str, int is_sep)
 	while (ptr->next)
 		ptr = ptr->next;
 	ptr->next = get_token_node(0, str);
+	ptr->next->prev = ptr;
 	set_token_type(*ptokens, ptr->next, is_sep);
 }
 
