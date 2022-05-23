@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:37:37 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:54:22 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**create_args(t_token *token)
 
 	i = 0;
 	ptr = token;
-	while (ptr && ptr->type != PIPE)
+	while (ptr && ptr->type < PIPE)
 	{
 		if (ptr->type <= ARG)
 			i++;
@@ -38,7 +38,7 @@ char	**create_args(t_token *token)
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	ptr = token;
-	while (ptr && ptr->type != PIPE)
+	while (ptr && ptr->type < PIPE)
 	{
 		if (ptr->type <= ARG)
 			ret[i++] = ptr->str;
