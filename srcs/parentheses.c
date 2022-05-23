@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 21:16:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:34:38 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 20:57:28 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,16 @@ int	pr_top(t_token *stack)
 	return (stack->type);
 }
 
-int	pr_pop(t_token *stack)
+int	pr_pop(t_token **stack)
 {
 	t_token	*ptr;
 	int		ret;
 
-	if (!stack)
+	if (!(*stack))
 		return (-1);
-	ret = stack->type;
-	ptr = stack;
-	stack = stack->next;
+	ret = (*stack)->type;
+	ptr = *stack;
+	*stack = (*stack)->next;
 	free(ptr);
 	return (ret);
 }
@@ -57,7 +57,7 @@ t_token	*find_close_pr(t_token *token)
 		{
 			if (pr_top(stack) == OPEN_PR)
 			{
-				pr_pop(stack);
+				pr_pop(&stack);
 				if (!stack)
 					return (ptr);
 			}
