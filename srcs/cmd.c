@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:54:22 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 20:40:53 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 t_token	*next_cmd(t_token *ptr)
 {
-	while (ptr && ptr->type != PIPE)
+	while (ptr && ptr->type < PIPE)
 		ptr = ptr->next;
-	if (ptr)
+	if (ptr && ptr->type == PIPE)
 		ptr = ptr->next;
 	return (ptr);
 }

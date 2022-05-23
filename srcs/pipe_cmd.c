@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:50:48 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 20:34:13 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	next_has_pipe(t_token *token)
 {
-	while (token && token->type < PIPE)
+	while (token && token->type != PIPE)
 		token = token->next;
 	if (!token)
 		return (0);
