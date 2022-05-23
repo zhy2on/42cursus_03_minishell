@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:15:32 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:37:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ char	**create_args(t_token *token)
 	return (ret);
 }
 
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int fork_flag)
 {
 	if (!handle_redirect(mini, cmd))
 		return ;
 	if (!builtin(mini, args))
-		pre_exec(mini, args, flag);
+		pre_exec(mini, args, fork_flag);
 	free(args);
 }
 
@@ -90,7 +90,8 @@ void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point)
 			token = find_close_pr(token)->next;
 			continue ;
 		}
-		else if (next_has_pipe(token) || token->prev->type == PIPE)
+		else if (next_has_pipe(token)
+			|| (token->prev && token->prev->type == PIPE))
 			run_cmd_with_pipe(mini, token);
 		else
 			run_cmd(mini, token, create_args(token), 0);

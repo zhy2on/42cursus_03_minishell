@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:27:29 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:50:48 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	set_pipe_inout(t_mini *mini, int is_prev_pipe, int is_next_pipe)
 
 void	backup_pipe_fd(t_mini *mini)
 {
-	pipe(mini->fd.pd);
 	mini->fd.bd[0] = mini->fd.pd[0];
 	mini->fd.bd[1] = mini->fd.pd[1];
 }
@@ -81,7 +80,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 	if (cmd->prev && cmd->prev->type == PIPE)
 		mini->is_prev_pipe = 1;
 	mini->is_next_pipe = next_has_pipe(cmd);
-	backup_pipe_fd(mini);
+	pipe(mini->fd.pd);
 	signal(SIGQUIT, SIG_DFL);
 	pid = fork();
 	if (pid == 0)
@@ -97,4 +96,5 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 		if (!mini->is_next_pipe)
 			wait_pipe_pid(mini, pid);
 	}
+	backup_pipe_fd(mini);
 }
