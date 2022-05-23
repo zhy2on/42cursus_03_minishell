@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 18:38:26 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:20:06 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ void	str_to_token_sub(t_mini *mini, char *str, char *ret)
 				*ret++ = *value++;
 			str = end_of_dollar(str);
 		}
-		else if (*str == - '>' || *str == - '<')
+		else if (*str == - '>' || *str == - '<'
+			|| *str == - '&' || *str == - '|')
 		{
 			*str = -(*str);
 			*ret++ = *str;

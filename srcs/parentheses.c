@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 21:16:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:03:33 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:16:36 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,64 +70,16 @@ t_token	*find_close_pr(t_token *token)
 void	run_cmd_in_paren(t_mini *mini, t_token *open_pr)
 {
 	t_token	*close_pr;
-	t_token	*cmd;
+	t_token	*token;
 	int		status;
 
 	close_pr = find_close_pr(open_pr);
-	cmd = open_pr->next;
+	token = open_pr->next;
 	if (fork() == 0)
 	{
-		while (cmd != close_pr)
-		{
-			if (!next_has_pipe(cmd))
-				run_cmd(mini, cmd, create_args(cmd), 0);
-			else
-				run_cmd_with_pipe(mini, cmd);
-			cmd = next_cmd(cmd);
-		}
+		run_cmd_line(mini, token, close_pr);
 		exit(0);
 	}
 	wait(&status);
 	set_exit_code(mini, status);
-}
-
-int	handle_and_or(t_mini *mini, t_token **ptoken)
-{
-	if ((*ptoken)->type == AND)
-	{
-		if (mini->exit_code != SUCCESS)
-			*ptoken = next_cmd((*ptoken)->next);
-		else
-			*ptoken = (*ptoken)->next;
-		return (1);
-	}
-	else if ((*ptoken)->type == OR)
-	{
-		if (mini->exit_code == SUCCESS)
-			*ptoken = next_cmd((*ptoken)->next);
-		else
-			*ptoken = (*ptoken)->next;
-		return (1);
-	}
-	return (0);
-}
-
-void	run_cmd_line(t_mini *mini, t_token *token)
-{
-	while (token)
-	{
-		if (handle_and_or(mini, &token))
-			continue ;
-		else if (token->type == OPEN_PR)
-		{
-			run_cmd_in_paren(mini, token);
-			token = find_close_pr(token)->next;
-			continue ;
-		}
-		else if (next_has_pipe(token) || token->prev->type == PIPE)
-			run_cmd_with_pipe(mini, token);
-		else
-			run_cmd(mini, token, create_args(token), 0);
-		token = next_cmd(token);
-	}
 }

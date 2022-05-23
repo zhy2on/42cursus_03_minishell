@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/23 18:54:21 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:16:30 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,12 @@ typedef struct s_mini
 	int		is_prev_pipe;
 	int		is_next_pipe;
 }				t_mini;
+
+/*
+*** bonus ***
+*/
+t_token	*find_close_pr(t_token *token);
+void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point);
 
 /*
 *** main ***

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:39:41 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:15:32 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,45 @@ void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag)
 	if (!builtin(mini, args))
 		pre_exec(mini, args, flag);
 	free(args);
+}
+
+int	handle_and_or(t_mini *mini, t_token **ptoken)
+{
+	if ((*ptoken)->type == AND)
+	{
+		if (mini->exit_code != SUCCESS)
+			*ptoken = next_cmd((*ptoken)->next);
+		else
+			*ptoken = (*ptoken)->next;
+		return (1);
+	}
+	else if ((*ptoken)->type == OR)
+	{
+		if (mini->exit_code == SUCCESS)
+			*ptoken = next_cmd((*ptoken)->next);
+		else
+			*ptoken = (*ptoken)->next;
+		return (1);
+	}
+	return (0);
+}
+
+void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point)
+{
+	while (token != end_point)
+	{
+		if (handle_and_or(mini, &token))
+			continue ;
+		else if (token->type == OPEN_PR)
+		{
+			run_cmd_in_paren(mini, token);
+			token = find_close_pr(token)->next;
+			continue ;
+		}
+		else if (next_has_pipe(token) || token->prev->type == PIPE)
+			run_cmd_with_pipe(mini, token);
+		else
+			run_cmd(mini, token, create_args(token), 0);
+		token = next_cmd(token);
+	}
 }
