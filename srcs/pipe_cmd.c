@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:18:13 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 19:27:29 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,10 @@ void	backup_pipe_fd(t_mini *mini)
 
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
-	char	**args;
 	pid_t	pid;
 
 	mini->is_prev_pipe = 0;
-	if (cmd->prev == PIPE)
+	if (cmd->prev && cmd->prev->type == PIPE)
 		mini->is_prev_pipe = 1;
 	mini->is_next_pipe = next_has_pipe(cmd);
 	backup_pipe_fd(mini);
