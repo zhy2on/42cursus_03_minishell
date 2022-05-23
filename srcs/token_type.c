@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 19:21:51 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 20:10:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/23 20:30:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	set_token_type_sub(t_token *tokens,
 		token->type = AND;
 	else if (!ft_strcmp(token->str, "||") && is_sep)
 		token->type = OR;
-	else if (tokens == token || prev->type <= PIPE)
+	else if (tokens == token || prev->type >= PIPE)
 		token->type = CMD;
 	else if (prev->type > DIRE && prev->type < PIPE)
 		token->type = DIRE;
