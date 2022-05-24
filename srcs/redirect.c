@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 21:21:37 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 19:48:46 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 18:32:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	heredoc(t_mini *mini, t_token *token)
 	ignore_signal();
 	wait(&status);
 	set_signal();
-	return (!WEXITSTATUS(status));
+	return (!(status >> 8));
 }
 
 int	set_heredoc_fd(t_mini *mini, t_token *token)
