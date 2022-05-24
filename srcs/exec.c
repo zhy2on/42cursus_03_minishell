@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 10:29:39 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:41:35 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	pre_exec(t_mini *mini, char **args, int flag)
 
 void	stat_check_sub(char *args)
 {
-	if (args[0] != '/')
+	if (!ft_strchr(args, '/'))
 	{
 		join_putstr_fd("minishell: ", args,
 			": command not found\n", STDERR);
@@ -80,7 +80,7 @@ void	exe_command(t_mini *mini, char **args)
 
 	ft_memset(buf, 0, PATH_MAX);
 	convertenv = convert_env(mini->envs);
-	if (args[0][0] == '/')
+	if (ft_strchr(args[0], '/'))
 	{
 		stat_check(args[0]);
 		execve(args[0], args, convertenv);
