@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 10:30:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 10:47:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 14:15:47 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,15 @@ int	paren_syntax_check(t_mini *mini)
 	while (ptr)
 	{
 		if (ptr->type == OPEN_PR)
-			close_pr = find_close_pr(ptr);
-		if (!close_pr)
 		{
-			join_putstr_fd("minishell: syntax error near unexpected token ",
-				"`)'\n", 0, STDERR);
-			mini->exit_code = 258;
-			return (0);
+			close_pr = find_close_pr(ptr);
+			if (!close_pr)
+			{
+				join_putstr_fd("minishell: syntax error near unexpected token ",
+					"`)'\n", 0, STDERR);
+				mini->exit_code = 258;
+				return (0);
+			}
 		}
 		ptr = ptr->next;
 	}

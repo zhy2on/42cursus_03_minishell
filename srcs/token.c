@@ -14,18 +14,19 @@
 
 void	free_token(t_token **tokens)
 {
-	t_token	*prev;
 	t_token	*ptr;
 
 	ptr = (*tokens);
 	if (!ptr)
 		return ;
-	while (ptr)
+	while (ptr->next)
 	{
-		prev = ptr;
 		ptr = ptr->next;
-		free(prev);
+		free(ptr->prev->str);
+		free(ptr->prev);
 	}
+	free(ptr);
+	free(ptr->str);
 	*tokens = NULL;
 }
 
