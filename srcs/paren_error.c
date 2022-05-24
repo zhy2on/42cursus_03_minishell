@@ -48,13 +48,15 @@ int	paren_syntax_check(t_mini *mini)
 	while (ptr)
 	{
 		if (ptr->type == OPEN_PR)
-			close_pr = find_close_pr(ptr);
-		if (!close_pr)
 		{
-			join_putstr_fd("minishell: syntax error near unexpected token ",
-				"`)'\n", 0, STDERR);
-			mini->exit_code = 258;
-			return (0);
+			close_pr = find_close_pr(ptr);
+			if (!close_pr)
+			{
+				join_putstr_fd("minishell: syntax error near unexpected token ",
+							   "`)'\n", 0, STDERR);
+				mini->exit_code = 258;
+				return (0);
+			}
 		}
 		ptr = ptr->next;
 	}
