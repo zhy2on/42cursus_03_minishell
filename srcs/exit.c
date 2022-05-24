@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 00:42:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 00:43:12 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 18:30:36 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void	set_exit_code(t_mini *mini, int status)
 {
-	if (WIFSIGNALED(status))
+	if ((status & 0177) != 0177 && (status & 0177) != 0)
 	{
-		handler_2(WTERMSIG(status));
-		mini->exit_code = 128 + WTERMSIG(status);
+		handler_2(status & 0177);
+		mini->exit_code = 128 + (status & 0177);
 	}
 	else
-		mini->exit_code = WEXITSTATUS(status);
+		mini->exit_code = (status >> 8);
 }
 
 void	status_error_check(t_mini *mini, int sign, char *str)
