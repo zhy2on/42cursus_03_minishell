@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/20 18:42:43 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/24 10:15:08 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,10 @@ INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
 USERS := $(shell Users)
 
-READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib/
-READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include/
+#READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib/
+#READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include/
+READLINE_DIR = /opt/homebrew/opt/readline/lib
+READLINE_INC = /opt/homebrew/opt/readline/include
 
 LIBFT_DIR = ./libft/
 LIBFT_INC = $(LIBF_DIR)includes/
@@ -33,7 +35,8 @@ SRC_DIR = ./srcs/
 SRC_LIST = builtin.c env.c main.c str_to_token.c \
 				cd.c exec.c parsing.c syntax.c \
 				cmd.c exit.c redirect.c token.c \
-				dollar.c export.c signal.c tools.c init.c pipe_cmd.c
+				dollar.c export.c signal.c tools.c init.c pipe_cmd.c \
+				exec_utils.c
 SRCS = $(addprefix $(SRC_DIR), $(SRC_LIST))
 
 OBJ_DIR = ./objs/

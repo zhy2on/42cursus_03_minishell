@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/20 18:54:42 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 10:14:07 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	replace_char(char **pstr, char *quot, int *i)
 	s = *pstr;
 	if (*quot != '\'' && dollar_check(s))
 		*s = -(*s);
+	else if (*quot)
+		return ;
 	else if ((*s == '<' && *(s + 1) == '<')
 		|| (*s == '>' && *(s + 1) == '>'))
 	{
