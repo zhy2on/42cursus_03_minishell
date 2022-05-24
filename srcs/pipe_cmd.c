@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 11:33:21 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:52:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,8 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 	{
 		close(mini->fd.bd[0]);
 		close(mini->fd.bd[1]);
-		wait_pipe_pid(mini, mini->pid);
+		if (!mini->is_next_pipe)
+			wait_pipe_pid(mini, mini->pid);
 	}
 	backup_pipe_fd(mini);
 }
