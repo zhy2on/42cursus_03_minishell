@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 11:57:30 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 12:16:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,14 @@ void	prompt(t_mini *mini)
 		init_inout(mini);
 		init_fd(mini);
 		set_signal();
-		str = readline("\033[33mminishell$ \033[0m");
+		str = readline("minishell$ ");
 		if (str && *str)
 			add_history(str);
 		if (parsing_cmd(str, mini) && syntax_check(mini, mini->tokens))
 			run_cmd_line(mini, mini->tokens, NULL);
 		free_token(&mini->tokens);
-		free(str);
+		if (str)
+			free(str);
 	}
 }
 

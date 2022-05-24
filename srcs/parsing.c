@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 16:20:25 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 11:58:03 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 12:16:40 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	parsing_line(char *str, t_mini *mini)
 
 	if (!str)
 	{
-		ft_putstr_fd("\033[1A\033[33mminishell$ \033[0m", STDOUT);
+		ft_putstr_fd("\033[1Aminishell$ ", STDOUT);
 		ft_putstr_fd("exit\n", STDERR);
 		exit((uint8_t)mini->exit_code);
 	}
