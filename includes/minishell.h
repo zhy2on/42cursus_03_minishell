@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/24 11:25:35 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 12:31:45 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,6 @@ typedef struct s_mini
 }				t_mini;
 
 /*
-*** bonus ***
-*/
-t_token	*find_close_pr(t_token *token);
-void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point);
-void	run_cmd_in_paren(t_mini *mini, t_token *open_pr);
-int		paren_syntax_check(t_mini *mini);
-
-/*
 *** main ***
 */
 void	prompt(t_mini *mini);
@@ -121,8 +113,8 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** syntax ***
 */
-int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		check_type(int type);
+int		syntax_check_next_sub(t_mini *mini, t_token *token);
 int		syntax_check_next(t_mini *mini, t_token *token);
 int		syntax_check(t_mini *mini, t_token *token);
 
@@ -155,6 +147,8 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 t_token	*next_cmd(t_token *ptr);
 char	**create_args(t_token *token);
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int fork_flag);
+int		handle_and_or(t_mini *mini, t_token **ptoken);
+void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point);
 
 /*
 *** pipe_cmd ***
@@ -215,11 +209,17 @@ int		handle_redirect(t_mini *mini, t_token *token);
 /*
 *** exec ***
 */
-char	**convert_env(t_env *envs);
 void	pre_exec(t_mini *mini, char **args, int flag);
+void	stat_check_sub(char *args);
 void	stat_check(char *args);
 void	exe_command(t_mini *mini, char **args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
+
+/*
+*** exec_utils ***
+*/
+char	**convert_env(t_env *envs);
+void	check_newline(char *buffer);
 
 /*
 *** signal ***
@@ -237,6 +237,22 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_sep(char s);
 int		is_quot(char s);
-void	check_newline(char *buffer);
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
+
+/*
+********* bonus **********
+*/
+
+/*
+*** parentheses ***
+*/
+t_token	*find_close_pr(t_token *token);
+void	run_cmd_in_paren(t_mini *mini, t_token *open_pr);
+
+/*
+*** paren_syntax ***
+*/
+int		paren_count(t_mini *mini);
+int		paren_syntax_check(t_mini *mini);
 
 #endif
