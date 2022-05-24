@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/24 11:01:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:25:35 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_mini
 	int		exit_code;
 	int		is_prev_pipe;
 	int		is_next_pipe;
+	pid_t	pid;
 }				t_mini;
 
 /*

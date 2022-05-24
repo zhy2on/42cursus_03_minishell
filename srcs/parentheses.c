@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 21:16:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 20:57:28 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:34:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,14 @@ void	run_cmd_in_paren(t_mini *mini, t_token *open_pr)
 
 	close_pr = find_close_pr(open_pr);
 	token = open_pr->next;
-	if (fork() == 0)
+	signal(SIGQUIT, SIG_DFL);
+	mini->pid = fork();
+	if (mini->pid == 0)
 	{
 		run_cmd_line(mini, token, close_pr);
 		exit(0);
 	}
 	wait(&status);
+	set_signal();
 	set_exit_code(mini, status);
 }
