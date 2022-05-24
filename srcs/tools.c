@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:36:30 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 19:25:04 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 10:58:29 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,13 @@ int	is_quot(char s)
 	return (0);
 }
 
-void	check_newline(char *buffer)
+int	join_putstr_fd(char *a, char *b, char *c, int fd)
 {
-	int	i;
-
-	i = 0;
-	while (buffer[i] != '\0')
-	{
-		if (buffer[i] == '\n')
-		{
-			buffer[i] = '\0';
-			break ;
-		}
-		i++;
-	}
+	if (a)
+		ft_putstr_fd(a, fd);
+	if (b)
+		ft_putstr_fd(b, fd);
+	if (c)
+		ft_putstr_fd(c, fd);
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/23 19:34:56 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 10:42:38 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ typedef struct s_mini
 t_token	*find_close_pr(t_token *token);
 void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point);
 void	run_cmd_in_paren(t_mini *mini, t_token *open_pr);
+int		paren_syntax_check(t_mini *mini);
 
 /*
 *** main ***

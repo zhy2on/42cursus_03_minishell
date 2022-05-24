@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 03:01:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/23 21:12:13 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 10:21:59 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	handle_and_or(t_mini *mini, t_token **ptoken)
 		if (mini->exit_code != SUCCESS)
 		{
 			*ptoken = next_cmd((*ptoken)->next);
-			if ((*ptoken)->type == OPEN_PR)
+			if ((*ptoken) && (*ptoken)->type == OPEN_PR)
 				*ptoken = find_close_pr(*ptoken)->next;
 		}
 		else
@@ -76,7 +76,7 @@ int	handle_and_or(t_mini *mini, t_token **ptoken)
 		if (mini->exit_code == SUCCESS)
 		{
 			*ptoken = next_cmd((*ptoken)->next);
-			if ((*ptoken)->type == OPEN_PR)
+			if ((*ptoken) && (*ptoken)->type == OPEN_PR)
 				*ptoken = find_close_pr(*ptoken)->next;
 		}
 		else
