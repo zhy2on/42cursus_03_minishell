@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/24 10:42:38 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:01:05 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int		parsing_line(char *str, t_mini *mini);
 */
 int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		check_type(int type);
-int		syntax_check_next(t_mini *mini, t_token *prev, t_token *token);
+int		syntax_check_next(t_mini *mini, t_token *token);
 int		syntax_check(t_mini *mini, t_token *token);
 
 /*
