@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/24 10:43:22 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/24 13:59:58 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,19 +42,39 @@ OBJ_DIR = ./objs/
 OBJ_LIST = $(SRC_LIST:.c=.o)
 OBJS = $(addprefix $(OBJ_DIR), $(OBJ_LIST))
 
+BONUS_SRC_LIST = builtin.c env.c main.c str_to_token.c \
+				cd.c exec.c parsing.c syntax.c \
+				cmd.c exit.c redirect.c token.c \
+				dollar.c export.c signal.c tools.c \
+				init.c pipe_cmd.c parentheses_bonus.c token_type.c \
+				exec_utils.c paren_error_bonus.c
+BONUS_SRCS = $(addprefix $(SRC_DIR), $(BONUS_SRC_LIST))
+
+BONUS_OBJ_LIST = $(BONUS_SRC_LIST:.c=.o)
+BONUS_OBJS = $(addprefix $(OBJ_DIR), $(BONUS_OBJ_LIST))
+
 CLEAN = "\033[2K \033[A"
 RED = \033[31m
 GREEN = \033[32m
 YELLOW = \033[33m
 RESET = \033[0m
 
+ifdef WITH_BONUS
+	OBJECTS = $(BONUS_OBJS)
+else
+	OBJECTS = $(OBJS)
+endif
+
 all : $(NAME)
 
-$(NAME) : $(OBJS)
+$(NAME) : $(OBJECTS)
 	@echo $(CLEAN)
 	@make -sC $(LIBFT_DIR)
-	@$(CC) $(CFLAG) $(LIBFLAG) $(INCFLAG) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAG) $(LIBFLAG) $(INCFLAG) $(OBJECTS) -o $(NAME)
 	@echo "$(GREEN)[$(NAME)]: done$(RESET)"
+
+bonus : 
+	@make WITH_BONUS=1 all
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c $(INCS)
 	@mkdir -p $(OBJ_DIR)
@@ -63,7 +83,7 @@ $(OBJ_DIR)%.o : $(SRC_DIR)%.c $(INCS)
 
 clean:
 	@make -sC $(LIBFT_DIR) clean
-	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR) $(BONUS_OBJ_DIR)
 	@echo "$(RED)[$(NAME)]: clean$(RESET)"
 
 fclean: clean
