@@ -120,11 +120,13 @@ t_env	*copy_env_list(t_env *envs)
 void	export(t_mini *mini, char **args)
 {
 	t_env	*ptr;
+	t_env	*copied_env;
 
 	if (!args[1])
 	{
 		mini->exit_code = SUCCESS;
-		ptr = copy_env_list(mini->envs);
+		copied_env = copy_env_list(mini->envs);
+		ptr = copied_env;
 		while (ptr)
 		{
 			join_putstr_fd("declare -x ", ptr->key, 0, STDOUT);
@@ -133,6 +135,7 @@ void	export(t_mini *mini, char **args)
 			join_putstr_fd("\n", 0, 0, STDOUT);
 			ptr = ptr->next;
 		}
+		free_sort_env(copied_env);
 	}
 	else
 	{
