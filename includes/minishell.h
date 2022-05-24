@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: junyopar <junyopar@student.42.kr>          +#+  +:+       +#+        */
+/*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/21 15:21:36 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/24 12:31:45 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ enum e_token_type
 	APPEND = 4,
 	REDIRIN = 5,
 	HEREDOC = 6,
-	PIPE = 7
+	PIPE = 7,
+	OPEN_PR = 8,
+	CLOSE_PR = 9,
+	AND = 10,
+	OR = 11
 } ;
 
 enum e_std_type
@@ -60,6 +64,7 @@ typedef struct s_token
 {
 	int				type;
 	char			*str;
+	struct s_token	*prev;
 	struct s_token	*next;
 }				t_token;
 
@@ -68,6 +73,7 @@ typedef struct s_fd
 	int	sd[2];
 	int	fd[2];
 	int	pd[2];
+	int	bd[2];
 	int	hd[2];
 }				t_fd;
 
@@ -77,6 +83,9 @@ typedef struct s_mini
 	t_token	*tokens;
 	t_fd	fd;
 	int		exit_code;
+	int		is_prev_pipe;
+	int		is_next_pipe;
+	pid_t	pid;
 }				t_mini;
 
 /*
@@ -104,9 +113,9 @@ int		parsing_line(char *str, t_mini *mini);
 /*
 *** syntax ***
 */
-int		join_putstr_fd(char *a, char *b, char *c, int fd);
 int		check_type(int type);
-int		syntax_check_next(t_mini *mini, t_token *prev, t_token *token);
+int		syntax_check_next_sub(t_mini *mini, t_token *token);
+int		syntax_check_next(t_mini *mini, t_token *token);
 int		syntax_check(t_mini *mini, t_token *token);
 
 /*
@@ -137,14 +146,16 @@ char	*str_to_token(t_mini *mini, char *start, char *end);
 */
 t_token	*next_cmd(t_token *ptr);
 char	**create_args(t_token *token);
-void	run_cmd(t_mini *mini, t_token *cmd, char **args, int flag);
+void	run_cmd(t_mini *mini, t_token *cmd, char **args, int fork_flag);
+int		handle_and_or(t_mini *mini, t_token **ptoken);
+void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point);
 
 /*
 *** pipe_cmd ***
 */
 int		next_has_pipe(t_token *token);
 void	wait_pipe_pid(t_mini *mini, pid_t last_pid);
-void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe);
+void	set_pipe_inout(t_mini *mini, int is_prev_pipe, int is_next_pipe);
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 
 /*
@@ -198,11 +209,17 @@ int		handle_redirect(t_mini *mini, t_token *token);
 /*
 *** exec ***
 */
-char	**convert_env(t_env *envs);
 void	pre_exec(t_mini *mini, char **args, int flag);
+void	stat_check_sub(char *args);
 void	stat_check(char *args);
 void	exe_command(t_mini *mini, char **args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);
+
+/*
+*** exec_utils ***
+*/
+char	**convert_env(t_env *envs);
+void	check_newline(char *buffer);
 
 /*
 *** signal ***
@@ -220,6 +237,22 @@ t_env	*get_env_node(char *key, char *value);
 t_token	*get_token_node(int type, char *str);
 int		is_sep(char s);
 int		is_quot(char s);
-void	check_newline(char *buffer);
+int		join_putstr_fd(char *a, char *b, char *c, int fd);
+
+/*
+********* bonus **********
+*/
+
+/*
+*** parentheses ***
+*/
+t_token	*find_close_pr(t_token *token);
+void	run_cmd_in_paren(t_mini *mini, t_token *open_pr);
+
+/*
+*** paren_syntax ***
+*/
+int		paren_count(t_mini *mini);
+int		paren_syntax_check(t_mini *mini);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 20:37:36 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/19 00:43:18 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 12:16:50 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handler_1(int signo)
 	{
 		str = ft_strdup(rl_line_buffer);
 		rl_replace_line("", 0);
-		join_putstr_fd("\033[K🐚minishell$ ", str, "\n", STDOUT);
+		join_putstr_fd("\033[Kminishell$ ", str, "\n", STDOUT);
 		rl_on_new_line();
 		rl_redisplay();
 		free(str);

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 18:38:27 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/21 14:06:32 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/24 11:52:37 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,45 +50,49 @@ void	wait_pipe_pid(t_mini *mini, pid_t last_pid)
 	set_signal();
 }
 
-void	set_pipe_inout(int bd[2], int pd[2], int next_has_pipe)
+void	set_pipe_inout(t_mini *mini, int is_prev_pipe, int is_next_pipe)
 {
-	if (bd[0] > 0)
+	if (is_prev_pipe)
 	{
-		dup2(bd[0], 0);
-		close(bd[0]);
-		close(bd[1]);
+		dup2(mini->fd.bd[0], 0);
+		close(mini->fd.bd[0]);
+		close(mini->fd.bd[1]);
 	}
-	if (next_has_pipe)
+	if (is_next_pipe)
 	{
-		dup2(pd[1], 1);
-		close(pd[0]);
-		close(pd[1]);
+		dup2(mini->fd.pd[1], 1);
+		close(mini->fd.pd[0]);
+		close(mini->fd.pd[1]);
 	}
+}
+
+void	backup_pipe_fd(t_mini *mini)
+{
+	mini->fd.bd[0] = mini->fd.pd[0];
+	mini->fd.bd[1] = mini->fd.pd[1];
 }
 
 void	run_cmd_with_pipe(t_mini *mini, t_token *cmd)
 {
-	char	**args;
-	pid_t	pid;
-	int		bd[2];
-
-	while (cmd)
+	mini->is_prev_pipe = 0;
+	if (cmd->prev && cmd->prev->type == PIPE)
+		mini->is_prev_pipe = 1;
+	mini->is_next_pipe = next_has_pipe(cmd);
+	pipe(mini->fd.pd);
+	signal(SIGQUIT, SIG_DFL);
+	mini->pid = fork();
+	if (mini->pid == 0)
 	{
-		args = create_args(cmd);
-		bd[0] = mini->fd.pd[0];
-		bd[1] = mini->fd.pd[1];
-		pipe(mini->fd.pd);
-		signal(SIGQUIT, SIG_DFL);
-		pid = fork();
-		if (pid == 0)
-		{
-			set_pipe_inout(bd, mini->fd.pd, next_has_pipe(cmd));
-			run_cmd(mini, cmd, args, 1);
-			exit(0);
-		}
-		close(bd[0]);
-		close(bd[1]);
-		cmd = next_cmd(cmd);
+		set_pipe_inout(mini, mini->is_prev_pipe, mini->is_next_pipe);
+		run_cmd(mini, cmd, create_args(cmd), 1);
+		exit(0);
 	}
-	wait_pipe_pid(mini, pid);
+	if (mini->is_prev_pipe)
+	{
+		close(mini->fd.bd[0]);
+		close(mini->fd.bd[1]);
+		if (!mini->is_next_pipe)
+			wait_pipe_pid(mini, mini->pid);
+	}
+	backup_pipe_fd(mini);
 }
