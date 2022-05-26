@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/24 14:07:13 by junyopar         ###   ########.fr        #
+#    Updated: 2022/05/26 15:56:15 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,10 @@ INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
 USERS := $(shell Users)
 
-READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib
-READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include
+#READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib
+#READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include
+READLINE_DIR = /opt/homebrew/opt/readline/lib
+READLINE_INC = /opt/homebrew/opt/readline/include
 
 LIBFT_DIR = ./libft/
 LIBFT_INC = $(LIBF_DIR)includes/
