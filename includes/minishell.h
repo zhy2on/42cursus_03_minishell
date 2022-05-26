@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/24 12:31:45 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/26 20:59:15 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ char	*search_dollar_value(t_mini *mini, char *str);
 *** token ***
 */
 void	free_token(t_token **ptokens);
-void	set_token_type(t_token *tokens, t_token *token, int is_sep);
+void	set_token_type(t_token *token, int is_sep);
 void	add_token(t_token **ptokens, char *str, int is_sep);
 int		check_empty_token(char *start, char *str, int i, t_mini *mini);
 void	create_tokens(t_mini *mini, char *str, char *quot, int i);

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 21:16:56 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 11:34:43 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/26 23:48:21 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,11 @@ int	pr_pop(t_token **stack)
 	ret = (*stack)->type;
 	ptr = *stack;
 	*stack = (*stack)->next;
-	free(ptr);
+	if (ptr)
+	{
+		free(ptr->str);
+		free(ptr);
+	}
 	return (ret);
 }
 
