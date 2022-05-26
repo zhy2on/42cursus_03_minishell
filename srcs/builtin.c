@@ -12,6 +12,23 @@
 
 #include "../includes/minishell.h"
 
+void	env(t_mini *mini)
+{
+	t_env	*ptr;
+
+	mini->exit_code = SUCCESS;
+	ptr = mini->envs;
+	while (ptr)
+	{
+		if (ptr->value)
+		{
+			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
+			join_putstr_fd("\n", 0, 0, STDOUT);
+		}
+		ptr = ptr->next;
+	}
+}
+
 void	unset(t_mini *mini, char **args)
 {
 	mini->exit_code = SUCCESS;
