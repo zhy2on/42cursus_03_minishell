@@ -12,6 +12,18 @@
 
 #include "../includes/minishell.h"
 
+void	print_token(t_mini *mini)
+{
+	t_token	*ptr;
+
+	ptr = mini->tokens;
+	while (ptr)
+	{
+		printf("%d %s\n", ptr->type, ptr->str);
+		ptr = ptr->next;
+	}
+}
+
 t_token	*next_cmd(t_token *ptr)
 {
 	while (ptr && ptr->type < PIPE)
@@ -41,7 +53,7 @@ char	**create_args(t_token *token)
 	while (ptr && ptr->type < PIPE)
 	{
 		if (ptr->type <= ARG)
-			ret[i++] = ptr->str;
+			ret[i++] = ft_strdup(ptr->str);
 		ptr = ptr->next;
 	}
 	ret[i] = NULL;
@@ -50,11 +62,19 @@ char	**create_args(t_token *token)
 
 void	run_cmd(t_mini *mini, t_token *cmd, char **args, int fork_flag)
 {
+	int		i;
+
 	if (!handle_redirect(mini, cmd))
 		return ;
 	if (!builtin(mini, args))
 		pre_exec(mini, args, fork_flag);
-	free(args);
+	i = 0;
+	while (args[i])
+		i++;
+	while (i >= 0)
+		free(args[i--]);
+	if (args)
+		free(args);
 }
 
 int	handle_and_or(t_mini *mini, t_token **ptoken)
@@ -102,7 +122,15 @@ void	run_cmd_line(t_mini *mini, t_token *token, t_token *end_point)
 			|| (token->prev && token->prev->type == PIPE))
 			run_cmd_with_pipe(mini, token);
 		else
+		{
+			print_token(mini);
 			run_cmd(mini, token, create_args(token), 0);
+		}
 		token = next_cmd(token);
+		if (token && token->type > OR)
+		{
+			printf("type error\n");
+			return ;
+		}
 	}
 }

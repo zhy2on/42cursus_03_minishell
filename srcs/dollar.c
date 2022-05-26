@@ -43,14 +43,14 @@ char	*search_dollar_value(t_mini *mini, char *str)
 	ret = NULL;
 	end = end_of_dollar(str);
 	if (!end)
-		return ("$");
+		return (ft_strdup("$"));
 	if (end == str + 2 && *(str + 1) == '?')
 		return (ft_itoa(mini->exit_code));
 	end_backup = *end;
 	*end = '\0';
 	ptr = search_env(mini->envs, str + 1);
 	if (ptr)
-		ret = ptr->value;
+		ret = ft_strdup(ptr->value);
 	*end = end_backup;
 	return (ret);
 }

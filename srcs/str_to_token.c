@@ -24,7 +24,10 @@ int	token_len(t_mini *mini, char *str)
 		{
 			value = search_dollar_value(mini, str);
 			if (value)
+			{
 				i += ft_strlen(value);
+				free(value);
+			}
 			str = end_of_dollar(str);
 			continue ;
 		}
@@ -39,14 +42,18 @@ int	token_len(t_mini *mini, char *str)
 void	str_to_token_sub(t_mini *mini, char *str, char *ret)
 {
 	char	*value;
+	char	*s;
 
 	while (*str)
 	{
 		if (*str == - '$')
 		{
 			value = search_dollar_value(mini, str);
-			while (value && *value)
-				*ret++ = *value++;
+			s = value;
+			while (s && *s)
+				*ret++ = *s++;
+			if (value)
+				free(value);
 			str = end_of_dollar(str);
 		}
 		else if (*str == - '>' || *str == - '<'

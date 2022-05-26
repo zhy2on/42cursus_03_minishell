@@ -33,6 +33,7 @@ void	free_token(t_token **tokens)
 void	add_token(t_token **ptokens, char *str, int is_sep)
 {
 	t_token	*ptr;
+	t_token	*ret;
 
 	if (!str)
 		return ;
@@ -40,14 +41,19 @@ void	add_token(t_token **ptokens, char *str, int is_sep)
 	if (!ptr)
 	{
 		*ptokens = get_token_node(0, str);
-		set_token_type(*ptokens, *ptokens, is_sep);
-		return ;
+		ret = *ptokens;
+		set_token_type(*ptokens, is_sep);
 	}
-	while (ptr->next)
-		ptr = ptr->next;
-	ptr->next = get_token_node(0, str);
-	ptr->next->prev = ptr;
-	set_token_type(*ptokens, ptr->next, is_sep);
+	else
+	{
+		while (ptr->next)
+			ptr = ptr->next;
+		ptr->next = get_token_node(0, str);
+		ptr->next->prev = ptr;
+		ret = ptr->next;
+		set_token_type(ptr->next, is_sep);
+	}
+	printf("in add_token: %d %s\n", ret->type, ret->str);
 }
 
 int	check_empty_token(char *start, char *str, int i, t_mini *mini)

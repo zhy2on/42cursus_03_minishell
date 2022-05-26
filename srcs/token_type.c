@@ -12,8 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	set_token_type_sub(t_token *tokens,
-								t_token *prev, t_token *token, int is_sep)
+void	set_token_type_sub(t_token *token, int is_sep)
 {
 	if (!ft_strcmp(token->str, "(") && is_sep)
 		token->type = OPEN_PR;
@@ -23,21 +22,16 @@ void	set_token_type_sub(t_token *tokens,
 		token->type = AND;
 	else if (!ft_strcmp(token->str, "||") && is_sep)
 		token->type = OR;
-	else if (tokens == token || prev->type >= PIPE)
+	else if (token->prev == NULL || token->prev->type >= PIPE)
 		token->type = CMD;
-	else if (prev->type > DIRE && prev->type < PIPE)
+	else if (token->prev->type > DIRE && token->prev->type < PIPE)
 		token->type = DIRE;
 	else
 		token->type = ARG;
 }
 
-void	set_token_type(t_token *tokens, t_token *token, int is_sep)
+void	set_token_type(t_token *token, int is_sep)
 {
-	t_token	*prev;
-
-	prev = tokens;
-	while (prev != token && prev->next != token)
-		prev = prev->next;
 	if (!ft_strcmp(token->str, ">") && is_sep)
 		token->type = REDIROUT;
 	else if (!ft_strcmp(token->str, ">>") && is_sep)
@@ -49,5 +43,5 @@ void	set_token_type(t_token *tokens, t_token *token, int is_sep)
 	else if (!ft_strcmp(token->str, "|") && is_sep)
 		token->type = PIPE;
 	else
-		set_token_type_sub(tokens, prev, token, is_sep);
+		set_token_type_sub(token, is_sep);
 }
