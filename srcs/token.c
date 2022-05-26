@@ -25,8 +25,8 @@ void	free_token(t_token **tokens)
 		free(ptr->prev->str);
 		free(ptr->prev);
 	}
-	free(ptr);
 	free(ptr->str);
+	free(ptr);
 	*tokens = NULL;
 }
 
