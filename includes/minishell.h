@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/26 20:59:15 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/27 15:24:19 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 /*
 *** builtin ***
 */
+void	env(t_mini *mini);
 void	unset(t_mini *mini, char **args);
 void	echo(t_mini *mini, char **args);
 int		builtin(t_mini *mini, char **args);
@@ -175,11 +176,11 @@ void	cd_sub(t_mini *mini, char **args);
 /*
 *** env ***
 */
+char	*validate_key(char *key, char *cmd);
 void	remove_env(t_env **penvs, char *key);
 t_env	*search_env(t_env *envs, char *key);
 void	add_env_sub(t_env **penvs, char *key, char *value);
 int		add_env(t_env **penvs, char *name);
-void	env(t_mini *mini);
 
 /*
 *** exit ***
@@ -191,10 +192,10 @@ void	ft_exit(t_mini *mini, char **args);
 /*
 *** export ***
 */
-char	*validate_key(char *key, char *cmd);
 void	free_sort_env(t_env *envs);
 t_env	*sort_env_list(t_env *temp);
 t_env	*copy_env_list(t_env *envs);
+void	export_with_args(t_mini *mini, char **args);
 void	export(t_mini *mini, char **args);
 
 /*
