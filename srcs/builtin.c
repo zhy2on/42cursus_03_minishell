@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 18:25:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/22 19:11:11 by junyopar         ###   ########.fr       */
+/*   Updated: 2022/05/27 18:44:43 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,27 +43,49 @@ void	unset(t_mini *mini, char **args)
 	}
 }
 
-void	echo(t_mini *mini, char **args)
+int	echo_option_count(char **args)
 {
 	char	*ptr;
+	int		i;
+
+	i = 0;
+	while (args[1])
+	{
+		ptr = args[1];
+		if (*ptr == '-' && *(ptr + 1) == 'n')
+		{
+			while (*(++ptr) == 'n')
+				;
+			if (!*ptr)
+			{
+				i++;
+				args++;
+			}
+			else
+				break ;
+		}
+		else
+			break ;
+	}
+	return (i);
+}
+
+void	echo(t_mini *mini, char **args)
+{
+	int	i;
 
 	mini->exit_code = SUCCESS;
 	if (!args[1] && join_putstr_fd("\n", 0, 0, STDOUT))
 		return ;
-	ptr = args[1];
-	if (*ptr == '-')
+	i = echo_option_count(args);
+	if (i)
 	{
-		while (*(++ptr) == 'n')
-			;
-		if (*ptr == '\0')
-		{
-			args += 2;
-			while (*args && *(args + 1))
-				join_putstr_fd(*args++, " ", 0, STDOUT);
-			if (*args)
-				join_putstr_fd(*args, 0, 0, STDOUT);
-			return ;
-		}
+		args += i + 1;
+		while (*args && *(args + 1))
+			join_putstr_fd(*args++, " ", 0, STDOUT);
+		if (*args)
+			join_putstr_fd(*args, 0, 0, STDOUT);
+		return ;
 	}
 	args += 1;
 	while (*args && *(args + 1))

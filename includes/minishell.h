@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/27 15:24:19 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/27 18:45:05 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ void	run_cmd_with_pipe(t_mini *mini, t_token *cmd);
 */
 void	env(t_mini *mini);
 void	unset(t_mini *mini, char **args);
+int		echo_option_count(char **args);
 void	echo(t_mini *mini, char **args);
 int		builtin(t_mini *mini, char **args);
 
