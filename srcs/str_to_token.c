@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/27 15:54:55 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/27 16:45:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,10 @@ void	str_to_token_sub(t_mini *mini, char *str, char *ret)
 			s = value;
 			while (s && *s)
 				*ret++ = *s++;
-			if (value)
-				free(value);
+			free(value);
 			str = end_of_dollar(str);
+			if (!*str)
+				break ;
 		}
 		else if (*str == - '>' || *str == - '<'
 			|| *str == - '&' || *str == - '|')
@@ -76,7 +77,7 @@ char	*str_to_token(t_mini *mini, char *start, char *end)
 		return (NULL);
 	end_backup = *end;
 	*end = '\0';
-	ret = (char *)malloc(sizeof(char) * (token_len(mini, start) * 2));
+	ret = (char *)malloc(sizeof(char) * (token_len(mini, start) + 1));
 	if (!ret)
 		return (NULL);
 	str_to_token_sub(mini, start, ret);
