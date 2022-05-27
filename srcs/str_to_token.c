@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/30 16:29:52 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/27 00:00:39 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/27 15:54:55 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,12 @@ char	*str_to_token(t_mini *mini, char *start, char *end)
 {
 	char	*ret;
 	char	end_backup;
-	int		i;
 
 	if (start == end)
 		return (NULL);
 	end_backup = *end;
 	*end = '\0';
-	i = token_len(mini, start);
-	ret = (char *)malloc(sizeof(char) * (i + 1));
+	ret = (char *)malloc(sizeof(char) * (token_len(mini, start) * 2));
 	if (!ret)
 		return (NULL);
 	str_to_token_sub(mini, start, ret);
