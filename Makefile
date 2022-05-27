@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/26 15:56:15 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/27 21:59:32 by jihoh            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ SRC_LIST = builtin.c env.c main.c str_to_token.c \
 				cmd.c exit.c redirect.c token.c \
 				dollar.c export.c signal.c tools.c \
 				init.c pipe_cmd.c parentheses.c token_type.c \
-				exec_utils.c paren_error.c
+				exec_utils.c paren_error.c replace_str.c
 SRCS = $(addprefix $(SRC_DIR), $(SRC_LIST))
 
 OBJ_DIR = ./objs/

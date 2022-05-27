@@ -48,7 +48,8 @@ void	cd_sub(t_mini *mini, char **args)
 			": No such file or directory\n", STDERR);
 		mini->exit_code = ERROR;
 	}
-	mini->exit_code = SUCCESS;
+	else
+		mini->exit_code = SUCCESS;
 }
 
 void	cd(t_mini *mini, char **args)

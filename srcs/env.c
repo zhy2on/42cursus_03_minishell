@@ -12,6 +12,35 @@
 
 #include "../includes/minishell.h"
 
+char	*validate_key(char *key, char *cmd)
+{
+	char	*s;
+
+	s = key;
+	if (ft_isalpha(*s) || *s == '_')
+	{
+		s++;
+		while (ft_isalnum(*s) || *s == '_')
+			s++;
+	}
+	if (!ft_strcmp(cmd, "unset") && *s)
+	{
+		join_putstr_fd("minishell: unset: `", key,
+			"': not a valid identifier\n", STDERR);
+		return (NULL);
+	}
+	if (!ft_strcmp(cmd, "export"))
+	{
+		if ((*s && *s != '=') || (key == s && *s == '='))
+		{
+			join_putstr_fd("minishell: export: `", key,
+				"': not a valid identifier\n", STDERR);
+			return (NULL);
+		}
+	}
+	return (s);
+}
+
 void	remove_env(t_env **envs, char *key)
 {
 	t_env	*prev;
@@ -96,21 +125,4 @@ int	add_env(t_env **penvs, char *name)
 	*s = '\0';
 	add_env_sub(penvs, name, value);
 	return (1);
-}
-
-void	env(t_mini *mini)
-{
-	t_env	*ptr;
-
-	mini->exit_code = SUCCESS;
-	ptr = mini->envs;
-	while (ptr)
-	{
-		if (ptr->value)
-		{
-			join_putstr_fd(ptr->key, "=", ptr->value, STDOUT);
-			join_putstr_fd("\n", 0, 0, STDOUT);
-		}
-		ptr = ptr->next;
-	}
 }

@@ -12,35 +12,6 @@
 
 #include "../includes/minishell.h"
 
-char	*validate_key(char *key, char *cmd)
-{
-	char	*s;
-
-	s = key;
-	if (ft_isalpha(*s) || *s == '_')
-	{
-		s++;
-		while (ft_isalnum(*s) || *s == '_')
-			s++;
-	}
-	if (!ft_strcmp(cmd, "unset") && *s)
-	{
-		join_putstr_fd("minishell: unset: `", key,
-			"': not a valid identifier\n", STDERR);
-		return (NULL);
-	}
-	if (!ft_strcmp(cmd, "export"))
-	{
-		if ((*s && *s != '=') || (key == s && *s == '='))
-		{
-			join_putstr_fd("minishell: export: `", key,
-				"': not a valid identifier\n", STDERR);
-			return (NULL);
-		}
-	}
-	return (s);
-}
-
 void	free_sort_env(t_env *envs)
 {
 	t_env		*ptr;
@@ -117,6 +88,17 @@ t_env	*copy_env_list(t_env *envs)
 	return (sort_env_list(copied_list));
 }
 
+void	export_with_args(t_mini *mini, char **args)
+{
+	mini->exit_code = SUCCESS;
+	args += 1;
+	while (*args)
+	{
+		if (!add_env(&mini->envs, ft_strdup(*args++)))
+			mini->exit_code = ERROR;
+	}
+}
+
 void	export(t_mini *mini, char **args)
 {
 	t_env	*ptr;
@@ -138,13 +120,5 @@ void	export(t_mini *mini, char **args)
 		free_sort_env(copied_env);
 	}
 	else
-	{
-		mini->exit_code = SUCCESS;
-		args += 1;
-		while (*args)
-		{
-			if (!add_env(&mini->envs, ft_strdup(*args++)))
-				mini->exit_code = ERROR;
-		}
-	}
+		export_with_args(mini, args);
 }
