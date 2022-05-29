@@ -6,7 +6,7 @@
 #    By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/17 18:18:07 by junyopar          #+#    #+#              #
-#    Updated: 2022/05/26 20:59:42 by jihoh            ###   ########.fr        #
+#    Updated: 2022/05/29 13:19:10 by junyopar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,10 @@ INCFLAG = -I$(INC_DIR) -I$(LIBFT_INC) -I$(READLINE_INC)
 
 USERS := $(shell Users)
 
-#READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib
-#READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include
-READLINE_DIR = /opt/homebrew/opt/readline/lib
-READLINE_INC = /opt/homebrew/opt/readline/include
+READLINE_DIR = /Users/$(USERS)/.brew/opt/readline/lib
+READLINE_INC = /Users/$(USERS)/.brew/opt/readline/include
+#READLINE_DIR = /opt/homebrew/opt/readline/lib
+#READLINE_INC = /opt/homebrew/opt/readline/include
 
 LIBFT_DIR = ./libft/
 LIBFT_INC = $(LIBF_DIR)includes/
@@ -34,7 +34,7 @@ INCS = $(addprefix $(INC_DIR), $(INC_LIST))
 SRC_DIR = ./srcs/
 SRC_LIST = builtin.c env.c main.c str_to_token.c \
 				cd.c exec.c parsing.c syntax.c \
-				cmd.c exit.c redirect.c token.c \
+				cmd.c exit.c redirect.c heredoc.c token.c \
 				dollar.c export.c signal.c tools.c \
 				init.c pipe_cmd.c parentheses.c token_type.c \
 				exec_utils.c paren_error.c
@@ -46,7 +46,7 @@ OBJS = $(addprefix $(OBJ_DIR), $(OBJ_LIST))
 
 BONUS_SRC_LIST = builtin.c env.c main.c str_to_token.c \
 				cd.c exec.c parsing.c syntax.c \
-				cmd.c exit.c redirect.c token.c \
+				cmd.c exit.c redirect.c heredoc.c token.c \
 				dollar.c export.c signal.c tools.c \
 				init.c pipe_cmd.c parentheses_bonus.c token_type.c \
 				exec_utils.c paren_error_bonus.c

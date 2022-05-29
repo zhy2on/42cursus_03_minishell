@@ -202,11 +202,16 @@ void	export(t_mini *mini, char **args);
 /*
 *** redirect ***
 */
-int		heredoc(t_mini *mini, t_token *token);
-int		set_heredoc_fd(t_mini *mini, t_token *token);
 int		change_inout_sub(t_mini *mini, t_token *token);
 int		change_inout(t_mini *mini, t_token *token);
 int		handle_redirect(t_mini *mini, t_token *token);
+
+/*
+*** heredoc ***
+*/
+int		heredoc_sub(t_mini *mini);
+int		heredoc(t_mini *mini, t_token *token);
+int		set_heredoc_fd(t_mini *mini, t_token *token);
 
 /*
 *** exec ***

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 12:25:59 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/05/29 13:49:50 by junyopar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ void	prompt(t_mini *mini)
 		if (parsing_line(str, mini) && syntax_check(mini, mini->tokens))
 			run_cmd_line(mini, mini->tokens, NULL);
 		free_token(&mini->tokens);
-		if (str)
-			free(str);
+		free(str);
 	}
 }
 
