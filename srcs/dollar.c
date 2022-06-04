@@ -6,11 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 17:31:33 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/27 01:40:10 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/04 17:36:18 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 int	dollar_check(char *str)
 {

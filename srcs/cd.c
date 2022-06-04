@@ -6,11 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/25 17:29:19 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/19 18:50:24 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/04 17:36:15 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 int	cd_home(t_mini *mini, char **args)
 {

@@ -6,11 +6,11 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 10:29:28 by jihoh             #+#    #+#             */
-/*   Updated: 2022/05/24 14:02:34 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/04 17:36:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 char	**convert_env(t_env *envs)
 {
