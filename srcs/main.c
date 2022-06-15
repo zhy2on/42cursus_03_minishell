@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/06/04 17:36:23 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/15 17:05:50 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,12 @@ void	prompt(t_mini *mini)
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
-	t_env	*ptr;
 
 	ac = 0;
 	av[1] = NULL;
 	init_mini(&mini);
 	while (*env)
 		add_env(&mini.envs, ft_strdup(*env++));
-	ptr = mini.envs;
 	init_shlvl(&mini.envs);
 	prompt(&mini);
 	return (0);
