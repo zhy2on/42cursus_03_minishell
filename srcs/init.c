@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 01:40:22 by jihoh             #+#    #+#             */
-/*   Updated: 2022/06/04 17:36:22 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:12:20 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	init_mini(t_mini *mini)
 	mini->envs = NULL;
 	mini->tokens = NULL;
 	mini->exit_code = 0;
-	mini->is_prev_pipe = 0;
 	mini->fd.sd[0] = dup(STDIN);
 	mini->fd.sd[1] = dup(STDOUT);
 	init_fd(mini);

@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 15:21:26 by junyopar          #+#    #+#             */
-/*   Updated: 2022/05/27 18:45:05 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:32:30 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,8 +216,7 @@ int		set_heredoc_fd(t_mini *mini, t_token *token);
 /*
 *** exec ***
 */
-void	pre_exec(t_mini *mini, char **args, int flag);
-void	stat_check_sub(char *args);
+void	exec(t_mini *mini, char **args, int flag);
 void	stat_check(char *args);
 void	exe_command(t_mini *mini, char **args);
 void	find_abs_exe(char *command, char *envs[], char buffer[], int buf_size);

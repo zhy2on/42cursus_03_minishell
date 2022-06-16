@@ -6,13 +6,13 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 19:18:45 by jihoh             #+#    #+#             */
-/*   Updated: 2022/06/04 17:36:20 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:37:56 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	pre_exec(t_mini *mini, char **args, int flag)
+void	exec(t_mini *mini, char **args, int flag)
 {
 	int	status;
 
@@ -33,44 +33,24 @@ void	pre_exec(t_mini *mini, char **args, int flag)
 		exe_command(mini, args);
 }
 
-void	stat_check_sub(char *args)
-{
-	if (!ft_strchr(args, '/'))
-	{
-		join_putstr_fd("minishell: ", args,
-			": command not found\n", STDERR);
-		exit(127);
-	}
-	else
-	{
-		join_putstr_fd("minishell: ", args,
-			": No such file or directory\n", STDERR);
-		exit(127);
-	}
-}
-
 void	stat_check(char *args)
 {
 	struct stat	statbuf;
 
 	stat(args, &statbuf);
-	if (S_ISREG(statbuf.st_mode))
-	{
-		if (!(statbuf.st_mode & S_IXUSR))
-		{
-			join_putstr_fd("minishell: ", args,
-				": Permission denied\n", STDERR);
-			exit(126);
-		}
-	}
-	else if (S_ISDIR(statbuf.st_mode))
-	{
-		join_putstr_fd("minishell: ", args,
-			": is a directory\n", STDERR);
+	if (!ft_strchr(args, '/')
+		&& join_putstr_fd("minishell: ", args, ": command not found\n", STDERR))
+		exit(127);
+	else if (S_ISREG(statbuf.st_mode) && !(statbuf.st_mode & S_IXUSR)
+		&& join_putstr_fd("minishell: ", args, ": Permission denied\n", STDERR))
 		exit(126);
-	}
-	else
-		stat_check_sub(args);
+	else if (S_ISDIR(statbuf.st_mode)
+		&& join_putstr_fd("minishell: ", args, ": is a directory\n", STDERR))
+		exit(126);
+	else if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode)
+		&& join_putstr_fd("minishell: ", args, ": No such file or directory\n",
+			STDERR))
+		exit(127);
 }
 
 void	exe_command(t_mini *mini, char **args)
