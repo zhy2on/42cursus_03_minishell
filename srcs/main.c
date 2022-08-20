@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 21:41:26 by jihoh             #+#    #+#             */
-/*   Updated: 2022/06/15 17:05:50 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/08/20 18:15:51 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
 
-	ac = 0;
+	(void)ac;
 	av[1] = NULL;
 	init_mini(&mini);
 	while (*env)

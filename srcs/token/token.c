@@ -6,7 +6,7 @@
 /*   By: jihoh <jihoh@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 04:13:04 by jihoh             #+#    #+#             */
-/*   Updated: 2022/06/04 17:36:30 by jihoh            ###   ########.fr       */
+/*   Updated: 2022/08/20 18:16:23 by jihoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	free_token(t_token **tokens)
 void	add_token(t_token **ptokens, char *str, int is_sep)
 {
 	t_token	*ptr;
-	t_token	*ret;
 
 	if (!str)
 		return ;
@@ -44,7 +43,6 @@ void	add_token(t_token **ptokens, char *str, int is_sep)
 	if (!ptr)
 	{
 		*ptokens = get_token_node(0, str);
-		ret = *ptokens;
 		set_token_type(*ptokens, is_sep);
 	}
 	else
@@ -53,7 +51,6 @@ void	add_token(t_token **ptokens, char *str, int is_sep)
 			ptr = ptr->next;
 		ptr->next = get_token_node(0, str);
 		ptr->next->prev = ptr;
-		ret = ptr->next;
 		set_token_type(ptr->next, is_sep);
 	}
 }
